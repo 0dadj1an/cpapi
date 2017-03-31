@@ -100,6 +100,14 @@ class AddHost(tk.Frame):
         hostip_e.grid(row=5, column=1)
         hostip_e.configure(background="#ffffff")
 
+        #Host Color
+        hostcolor_l = ttk.Label(self, text="Host Color", background="#494949", foreground="#f44242")
+        hostcolor_l.grid(row=6, column=0, sticky=E)
+        defaultcolor = StringVar(self)
+        defaultcolor.set("black")
+        hostcolormenu = OptionMenu(self, defaultcolor, "black", "blue", "cyan", "gold", "green", "red", "orange", "yellow")
+        hostcolormenu.grid(row=6, column=1)
+
         #Button to run command
         runapi = ttk.Button(self, text="Add Host", command = lambda: addhost())
         runapi.grid(row=3, column=2)
@@ -114,8 +122,9 @@ class AddHost(tk.Frame):
             usrdef_pass = pass_e.get()
             hostname = hostname_e.get()
             hostip = hostip_e.get()
+            hostcolor = defaultcolor.get()
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
-            ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add host name " + hostname + " ipv4-address " + hostip + " -s session.txt")
+            ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add host name " + hostname + " ipv4-address " + hostip + " color " + hostcolor + " -s session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
 
 class AddNetwork(tk.Frame):
