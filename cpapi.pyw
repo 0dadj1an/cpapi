@@ -39,6 +39,8 @@ class apiapp(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
+
+        #Style Configuration for page
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
@@ -56,7 +58,7 @@ class AddHost(tk.Frame):
 
     def __init__(self, parent, controller):
 
-        #TO BE WRITTEN
+        #Style Configuration for page
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
@@ -120,7 +122,7 @@ class AddNetwork(tk.Frame):
 
     def __init__(self, parent, controller):
 
-        #TO BE WRITTEN
+        #Style Configuration for page
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
