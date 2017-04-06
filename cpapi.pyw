@@ -11,12 +11,39 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 
+#Class for ssh session and sending commands
+class ssh:
+    client = None
+
+    def __init__(self, address, username, password):
+        self.client = client.SSHClient()
+        self.client.set_missing_host_key_policy(client.AutoAddPolicy())
+        self.client.connect(address, username=username, password=password, look_for_keys=False)
+
+    def sendCommand(self, command):
+        if(self.client):
+            stdin, stdout, stderr = self.client.exec_command(command)
+            while not stdout.channel.exit_status_ready():
+                time.sleep(2)
+                # Print data when available
+                if stdout.channel.recv_ready():
+                    alldata = stdout.channel.recv(1024)
+                    prevdata = b"1"
+                    while prevdata:
+                        prevdata = stdout.channel.recv(1024)
+                        alldata += prevdata
+
+                    return (str(alldata, "utf8"))
+        else:
+            print ("Connection not opened.")
+
+#Class for main frame
 class apiapp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.wm_title("Check Point API Tool")
-        self.iconbitmap("cpscanicon.ico")
+        self.iconbitmap("cpapiicon.ico")
         container = ttk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
@@ -36,6 +63,7 @@ class apiapp(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+#Class for starting window
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -48,12 +76,15 @@ class StartPage(tk.Frame):
         label.configure(background="#494949", foreground="#f44242")
         label.grid(row=0)
 
+        #Button to call add host window
         addhostb = ttk.Button(self, text="ADD HOST", command=lambda: controller.show_frame("AddHost"))
         addhostb.grid(row=1)
 
+        #Button to call add network window
         addnetworkb = ttk.Button(self, text="ADD NETWORK", command=lambda: controller.show_frame("AddNetwork"))
         addnetworkb.grid(row=2)
 
+#Class for add host functionality
 class AddHost(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -116,6 +147,7 @@ class AddHost(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=2)
 
+        #Method for adding a single host object
         def addhost():
             usrdef_sship = sship_e.get()
             usrdef_username = username_e.get()
@@ -127,6 +159,7 @@ class AddHost(tk.Frame):
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add host name " + hostname + " ipv4-address " + hostip + " color " + hostcolor + " -s session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
 
+#Class for add network functionality
 class AddNetwork(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -189,6 +222,7 @@ class AddNetwork(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=2)
 
+        #Method for adding a single network object
         def addnetwork():
             usrdef_sship = sship_e.get()
             usrdef_username = username_e.get()
@@ -199,31 +233,6 @@ class AddNetwork(tk.Frame):
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add network name " + netname + " subnet " + netaddr + " mask-length " + netmask + " -s session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
-
-class ssh:
-    client = None
-
-    def __init__(self, address, username, password):
-        self.client = client.SSHClient()
-        self.client.set_missing_host_key_policy(client.AutoAddPolicy())
-        self.client.connect(address, username=username, password=password, look_for_keys=False)
-
-    def sendCommand(self, command):
-        if(self.client):
-            stdin, stdout, stderr = self.client.exec_command(command)
-            while not stdout.channel.exit_status_ready():
-                time.sleep(2)
-                # Print data when available
-                if stdout.channel.recv_ready():
-                    alldata = stdout.channel.recv(1024)
-                    prevdata = b"1"
-                    while prevdata:
-                        prevdata = stdout.channel.recv(1024)
-                        alldata += prevdata
-
-                    return (str(alldata, "utf8"))
-        else:
-            print ("Connection not opened.")
 
 if __name__ == "__main__":
     app = apiapp()
