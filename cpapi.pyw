@@ -50,7 +50,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork):
+        for F in (StartPage, AddHost, AddNetwork, ShowHosts):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -84,6 +84,10 @@ class StartPage(tk.Frame):
         addnetworkb = ttk.Button(self, text="ADD NETWORK", command=lambda: controller.show_frame("AddNetwork"))
         addnetworkb.grid(row=2)
 
+        #Button to call show hosts window
+        showhostsb = ttk.Button(self, text="SHOW HOSTS", command=lambda: controller.show_frame("ShowHosts"))
+        showhostsb.grid(row=3)
+
 #Class for add host functionality
 class AddHost(tk.Frame):
 
@@ -96,6 +100,7 @@ class AddHost(tk.Frame):
         addhostlabel = ttk.Label(self, text="Add Host")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0)
+
         #Collect IP for connection
         sship_l = ttk.Label(self, text = "IP", background="#494949", foreground="#f44242")
         sship_l.grid(row=1, column=0, sticky=E)
@@ -233,6 +238,22 @@ class AddNetwork(tk.Frame):
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add network name " + netname + " subnet " + netaddr + " mask-length " + netmask + " -s session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
+
+class ShowHosts(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Show Hosts")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=0, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
