@@ -48,7 +48,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, ShowHosts):
+        for F in (StartPage, AddHost, AddNetwork, HostToGroup):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -75,16 +75,16 @@ class StartPage(tk.Frame):
         label.grid(row=0)
 
         #Button to call add host window
-        addhostb = ttk.Button(self, text="ADD HOST", command=lambda: controller.show_frame("AddHost"))
+        addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
         addhostb.grid(row=1)
 
         #Button to call add network window
-        addnetworkb = ttk.Button(self, text="ADD NETWORK", command=lambda: controller.show_frame("AddNetwork"))
+        addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
         addnetworkb.grid(row=2)
 
-        #Button to call show hosts window
-        showhostsb = ttk.Button(self, text="SHOW HOSTS", command=lambda: controller.show_frame("ShowHosts"))
-        showhostsb.grid(row=3)
+        #Butto to call add host to group
+        addhosttogroup = ttk.Button(self, text="Add Host To Group", command=lambda: controller.show_frame("HostToGroup"))
+        addhosttogroup.grid(row=3)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -237,7 +237,7 @@ class AddNetwork(tk.Frame):
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli add network name " + netname + " subnet " + netaddr + " mask-length " + netmask + " -s session.txt")
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
 
-class ShowHosts(tk.Frame):
+class HostToGroup(tk.Frame):
 
     def __init__(self, parent, controller):
 
@@ -245,9 +245,9 @@ class ShowHosts(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Show Hosts")
+        addhostlabel = ttk.Label(self, text="Add Host to Group")
         addhostlabel.configure(background="#494949", foreground="#f44242")
-        addhostlabel.grid(row=0, column=0)
+        addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Collect IP for connection
         sship_l = ttk.Label(self, text = "IP", background="#494949", foreground="#f44242")
@@ -272,31 +272,51 @@ class ShowHosts(tk.Frame):
 
         #List for retrieval of all hosts
         allhostlist = []
+        allgrouplist = []
 
-        #Button to run command
-        runapi = ttk.Button(self, text="Get Hosts", command = lambda: showhosts())
+        #Button to retrieve objects
+        runapi = ttk.Button(self, text="Get Objects", command = lambda: showhostgroup())
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
-        def showhosts():
+        def showhostgroup():
             usrdef_sship = sship_e.get()
             usrdef_username = username_e.get()
             usrdef_pass = pass_e.get()
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
             allhosts = ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli show hosts --format json -s session.txt")
+            allgroups = ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli show groups --format json -s session.txt")
             json_hosts = json.loads(allhosts)
+            json_groups = json.loads(allgroups)
             for host in json_hosts["objects"]:
                 allhostlist.append(host["name"])
+            for group in json_groups["objects"]:
+                allgrouplist.append(group["name"])
             allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
             allhost.grid(row=4, column=0, sticky=E)
             defaulthost = StringVar(self)
             defaulthost.set("Select Host")
-            hostcolormenu = OptionMenu(self, defaulthost, *allhostlist)
-            hostcolormenu.grid(row=5, column=1)
+            showhostgroup.hostmenu = OptionMenu(self, defaulthost, *allhostlist)
+            showhostgroup.hostmenu.grid(row=4, column=1)
+            allgroup = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
+            allgroup.grid(row=5, column=0, sticky=E)
+            defaultgroup = StringVar(self)
+            defaultgroup.set("Select Group")
+            showhostgroup.groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
+            showhostgroup.groupmenu.grid(row=5, column=1)
 
+            #Button to add host to group
+            addbutton = ttk.Button(self, text="Add", command=lambda: addthehost())
+            addbutton.grid(row=4, column=2)
+
+            def addthehost():
+                thehost = defaulthost.get()
+                thegroup = defaultgroup.get()
+                ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli set host name " + thehost + " groups " + thegroup + " -s session.txt")
+                ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli publish -s session.txt ")
 
 if __name__ == "__main__":
     app = apiapp()
