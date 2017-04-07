@@ -270,8 +270,11 @@ class ShowHosts(tk.Frame):
         pass_e.grid(row=3, column=1)
         pass_e.configure(background="#ffffff")
 
+        #List for retrieval of all hosts
+        allhostlist = []
+
         #Button to run command
-        runapi = ttk.Button(self, text="Show Hosts", command = lambda: showhosts())
+        runapi = ttk.Button(self, text="Get Hosts", command = lambda: showhosts())
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -286,7 +289,14 @@ class ShowHosts(tk.Frame):
             allhosts = ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli show hosts --format json -s session.txt")
             json_hosts = json.loads(allhosts)
             for host in json_hosts["objects"]:
-                print (host["name"])
+                allhostlist.append(host["name"])
+            allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
+            allhost.grid(row=4, column=0, sticky=E)
+            defaulthost = StringVar(self)
+            defaulthost.set("Select Host")
+            hostcolormenu = OptionMenu(self, defaulthost, *allhostlist)
+            hostcolormenu.grid(row=5, column=1)
+
 
 if __name__ == "__main__":
     app = apiapp()
