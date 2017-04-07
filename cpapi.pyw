@@ -1,11 +1,9 @@
-##Importing SSH
+##Import Paramiko Client
 from paramiko import client
-#Importing Arguments
-import sys
-#Import RegEx
-import re
-#Import Time
-import time
+#Import Things
+import sys, re, time
+#Import json
+import json
 #Import tkinter
 import tkinter as tk
 from tkinter import ttk
@@ -251,9 +249,54 @@ class ShowHosts(tk.Frame):
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0)
 
+        #Collect IP for connection
+        sship_l = ttk.Label(self, text = "IP", background="#494949", foreground="#f44242")
+        sship_l.grid(row=1, column=0, sticky=E)
+        sship_e = Entry(self, bd=5)
+        sship_e.grid(row=1, column=1)
+        sship_e.configure(background="#ffffff")
+
+        #Collect Username for connection
+        username_l = ttk.Label(self, text = "Username", background="#494949", foreground="#f44242")
+        username_l.grid(row=2, column=0, sticky=E)
+        username_e = Entry(self, bd=5)
+        username_e.grid(row=2, column=1)
+        username_e.configure(background="#ffffff")
+
+        #Collect Password for connection
+        pass_l = ttk.Label(self, text = "Password",  background="#494949", foreground="#f44242")
+        pass_l.grid(row=3, column=0, sticky=E)
+        pass_e = Entry(self, bd=5, show="*")
+        pass_e.grid(row=3, column=1)
+        pass_e.configure(background="#ffffff")
+
+        #List for retrieval of all hosts
+        allhostlist = []
+
+        #Button to run command
+        runapi = ttk.Button(self, text="Get Hosts", command = lambda: showhosts())
+        runapi.grid(row=1, column=2)
+
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=0, column=0)
+        button.grid(row=2, column=2)
+
+        def showhosts():
+            usrdef_sship = sship_e.get()
+            usrdef_username = username_e.get()
+            usrdef_pass = pass_e.get()
+            ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
+            allhosts = ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli show hosts --format json -s session.txt")
+            json_hosts = json.loads(allhosts)
+            for host in json_hosts["objects"]:
+                allhostlist.append(host["name"])
+            allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
+            allhost.grid(row=4, column=0, sticky=E)
+            defaulthost = StringVar(self)
+            defaulthost.set("Select Host")
+            hostcolormenu = OptionMenu(self, defaulthost, *allhostlist)
+            hostcolormenu.grid(row=5, column=1)
+
 
 if __name__ == "__main__":
     app = apiapp()
