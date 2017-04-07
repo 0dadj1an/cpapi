@@ -211,7 +211,7 @@ class AddNetwork(tk.Frame):
         netaddr_e.configure(background="#ffffff")
 
         #Network Mask
-        netmask_l = ttk.Label(self, text = "Mask Length in CIDR", background="#494949", foreground="#f44242")
+        netmask_l = ttk.Label(self, text = "Subnet Mask", background="#494949", foreground="#f44242")
         netmask_l.grid(row=6, column=0, sticky=E)
         netmask_e = Entry(self, bd=5)
         netmask_e.grid(row=6, column=1)
