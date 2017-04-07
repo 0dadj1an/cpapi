@@ -285,7 +285,8 @@ class ShowHosts(tk.Frame):
             ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli login user " + usrdef_username + " password " + usrdef_pass + " > session.txt")
             allhosts = ssh(usrdef_sship, usrdef_username, usrdef_pass).sendCommand("mgmt_cli show hosts --format json -s session.txt")
             json_hosts = json.loads(allhosts)
-            print (json_hosts["objects"][0]["name"])
+            for host in json_hosts["objects"]:
+                print (host["name"])
 
 if __name__ == "__main__":
     app = apiapp()
