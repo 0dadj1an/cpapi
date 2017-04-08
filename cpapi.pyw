@@ -4,6 +4,7 @@ import sys, re, time, json, requests
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter import messagebox
 
 sid = "tbd"
 usrdef_sship = "tbd"
@@ -55,17 +56,17 @@ class StartPage(tk.Frame):
         usrdef_sship = ip
         global sid
         sid = (response["sid"])
-        print ("login result: " + json.dumps(response))
+        messagebox.showinfo("Login Response", json.dumps(response))
 
     #Method to publish api session
     def publish(self):
         publish_result = self.api_call(usrdef_sship, 443, 'publish', {} ,sid)
-        print ("publish result: " + json.dumps(publish_result))
+        messagebox.showinfo("Publish Response", json.dumps(publish_result))
 
     #Method to logout over api
     def logout(self):
         logout_result = self.api_call(usrdef_sship, 443,"logout", {},sid)
-        print("logout result: " + json.dumps(logout_result))
+        messagebox.showinfo("Publish Response", json.dumps(logout_result))
 
     def __init__(self, parent, controller):
 
@@ -133,7 +134,7 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        print (json.dumps(new_host_result))
+        messagebox.showinfo("Add Host Response", json.dumps(new_host_result))
 
     def __init__(self, parent, controller):
 
@@ -182,7 +183,7 @@ class AddNetwork(tk.Frame):
     def addnetwork(self, netname, netsub, netmask):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-        print (json.dumps(new_network_result))
+        messagebox.showinfo("Add Network Response", json.dumps(new_network_result))
 
     def __init__(self, parent, controller):
 
@@ -230,7 +231,7 @@ class AddGroup(tk.Frame):
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
-        print (json.dumps(new_group_result))
+        messagebox.showinfo("Add Group Response", json.dumps(new_group_result))
 
     def __init__(self, parent, controller):
 
@@ -264,17 +265,17 @@ class ObjectToGroup(tk.Frame):
     def addhostgroup(self, hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
-        print (json.dumps(addhostgroup_result))
+        messagebox.showinfo("Add Host To Group Response", json.dumps(new_group_result))
 
     def addnetgroup(self, netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
-        print (json.dumps(addnetgroup_result))
+        messagebox.showinfo("Add Network To Group Response", json.dumps(addnetgroup_result))
 
     def addgroupgroup(self, addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        print (json.dumps(addgroupgroup_result))
+        messagebox.showinfo("Add Group To Group Response", json.dumps(addgroupgroup_result))
 
     #Method to retrieve db hosts and Groups
     def gethostnetgroup(self):
