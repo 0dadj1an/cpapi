@@ -21,7 +21,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, ObjectToGroup):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -118,9 +118,13 @@ class StartPage(tk.Frame):
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
         addnetworkb.grid(row=5)
 
+        #Button to call add group window
+        addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
+        addgroupb.grid(row=6)
+
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=6)
+        addhosttogroup.grid(row=7)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -219,6 +223,41 @@ class AddNetwork(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
+#Class for add network functionality
+class AddGroup(tk.Frame):
+
+    #Method for adding a network object
+    def addgroup(self, groupname):
+        new_group_data = {'name':groupname}
+        new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
+        print (json.dumps(new_group_result))
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addgrouplabel = ttk.Label(self, text="Add Group")
+        addgrouplabel.configure(background="#494949", foreground="#f44242")
+        addgrouplabel.grid(row=0, column=0, columnspan=2)
+
+        #Group Name
+        groupname_l = ttk.Label(self, text = "Group Name", background="#494949", foreground="#f44242")
+        groupname_l.grid(row=1, column=0, sticky=E)
+        groupname_e = Entry(self, bd=5)
+        groupname_e.grid(row=1, column=1)
+        groupname_e.configure(background="#ffffff")
+
+        #Button to run command
+        runapi = ttk.Button(self, text="Add Group", command = lambda: self.addgroup(groupname_e.get()))
+        runapi.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=2)
+
+#Class for adding objects to a group functionality
 class ObjectToGroup(tk.Frame):
 
     #Method to add host to group
