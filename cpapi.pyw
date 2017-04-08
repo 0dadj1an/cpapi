@@ -4,6 +4,7 @@ import sys, re, time, json, requests
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter import messagebox
 
 sid = "tbd"
 usrdef_sship = "tbd"
@@ -55,16 +56,17 @@ class StartPage(tk.Frame):
         usrdef_sship = ip
         global sid
         sid = (response["sid"])
+        messagebox.showinfo("Login Response", json.dumps(response))
 
     #Method to publish api session
     def publish(self):
         publish_result = self.api_call(usrdef_sship, 443, 'publish', {} ,sid)
-        print ("publish result: " + json.dumps(publish_result))
+        messagebox.showinfo("Publish Response", json.dumps(publish_result))
 
     #Method to logout over api
     def logout(self):
         logout_result = self.api_call(usrdef_sship, 443,"logout", {},sid)
-        print("logout result: " + json.dumps(logout_result))
+        messagebox.showinfo("Publish Response", json.dumps(logout_result))
 
     def __init__(self, parent, controller):
 
@@ -128,7 +130,7 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        print (json.dumps(new_host_result))
+        messagebox.showinfo("Add Host Response", json.dumps(new_host_result))
 
     def __init__(self, parent, controller):
 
@@ -177,7 +179,7 @@ class AddNetwork(tk.Frame):
     def addnetwork(self, netname, netsub, netmask):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-        print (json.dumps(new_network_result))
+        messagebox.showinfo("Add Network Response", json.dumps(new_network_result))
 
     def __init__(self, parent, controller):
 
