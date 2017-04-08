@@ -55,6 +55,7 @@ class StartPage(tk.Frame):
         usrdef_sship = ip
         global sid
         sid = (response["sid"])
+        print ("login result: " + json.dumps(response))
 
     #Method to publish api session
     def publish(self):
