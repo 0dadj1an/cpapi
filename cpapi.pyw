@@ -21,7 +21,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, HostToGroup):
+        for F in (StartPage, AddHost, AddNetwork, ObjectToGroup):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -118,8 +118,8 @@ class StartPage(tk.Frame):
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
         addnetworkb.grid(row=5)
 
-        #Butto to call add host to group
-        addhosttogroup = ttk.Button(self, text="Add Host To Group", command=lambda: controller.show_frame("HostToGroup"))
+        #Button to call add object to group
+        addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
         addhosttogroup.grid(row=6)
 
 #Class for add host functionality
@@ -219,42 +219,81 @@ class AddNetwork(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
-class HostToGroup(tk.Frame):
+class ObjectToGroup(tk.Frame):
 
     #Method to add host to group
     def addhostgroup(self, hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
-        addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data ,sid)
-        print (json.dumps(new_network_result))
+        addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
+        print (json.dumps(addhostgroup_result))
+
+    def addnetgroup(self, netname, groupname):
+        addnetgroup_data = {'name':netname, 'groups':groupname}
+        addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
+        print (json.dumps(addnetgroup_result))
+
+    def addgroupgroup(self, addgroupname, groupname):
+        addgroup_data = {'name':addgroupname, 'groups':groupname}
+        addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
+        print (json.dumps(addgroupgroup_result))
 
     #Method to retrieve db hosts and Groups
-    def gethostgroup(self):
+    def gethostnetgroup(self):
         allhostlist = []
+        allnetlist = []
         allgrouplist = []
         show_hosts_data = {'limit':50, 'offset':0, 'details-level':'standard'}
         show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         show_groups_data = {'limit':50, 'offset':0, 'details-level':'standard'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data, sid)
+        show_nets_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_nets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_nets_data, sid)
         for host in show_hosts_result["objects"]:
             allhostlist.append(host["name"])
+        for net in show_nets_result["objects"]:
+            allnetlist.append(net["name"])
         for group in show_groups_result["objects"]:
             allgrouplist.append(group["name"])
+        #Host Dropdown
         allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
         allhost.grid(row=2, column=0, sticky=E)
         defaulthost = StringVar(self)
         defaulthost.set("Select Host")
         hostmenu = OptionMenu(self, defaulthost, *allhostlist)
         hostmenu.grid(row=2, column=1)
-        allgroup = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
-        allgroup.grid(row=3, column=0, sticky=E)
+        #Network Dropdown
+        allnet = ttk.Label(self, text="All Networks", background="#494949", foreground="#f44242")
+        allnet.grid(row=3, column=0, sticky=E)
+        defaultnet = StringVar(self)
+        defaultnet.set("Select Network")
+        netmenu = OptionMenu(self, defaultnet, *allnetlist)
+        netmenu.grid(row=3, column=1)
+        #Group Dropdown
+        allgroup1 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
+        allgroup1.grid(row=4, column=0, sticky=E)
+        defaultaddgroup = StringVar(self)
+        defaultaddgroup.set("Select Group")
+        groupaddmenu = OptionMenu(self, defaultaddgroup, *allgrouplist)
+        groupaddmenu.grid(row=4, column=1)
+        #Target Group Dropdown
+        allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
+        allgroup2.grid(row=5, column=0, sticky=E)
         defaultgroup = StringVar(self)
-        defaultgroup.set("Select Group")
+        defaultgroup.set("Target Group")
         groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
-        groupmenu.grid(row=3, column=1)
+        groupmenu.grid(row=5, column=1)
 
         #Button to add host to group
-        hosttogroupb = ttk.Button(self, text="Add", command=lambda: self.addhostgroup(defaulthost.get(), defaultgroup.get()))
-        hosttogroupb.grid(row=1, column=1)
+        hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: self.addhostgroup(defaulthost.get(), defaultgroup.get()))
+        hosttogroupb.grid(row=2, column=2)
+
+        #Button to add network to group
+        nettogroupb = ttk.Button(self, text="Add Network", command=lambda: self.addnetgroup(defaultnet.get(), defaultgroup.get()))
+        nettogroupb.grid(row=3, column=2)
+
+        #Button to add group to group
+        grouptogroup = ttk.Button(self, text="Add Group", command=lambda: self.addgroupgroup(defaultaddgroup.get(), defaultgroup.get()))
+        grouptogroup.grid(row=4, column=2)
 
     def __init__(self, parent, controller):
 
@@ -262,12 +301,12 @@ class HostToGroup(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Add Host to Group")
+        addhostlabel = ttk.Label(self, text="Add Object to Group")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to retrieve objects
-        runapi = ttk.Button(self, text="Get Objects", command=lambda: self.gethostgroup())
+        runapi = ttk.Button(self, text="Get Objects", command=lambda: self.gethostnetgroup())
         runapi.grid(row=1, column=0)
 
         #Button to return to apiapp
