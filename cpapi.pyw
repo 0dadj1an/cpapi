@@ -111,21 +111,25 @@ class StartPage(tk.Frame):
         logoutb = ttk.Button(self, text="Logout", command=lambda: self.logout())
         logoutb.grid(row=3, column=2)
 
+        #Create Space
+        space_label = ttk.Label(self, background="#494949")
+        space_label.grid(row=4)
+
         #Button to call add host window
         addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
-        addhostb.grid(row=4)
+        addhostb.grid(row=5)
 
         #Button to call add network window
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
-        addnetworkb.grid(row=5)
+        addnetworkb.grid(row=5, column=1)
 
         #Button to call add group window
         addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
-        addgroupb.grid(row=6)
+        addgroupb.grid(row=5, column=2)
 
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=7)
+        addhosttogroup.grid(row=6, column=1)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
