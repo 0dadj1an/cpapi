@@ -22,7 +22,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ShowRulebase):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -129,7 +129,11 @@ class StartPage(tk.Frame):
 
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=6, column=1)
+        addhosttogroup.grid(row=6, column=0)
+
+        #Button to call show rulebase window
+        showrulebaseb = ttk.Button(self, text="Show Rulebase", command=lambda: controller.show_frame("ShowRulebase"))
+        showrulebaseb.grid(row=6, column=2)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -356,6 +360,22 @@ class ObjectToGroup(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
+
+class ShowRulebase(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Show Rulebase")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=0, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
