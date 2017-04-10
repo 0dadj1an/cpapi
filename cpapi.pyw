@@ -338,7 +338,7 @@ class ObjectToGroup(tk.Frame):
         groupaddmenu.grid(row=4, column=1)
         #Target Group Dropdown
         allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
-        allgroup2.grid(row=2, column=3, sticky=E)
+        allgroup2.grid(row=2, column=3)
         defaultgroup = StringVar(self)
         defaultgroup.set("Target Group")
         groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
