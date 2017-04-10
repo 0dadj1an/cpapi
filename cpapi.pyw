@@ -22,7 +22,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts, ExportHosts):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts, ExportHosts, ImportNetworks, ExportNetworks):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -135,6 +135,14 @@ class StartPage(tk.Frame):
         #Button to call export hosts window
         exphostsb = ttk.Button(self, text="Export Hosts", command=lambda: controller.show_frame("ExportHosts"))
         exphostsb.grid(row=8, column=0)
+
+        #Button to call import networks
+        impnetsb = ttk.Button(self, text="Import Networks", command=lambda: controller.show_frame("ImportNetworks"))
+        impnetsb.grid(row=7, column=1)
+
+        #Button to call export networks
+        expnetsb = ttk.Button(self, text="Export Networks", command=lambda: controller.show_frame("ExportNetworks"))
+        expnetsb.grid(row=8, column=1)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -364,7 +372,6 @@ class ImportHosts(tk.Frame):
         for line in csvhosts:
             apiprep = line.split(',')
             AddHost.addhost(self, apiprep[0], apiprep[1], "black")
-        print ("Done")
 
     def __init__(self, parent, controller):
 
@@ -423,7 +430,74 @@ class ExportHosts(tk.Frame):
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=1)
+
+class ImportNetworks(tk.Frame):
+
+    def importnetworks(self, filename):
+        csvnets = open(filename, "r").read().split()
+        for line in csvnets:
+            apiprep = line.split(',')
+            AddNetwork.addnetwork(self, apiprep[0], apiprep[1], apiprep[2])
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Import Networks")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #File Selection
+        file_l = ttk.Label(self, text = "CSV File Name", background="#494949", foreground="#f44242")
+        file_l.grid(row=1, column=0, sticky=E)
+        file_e = Entry(self, bd=5)
+        file_e.grid(row=1, column=1)
+        file_e.configure(background="#ffffff")
+
+        #Button to import networks
+        exphostb = ttk.Button(self, text="Import Networks", command=lambda: self.importnetworks(file_e.get()))
+        exphostb.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=3)
+
+        #Example file
+        example_l = ttk.Label(self, text="Example file provided in repository!")
+        example_l.configure(background="#494949", foreground="#f44242")
+        example_l.grid(row=2, columnspan=2)
+
+class ExportNetworks(tk.Frame):
+
+    #Method to export host to csv file
+    def exportnetworks(self):
+        show_networks_data = {'offset':0, 'details-level':'full'}
+        show_networks_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+        networksexportfile = open(("exportednetworks.csv"), "w+")
+        for network in show_networks_result["objects"]:
+            networksexportfile = open(("exportednetworks.csv"), "a")
+            networksexportfile.write(network["name"] + "," + str(network["subnet4"]) + "," + str(network["mask-length4"]) + "\n")
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export Networks")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to export networks
+        exphostb = ttk.Button(self, text="Export Networks", command=lambda: self.exportnetworks())
+        exphostb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=1)
 
 if __name__ == "__main__":
     app = apiapp()
