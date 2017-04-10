@@ -75,7 +75,7 @@ class StartPage(tk.Frame):
         self.configure(background="#494949")
         label = ttk.Label(self, text="Credentials for Session")
         label.configure(background="#494949", foreground="#f44242")
-        label.grid(row=0, columnspan=2)
+        label.grid(row=0, columnspan=3)
 
         #Collect IP for connection
         sship_l = ttk.Label(self, text = "IP", background="#494949", foreground="#f44242")
@@ -303,11 +303,11 @@ class ObjectToGroup(tk.Frame):
         allhostlist = []
         allnetlist = []
         allgrouplist = []
-        show_hosts_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_hosts_data = {'offset':0, 'details-level':'standard'}
         show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-        show_groups_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_groups_data = {'offset':0, 'details-level':'standard'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-        show_nets_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_nets_data = {'offset':0, 'details-level':'standard'}
         show_nets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_nets_data, sid)
         for host in show_hosts_result["objects"]:
             allhostlist.append(host["name"])
