@@ -1,5 +1,7 @@
 #Import Things
-import sys, re, time, json, requests
+import sys, re, time, json
+#Import Requests
+import requests
 #Import tkinter
 import tkinter as tk
 from tkinter import ttk
@@ -336,11 +338,11 @@ class ObjectToGroup(tk.Frame):
         groupaddmenu.grid(row=4, column=1)
         #Target Group Dropdown
         allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
-        allgroup2.grid(row=5, column=0, sticky=E)
+        allgroup2.grid(row=2, column=3, sticky=E)
         defaultgroup = StringVar(self)
         defaultgroup.set("Target Group")
         groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
-        groupmenu.grid(row=5, column=1)
+        groupmenu.grid(row=3, column=3)
 
         #Button to add host to group
         hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: self.addhostgroup(defaulthost.get(), defaultgroup.get()))
