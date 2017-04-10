@@ -22,7 +22,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts, ExportHosts):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -128,9 +128,13 @@ class StartPage(tk.Frame):
         addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
         addgroupb.grid(row=6, column=2)
 
-        #Button to call show rulebase window
-        showrulebaseb = ttk.Button(self, text="Import Hosts", command=lambda: controller.show_frame("ImportHosts"))
-        showrulebaseb.grid(row=7, column=0)
+        #Button to call import hosts window
+        imphostb = ttk.Button(self, text="Import Hosts", command=lambda: controller.show_frame("ImportHosts"))
+        imphostb.grid(row=7, column=0)
+
+        #Button to call export hosts window
+        exphostsb = ttk.Button(self, text="Export Hosts", command=lambda: controller.show_frame("ExportHosts"))
+        exphostsb.grid(row=8, column=0)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -354,7 +358,7 @@ class ObjectToGroup(tk.Frame):
 
 class ImportHosts(tk.Frame):
 
-    #Method to import host from csv file_l
+    #Method to import host from csv file
     def importhosts(self, filename):
         csvhosts = open(filename, "r").read().split()
         for line in csvhosts:
@@ -391,6 +395,35 @@ class ImportHosts(tk.Frame):
         example_l = ttk.Label(self, text="Example file provided in repository!")
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
+
+class ExportHosts(tk.Frame):
+
+    #Method to export host to csv file
+    def exporthosts(self):
+        show_hosts_data = {'offset':0, 'details-level':'full'}
+        show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
+        hostexportfile = open(("exportedhosts.csv"), "w+")
+        for host in show_hosts_result["objects"]:
+            hostexportfile = open(("exportedhosts.csv"), "a")
+            hostexportfile.write(host["name"] + "," + host["ipv4-address"] + "\n")
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export Hosts")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to export hosts
+        exphostb = ttk.Button(self, text="Export Hosts", command=lambda: self.exporthosts())
+        exphostb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=3)
 
 if __name__ == "__main__":
     app = apiapp()
