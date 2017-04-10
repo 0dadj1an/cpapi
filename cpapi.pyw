@@ -4,8 +4,8 @@ import sys, re, time, json, requests
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from tkinter import messagebox
 
+#Global Variables
 sid = "tbd"
 usrdef_sship = "tbd"
 
@@ -22,7 +22,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -56,17 +56,14 @@ class StartPage(tk.Frame):
         usrdef_sship = ip
         global sid
         sid = (response["sid"])
-        messagebox.showinfo("Login Response", json.dumps(response))
 
     #Method to publish api session
     def publish(self):
         publish_result = self.api_call(usrdef_sship, 443, 'publish', {} ,sid)
-        messagebox.showinfo("Publish Response", json.dumps(publish_result))
 
     #Method to logout over api
     def logout(self):
         logout_result = self.api_call(usrdef_sship, 443,"logout", {},sid)
-        messagebox.showinfo("Publish Response", json.dumps(logout_result))
 
     def __init__(self, parent, controller):
 
@@ -115,25 +112,25 @@ class StartPage(tk.Frame):
         space_label = ttk.Label(self, background="#494949")
         space_label.grid(row=4)
 
+        #Button to call add object to group
+        addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
+        addhosttogroup.grid(row=5, column=0, columnspan=3)
+
         #Button to call add host window
         addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
-        addhostb.grid(row=5)
+        addhostb.grid(row=6)
 
         #Button to call add network window
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
-        addnetworkb.grid(row=5, column=1)
+        addnetworkb.grid(row=6, column=1)
 
         #Button to call add group window
         addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
-        addgroupb.grid(row=5, column=2)
-
-        #Button to call add object to group
-        addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=6, column=0)
+        addgroupb.grid(row=6, column=2)
 
         #Button to call show rulebase window
-        showrulebaseb = ttk.Button(self, text="Show Rulebase", command=lambda: controller.show_frame("ShowRulebase"))
-        showrulebaseb.grid(row=6, column=2)
+        showrulebaseb = ttk.Button(self, text="Import Hosts", command=lambda: controller.show_frame("ImportHosts"))
+        showrulebaseb.grid(row=7, column=0)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -142,7 +139,6 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        messagebox.showinfo("Add Host Response", json.dumps(new_host_result))
 
     def __init__(self, parent, controller):
 
@@ -191,7 +187,6 @@ class AddNetwork(tk.Frame):
     def addnetwork(self, netname, netsub, netmask):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-        messagebox.showinfo("Add Network Response", json.dumps(new_network_result))
 
     def __init__(self, parent, controller):
 
@@ -239,7 +234,6 @@ class AddGroup(tk.Frame):
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
-        messagebox.showinfo("Add Group Response", json.dumps(new_group_result))
 
     def __init__(self, parent, controller):
 
@@ -273,17 +267,14 @@ class ObjectToGroup(tk.Frame):
     def addhostgroup(self, hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
-        messagebox.showinfo("Add Host To Group Response", json.dumps(new_group_result))
 
     def addnetgroup(self, netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
-        messagebox.showinfo("Add Network To Group Response", json.dumps(addnetgroup_result))
 
     def addgroupgroup(self, addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        messagebox.showinfo("Add Group To Group Response", json.dumps(addgroupgroup_result))
 
     #Method to retrieve db hosts and Groups
     def gethostnetgroup(self):
@@ -360,6 +351,46 @@ class ObjectToGroup(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
+
+class ImportHosts(tk.Frame):
+
+    #Method to import host from csv file_l
+    def importhosts(self, filename):
+        csvhosts = open(filename, "r").read().split()
+        for line in csvhosts:
+            apiprep = line.split(',')
+            AddHost.addhost(self, apiprep[0], apiprep[1], "black")
+        print ("Done")
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Import Hosts")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #File Selection
+        file_l = ttk.Label(self, text = "CSV File Name", background="#494949", foreground="#f44242")
+        file_l.grid(row=1, column=0, sticky=E)
+        file_e = Entry(self, bd=5)
+        file_e.grid(row=1, column=1)
+        file_e.configure(background="#ffffff")
+
+        #Button to import Hosts
+        imphostb = ttk.Button(self, text="Import", command=lambda: self.importhosts(file_e.get()))
+        imphostb.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=3)
+
+        #Example file
+        example_l = ttk.Label(self, text="Example file provided in repository!")
+        example_l.configure(background="#494949", foreground="#f44242")
+        example_l.grid(row=2, columnspan=2)
 
 if __name__ == "__main__":
     app = apiapp()
