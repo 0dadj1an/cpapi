@@ -22,7 +22,7 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ShowRulebase):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -360,22 +360,6 @@ class ObjectToGroup(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
-
-class ShowRulebase(tk.Frame):
-
-    def __init__(self, parent, controller):
-
-        #Style Configuration for page
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Show Rulebase")
-        addhostlabel.configure(background="#494949", foreground="#f44242")
-        addhostlabel.grid(row=0, column=0, columnspan=2)
-
-        #Button to return to apiapp
-        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=0, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
