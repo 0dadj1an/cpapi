@@ -550,10 +550,14 @@ class ExportGroups(tk.Frame):
     def exportgroups(self):
         show_groups_data = {'offset':0, 'details-level':'full'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        groupsexportfile = open(("exportedgroups.csv"), "w+")
         for group in show_groups_result["objects"]:
-            groupsexportfile = open(("exportedgroups.csv"), "a")
-            groupsexportfile.write(group["name"] + "\n")
+            print ("Group Name: " + group["name"])
+            for member in group["members"]:
+                print("Member: " + member["name"])
+        # groupsexportfile = open(("exportedgroups.csv"), "w+")
+        # for group in show_groups_result["objects"]:
+        #     groupsexportfile = open(("exportedgroups.csv"), "a")
+        #     groupsexportfile.write(group["name"] + "\n")
 
     def __init__(self, parent, controller):
 
@@ -561,7 +565,7 @@ class ExportGroups(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Export Networks")
+        addhostlabel = ttk.Label(self, text="Export Groups")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
