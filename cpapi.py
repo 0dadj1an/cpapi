@@ -550,11 +550,10 @@ class ExportGroups(tk.Frame):
     def exportgroups(self):
         show_groups_data = {'offset':0, 'details-level':'full'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        print (show_groups_result)
-        # groupssexportfile = open(("exportedgroups.csv"), "w+")
-        # for group in show_groups_result["objects"]:
-        #     groupssexportfile = open(("exportedgroups.csv"), "a")
-        #     groupssexportfile.write(group["name"] + "\n")
+        groupsexportfile = open(("exportedgroups.csv"), "w+")
+        for group in show_groups_result["objects"]:
+            groupsexportfile = open(("exportedgroups.csv"), "a")
+            groupsexportfile.write(group["name"] + "\n")
 
     def __init__(self, parent, controller):
 
