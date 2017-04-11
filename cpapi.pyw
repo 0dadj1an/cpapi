@@ -252,7 +252,7 @@ class AddNetwork(tk.Frame):
 #Class for add network functionality
 class AddGroup(tk.Frame):
 
-    #Method for adding a network object
+    #Method for adding a group object
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
