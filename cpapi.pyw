@@ -513,7 +513,6 @@ class ImportGroups(tk.Frame):
 
     #Method for adding a group object with members
     def addgroupmembers(self, groupname, members):
-        #### EXAMPLE MEMBERS DATA #### ::: [ "New Host 1", "My Test Host 3" ]
         new_group_data = {'name':groupname, 'members':members}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
 
