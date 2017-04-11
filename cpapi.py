@@ -519,8 +519,14 @@ class ImportGroups(tk.Frame):
 
     def importgroups(self, filename):
         csvgroups = open(filename, "r").read().split()
+        #Parse Exported Groups File
         for line in csvgroups:
-            AddGroup.addgroup(self, line)
+            #Split Group name from members
+            groupname = line.split(',')
+            #Split Members from each other
+            memberlist = groupname[1].split('-')
+            #Pass to api, last element in memberlist is an empty string
+            self.addgroupmembers(groupname[0], memberlist[0:-1])
 
     def __init__(self, parent, controller):
 
@@ -558,14 +564,13 @@ class ExportGroups(tk.Frame):
     def exportgroups(self):
         show_groups_data = {'offset':0, 'details-level':'full'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        #groupsexportfile = open(("exportedgroups.csv"), "w+")
+        groupsexportfile = open(("exportedgroups.csv"), "w+")
         for group in show_groups_result["objects"]:
-            print (group["name"])
+            groupsexportfile.write(group["name"] + ",")
             listofmembers = group["members"]
             for member in listofmembers:
-                #groupsexportfile = open(("exportedgroups.csv"), "a")
-                print (member["name"])
-                #groupsexportfile.write(group["name"] + "," + member["name"])
+                groupsexportfile.write(member["name"] + "-")
+            groupsexportfile.write("\n")
 
     def __init__(self, parent, controller):
 
