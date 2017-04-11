@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Exported CSV
+exported*.csv
+batch*.csv
