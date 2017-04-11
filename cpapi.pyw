@@ -4,8 +4,9 @@ import sys, re, time, json
 import requests
 #Import tkinter
 import tkinter as tk
-from tkinter import ttk
 from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
 
 #Global Variables
 sid = "tbd"
@@ -57,15 +58,30 @@ class StartPage(tk.Frame):
         global usrdef_sship
         usrdef_sship = ip
         global sid
-        sid = (response["sid"])
+        #Return Error Message if sid does not exist
+        if 'sid' not in response:
+            messagebox.showinfo("Login Response", response["message"])
+        elif 'sid' in response:
+            messagebox.showinfo("Login Response", "Login Successful")
+            sid = (response["sid"])
+        ### CURRENTLY NOT WORKING ###
+        else:
+            messagebox.showinfo("Login Response", "Connection Failed")
 
     #Method to publish api session
     def publish(self):
         publish_result = self.api_call(usrdef_sship, 443, 'publish', {} ,sid)
+        #Return Successful if task-id exist
+        if 'task-id' in publish_result:
+            messagebox.showinfo("Publish Response", "Publish Successful")
+        else:
+            messagebox.showinfo("Publish Response", "Publish Failed")
 
     #Method to logout over api
     def logout(self):
         logout_result = self.api_call(usrdef_sship, 443,"logout", {},sid)
+        messagebox.showinfo("Logout Response", logout_result)
+
 
     def __init__(self, parent, controller):
 
@@ -161,6 +177,7 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
+        messagebox.showinfo("Add Host Response", new_host_result)
 
     def __init__(self, parent, controller):
 
@@ -209,6 +226,7 @@ class AddNetwork(tk.Frame):
     def addnetwork(self, netname, netsub, netmask):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
+        messagebox.showinfo("Add Network Response", new_network_result)
 
     def __init__(self, parent, controller):
 
@@ -256,6 +274,7 @@ class AddGroup(tk.Frame):
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
+        messagebox.showinfo("Add Group Response", new_group_result)
 
     def __init__(self, parent, controller):
 
@@ -289,14 +308,17 @@ class ObjectToGroup(tk.Frame):
     def addhostgroup(self, hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
+        messagebox.showinfo("Add Host Response", addhostgroup_result)
 
     def addnetgroup(self, netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
+        messagebox.showinfo("Add Network Response", addnetgroup_result)
 
     def addgroupgroup(self, addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
+        messagebox.showinfo("Add Group Response", addgroupgroup_result)
 
     #Method to retrieve db hosts and Groups
     def gethostnetgroup(self):
@@ -376,12 +398,18 @@ class ObjectToGroup(tk.Frame):
 
 class ImportHosts(tk.Frame):
 
+    #Method for adding a host object for importhost
+    def importaddhost(self, hostname, hostip, hostcolor):
+        new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
+        new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
+
     #Method to import host from csv file
     def importhosts(self, filename):
         csvhosts = open(filename, "r").read().split()
         for line in csvhosts:
             apiprep = line.split(',')
-            AddHost.addhost(self, apiprep[0], apiprep[1], "black")
+            self.importaddhost(apiprep[0], apiprep[1], "black")
+        messagebox.showinfo("Import Host Response", "PLACE HOLDER")
 
     def __init__(self, parent, controller):
 
@@ -423,6 +451,7 @@ class ExportHosts(tk.Frame):
         for host in show_hosts_result["objects"]:
             hostexportfile = open(("exportedhosts.csv"), "a")
             hostexportfile.write(host["name"] + "," + host["ipv4-address"] + "\n")
+        messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -444,11 +473,17 @@ class ExportHosts(tk.Frame):
 
 class ImportNetworks(tk.Frame):
 
+    #Method for adding a network object for importnetworks
+    def importaddnetwork(self, netname, netsub, netmask):
+        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
+        new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
+
     def importnetworks(self, filename):
         csvnets = open(filename, "r").read().split()
         for line in csvnets:
             apiprep = line.split(',')
-            AddNetwork.addnetwork(self, apiprep[0], apiprep[1], apiprep[2])
+            self.importaddnetwork(apiprep[0], apiprep[1], apiprep[2])
+        messagebox.showinfo("Import Network Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -490,6 +525,7 @@ class ExportNetworks(tk.Frame):
         for network in show_networks_result["objects"]:
             networksexportfile = open(("exportednetworks.csv"), "a")
             networksexportfile.write(network["name"] + "," + str(network["subnet4"]) + "," + str(network["mask-length4"]) + "\n")
+        messagebox.showinfo("Export Network Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -526,6 +562,7 @@ class ImportGroups(tk.Frame):
             memberlist = groupname[1].split('-')
             #Pass to api, last element in memberlist is an empty string
             self.addgroupmembers(groupname[0], memberlist[0:-1])
+        messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -570,6 +607,7 @@ class ExportGroups(tk.Frame):
             for member in listofmembers:
                 groupsexportfile.write(member["name"] + "-")
             groupsexportfile.write("\n")
+        messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
