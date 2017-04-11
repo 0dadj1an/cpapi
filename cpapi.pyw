@@ -1,5 +1,7 @@
 #Import Things
-import sys, re, time, json, requests
+import sys, re, time, json
+#Import Requests
+import requests
 #Import tkinter
 import tkinter as tk
 from tkinter import ttk
@@ -73,7 +75,7 @@ class StartPage(tk.Frame):
         self.configure(background="#494949")
         label = ttk.Label(self, text="Credentials for Session")
         label.configure(background="#494949", foreground="#f44242")
-        label.grid(row=0, columnspan=2)
+        label.grid(row=0, columnspan=3)
 
         #Collect IP for connection
         sship_l = ttk.Label(self, text = "IP", background="#494949", foreground="#f44242")
@@ -250,7 +252,7 @@ class AddNetwork(tk.Frame):
 #Class for add network functionality
 class AddGroup(tk.Frame):
 
-    #Method for adding a network object
+    #Method for adding a group object
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
@@ -301,11 +303,11 @@ class ObjectToGroup(tk.Frame):
         allhostlist = []
         allnetlist = []
         allgrouplist = []
-        show_hosts_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_hosts_data = {'offset':0, 'details-level':'standard'}
         show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-        show_groups_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_groups_data = {'offset':0, 'details-level':'standard'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-        show_nets_data = {'limit':50, 'offset':0, 'details-level':'standard'}
+        show_nets_data = {'offset':0, 'details-level':'standard'}
         show_nets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_nets_data, sid)
         for host in show_hosts_result["objects"]:
             allhostlist.append(host["name"])
@@ -336,11 +338,11 @@ class ObjectToGroup(tk.Frame):
         groupaddmenu.grid(row=4, column=1)
         #Target Group Dropdown
         allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
-        allgroup2.grid(row=5, column=0, sticky=E)
+        allgroup2.grid(row=2, column=3)
         defaultgroup = StringVar(self)
         defaultgroup.set("Target Group")
         groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
-        groupmenu.grid(row=5, column=1)
+        groupmenu.grid(row=3, column=3)
 
         #Button to add host to group
         hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: self.addhostgroup(defaulthost.get(), defaultgroup.get()))
@@ -509,6 +511,12 @@ class ExportNetworks(tk.Frame):
 
 class ImportGroups(tk.Frame):
 
+    #Method for adding a group object with members
+    def addgroupmembers(self, groupname, members):
+        #### EXAMPLE MEMBERS DATA #### ::: [ "New Host 1", "My Test Host 3" ]
+        new_group_data = {'name':groupname, 'members':members}
+        new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
+
     def importgroups(self, filename):
         csvgroups = open(filename, "r").read().split()
         for line in csvgroups:
@@ -550,14 +558,10 @@ class ExportGroups(tk.Frame):
     def exportgroups(self):
         show_groups_data = {'offset':0, 'details-level':'full'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
+        groupsexportfile = open(("exportedgroups.csv"), "w+")
         for group in show_groups_result["objects"]:
-            print ("Group Name: " + group["name"])
-            for member in group["members"]:
-                print("Member: " + member["name"])
-        # groupsexportfile = open(("exportedgroups.csv"), "w+")
-        # for group in show_groups_result["objects"]:
-        #     groupsexportfile = open(("exportedgroups.csv"), "a")
-        #     groupsexportfile.write(group["name"] + "\n")
+            groupsexportfile = open(("exportedgroups.csv"), "a")
+            groupsexportfile.write(group["name"] + "\n")
 
     def __init__(self, parent, controller):
 
@@ -565,7 +569,7 @@ class ExportGroups(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Export Groups")
+        addhostlabel = ttk.Label(self, text="Export Networks")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
