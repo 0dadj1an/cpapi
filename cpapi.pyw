@@ -511,10 +511,22 @@ class ExportNetworks(tk.Frame):
 
 class ImportGroups(tk.Frame):
 
+    #Method for adding a group object with members
+    def addgroupmembers(self, groupname, members):
+        #### EXAMPLE MEMBERS DATA #### ::: [ "New Host 1", "My Test Host 3" ]
+        new_group_data = {'name':groupname, 'members':members}
+        new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
+
     def importgroups(self, filename):
         csvgroups = open(filename, "r").read().split()
+        #Parse Exported Groups File
         for line in csvgroups:
-            AddGroup.addgroup(self, line)
+            #Split Group name from members
+            groupname = line.split(',')
+            #Split Members from each other
+            memberlist = groupname[1].split('-')
+            #Pass to api, last element in memberlist is an empty string
+            self.addgroupmembers(groupname[0], memberlist[0:-1])
 
     def __init__(self, parent, controller):
 
@@ -554,8 +566,11 @@ class ExportGroups(tk.Frame):
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
         groupsexportfile = open(("exportedgroups.csv"), "w+")
         for group in show_groups_result["objects"]:
-            groupsexportfile = open(("exportedgroups.csv"), "a")
-            groupsexportfile.write(group["name"] + "\n")
+            groupsexportfile.write(group["name"] + ",")
+            listofmembers = group["members"]
+            for member in listofmembers:
+                groupsexportfile.write(member["name"] + "-")
+            groupsexportfile.write("\n")
 
     def __init__(self, parent, controller):
 
@@ -563,7 +578,7 @@ class ExportGroups(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Export Networks")
+        addhostlabel = ttk.Label(self, text="Export Groups")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
