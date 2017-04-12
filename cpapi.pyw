@@ -728,7 +728,7 @@ class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
     def getpackages(self):
-        get_packages_data = {'offset':0, 'details-level':'standard'}
+        get_packages_data = {'offset':0, 'details-level':'full'}
         get_packages_result = StartPage.api_call(self, usrdef_sship, 443, 'show-packages', get_packages_data, sid)
         allpackagelist = []
         for package in get_packages_result["packages"]:
@@ -739,20 +739,32 @@ class ExportRules(tk.Frame):
         packagemenu = OptionMenu(self, defaultpackage, *allpackagelist)
         packagemenu.grid(row=1, column=0)
 
-        #Button to retrieve Rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.exportrules(defaultpackage.get()))
-        showrulebaseb.grid(row=2, column=0)
+        #Button to retrieve layers from package
+        showrulebaseb = ttk.Button(self, text="Get Layers", command=lambda: self.getlayers(defaultpackage.get()))
+        showrulebaseb.grid(row=2, column=1)
+
+    def getlayers(self, package):
+        get_layers_data = {'name':package}
+        get_layers_result = StartPage.api_call(self, usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        alllayerslist = []
+        #print (get_layers_result)
+        for layer in get_layers_result["access-layers"]:
+            alllayerslist.append(layer["name"])
+        #Layer Dropdown
+        defaultlayer = StringVar(self)
+        defaultlayer.set("Select Layer")
+        layermenu = OptionMenu(self, defaultlayer, *alllayerslist)
+        layermenu.grid(row=2, column=0)
+
+        #Button to retrieve rulebase
+        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: self.exportrules(package, defaultlayer.get()))
+        showrulebaseb.grid(row=3, column=0)
 
     #Method to get export rules
-    def exportrules(self, package):
+    def exportrules(self, package, layer):
         #Retrieve Rulebase
-        if package == "Standard":
-            show_rulebase_data = {"offset":0, "name":"Network", "details-level":"standard", "use-object-dictionary":"true"}
-            show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-        else:
-            package = (package + " Network")
-            show_rulebase_data = {"offset":0, "name":package, "details-level":"standard", "use-object-dictionary":"true"}
-            show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+        show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
+        show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
         #Create Output File
         rulebaseexport = open(("exportedrules.csv"), "w+")
         #Parse values for each rule
@@ -854,7 +866,7 @@ class ExportRules(tk.Frame):
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=3, column=0)
+        button.grid(row=4, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
