@@ -726,13 +726,33 @@ class ImportRules(tk.Frame):
 
 class ExportRules(tk.Frame):
 
-    #Method to get available packages
-    def exportrules(self):
+    #Method to retrieve available packages
+    def getpackages(self):
+        get_packages_data = {'offset':0, 'details-level':'standard'}
+        get_packages_result = StartPage.api_call(self, usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        allpackagelist = []
+        for package in get_packages_result["packages"]:
+            allpackagelist.append(package["name"])
+        #Package Dropdown
+        defaultpackage = StringVar(self)
+        defaultpackage.set("Select Package")
+        packagemenu = OptionMenu(self, defaultpackage, *allpackagelist)
+        packagemenu.grid(row=1, column=0)
+
+        #Button to retrieve Rulebase
+        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.exportrules(defaultpackage.get()))
+        showrulebaseb.grid(row=2, column=0)
+
+    #Method to get export rules
+    def exportrules(self, package):
         #Retrieve Rulebase
-        show_rulebase_data = {"offset":0, "name":"Network", "details-level":"standard", "use-object-dictionary":"true"}
-        show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-        #FOR TROUBLESHOOTING IN CLI
-        #print (show_rulebase_result)
+        if package == "Standard":
+            show_rulebase_data = {"offset":0, "name":"Network", "details-level":"standard", "use-object-dictionary":"true"}
+            show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+        else:
+            package = (package + " Network")
+            show_rulebase_data = {"offset":0, "name":package, "details-level":"standard", "use-object-dictionary":"true"}
+            show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
         #Create Output File
         rulebaseexport = open(("exportedrules.csv"), "w+")
         #Parse values for each rule
@@ -828,13 +848,13 @@ class ExportRules(tk.Frame):
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
-        #Button to retrieve Rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.exportrules())
-        showrulebaseb.grid(row=1, column=0)
+        #Button to retrieve packages
+        getpackagesb = ttk.Button(self, text="Get Packages", command=lambda: self.getpackages())
+        getpackagesb.grid(row=1, column=1)
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=2, column=0)
+        button.grid(row=3, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
