@@ -428,6 +428,7 @@ class ObjectToGroup(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
+#Class for adding importhost functionality
 class ImportHosts(tk.Frame):
 
     #Method for adding a host object for importhost
@@ -473,6 +474,7 @@ class ImportHosts(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
+#Class for adding exporthost functionality
 class ExportHosts(tk.Frame):
 
     #Method to export host to csv file
@@ -503,6 +505,7 @@ class ExportHosts(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
+#Class for adding importnetwork functionality
 class ImportNetworks(tk.Frame):
 
     #Method for adding a network object for importnetworks
@@ -548,6 +551,7 @@ class ImportNetworks(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
+#Class for adding exportnetwork functionality
 class ExportNetworks(tk.Frame):
 
     #Method to export host to csv file
@@ -578,6 +582,7 @@ class ExportNetworks(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
+#Class for adding importgroup functionality
 class ImportGroups(tk.Frame):
 
     #Method for adding a group object with members
@@ -628,6 +633,7 @@ class ImportGroups(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
+#Class for adding exporthost functionality
 class ExportGroups(tk.Frame):
 
     #Method to export host to csv file
@@ -661,6 +667,7 @@ class ExportGroups(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
+#Class for adding importrule functionality
 class ImportRules(tk.Frame):
 
     #Method to add rule for importrules
@@ -724,6 +731,7 @@ class ImportRules(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
+#Class for adding exportrule functionality
 class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
@@ -868,6 +876,7 @@ class ExportRules(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=0)
 
+#Call Main Frame
 if __name__ == "__main__":
     app = apiapp()
     app.mainloop()
