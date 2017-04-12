@@ -177,7 +177,7 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        if 'creater' in new_host_result:
+        if 'creator' in new_host_result:
             messagebox.showinfo("Add Host Response", "Add Host Successful")
         else:
             messagebox.showinfo("Add Host Response", new_host_result)
@@ -252,7 +252,7 @@ class AddNetwork(tk.Frame):
         netname_e.configure(background="#ffffff")
 
         #Network Address
-        netaddr_l = ttk.Label(self, text = "Network Subnet", background="#494949", foreground="#f44242")
+        netaddr_l = ttk.Label(self, text = "Mask-Length", background="#494949", foreground="#f44242")
         netaddr_l.grid(row=2, column=0, sticky=E)
         netaddr_e = Entry(self, bd=5)
         netaddr_e.grid(row=2, column=1)
@@ -322,6 +322,7 @@ class ObjectToGroup(tk.Frame):
         else:
             messagebox.showinfo("Add Host Response", addhostgroup_result)
 
+    #Method to add network to group
     def addnetgroup(self, netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
@@ -330,6 +331,7 @@ class ObjectToGroup(tk.Frame):
         else:
             messagebox.showinfo("Add Network Response", addnetgroup_result)
 
+    #Method to add group to group
     def addgroupgroup(self, addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
@@ -338,17 +340,20 @@ class ObjectToGroup(tk.Frame):
         else:
             messagebox.showinfo("Add Group Response", addgroupgroup_result)
 
-    #Method to retrieve db hosts and Groups
+    #Method to retrieve hosts,networks,groups
     def gethostnetgroup(self):
+        #Create list for each type
         allhostlist = []
         allnetlist = []
         allgrouplist = []
+        #API Call for each type
         show_hosts_data = {'offset':0, 'details-level':'standard'}
         show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         show_groups_data = {'offset':0, 'details-level':'standard'}
         show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data, sid)
         show_nets_data = {'offset':0, 'details-level':'standard'}
         show_nets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_nets_data, sid)
+        #Parse out names only
         for host in show_hosts_result["objects"]:
             allhostlist.append(host["name"])
         for net in show_nets_result["objects"]:
@@ -496,6 +501,7 @@ class ImportNetworks(tk.Frame):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
 
+    #Method to import networks from csv
     def importnetworks(self, filename):
         csvnets = open(filename, "r").read().split()
         for line in csvnets:
@@ -570,6 +576,7 @@ class ImportGroups(tk.Frame):
         new_group_data = {'name':groupname, 'members':members}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
 
+    #Method to import group from csv
     def importgroups(self, filename):
         csvgroups = open(filename, "r").read().split()
         #Parse Exported Groups File
