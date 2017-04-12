@@ -1,0 +1,44 @@
+### KNOWN ISSUES AND LIMITATION ###
+
+### ALL ###
+Feedback limited across many tests.
+
+
+### ADD HOST ###
+Only support for Name/Color/IP settings, notably NAT settings not supported currently.
+
+### IMPORT HOST ###
+Only support for Name/IP settings, notably NAT settings not supported currently.
+
+### EXPORT HOST ###
+Only support for Name/IP settings, notably NAT settings not supported currently.
+
+### ADD NETWORK ###
+Only support for Name/IP settings, notably NAT settings not supported currently.
+
+### IMPORT NETWORK ###
+Only support for Name/IP settings, notably NAT settings not supported currently.
+
+### EXPORT NETWORK ###
+Only support for Name/IP settings, notably NAT settings not supported currently.
+
+### ADD GROUP ###
+
+### IMPORT GROUP ###
+
+### EXPORT GROUP ###
+
+### ADD OBJECT TO GROUP ###
+Best if only used one time per launch of application. Pulling options a second time currently overlaps dropdowns.
+
+### IMPORT RULES ###
+Supported Fields - Number/Name/Source/Destination/Action
+Does not support negated objects.
+Does not support in-line layers such as rules with sub-rules 1.2, 1.3, etc.
+
+### EXPORT RULES ###
+Supported Fields - Number/Name/Source/Destination/Action
+Does not support negated objects.
+
+
+### THANK YOU ###
