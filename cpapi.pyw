@@ -781,7 +781,11 @@ class ExportRules(tk.Frame):
             counterdst = 0
             countersrv = 0
             #String, String, List, List, List, String
-            name = rule["name"]
+            ### NAME CAN BE EMPTY ###
+            if 'name' in rule:
+                name = rule["name"]
+            else:
+                name = "ASSIGN NAME"
             num = rule["rule-number"]
             src = rule["source"]
             dst = rule["destination"]
