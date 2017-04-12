@@ -35,10 +35,13 @@ Best if only used one time per launch of application. Pulling options a second t
 Supported Fields - Number/Name/Source/Destination/Action
 Does not support negated objects.
 Does not support in-line layers such as rules with sub-rules 1.2, 1.3, etc.
+Does not support sections.
 
 ### EXPORT RULES ###
 Supported Fields - Number/Name/Source/Destination/Action
 Does not support negated objects.
+Does not support in-line layers such as rules with sub-rules 1.2, 1.3, etc.
+Does not support sections.
 
 
 ### THANK YOU ###
