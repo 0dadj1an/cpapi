@@ -1,0 +1,3 @@
+1,Rule 1 Name,sourceobject1;sourceobject2,destinationobject1;destinationobject2,service1;service2,Accept
+1,Rule 2 Name,sourceobject3;sourceobject4,destinationobject4;destinationobject5,service3;service4,Drop
+3,Cleanup rule,Any,Any,Any,Drop
