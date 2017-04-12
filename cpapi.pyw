@@ -593,7 +593,7 @@ class ImportGroups(tk.Frame):
             #Split Group name from members
             groupname = line.split(',')
             #Split Members from each other
-            memberlist = groupname[1].split('-')
+            memberlist = groupname[1].split(';')
             #Pass to api, last element in memberlist is an empty string
             self.addgroupmembers(groupname[0], memberlist[0:-1])
         messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
@@ -639,7 +639,7 @@ class ExportGroups(tk.Frame):
             groupsexportfile.write(group["name"] + ",")
             listofmembers = group["members"]
             for member in listofmembers:
-                groupsexportfile.write(member["name"] + "-")
+                groupsexportfile.write(member["name"] + ";")
             groupsexportfile.write("\n")
         messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
 
@@ -663,8 +663,36 @@ class ExportGroups(tk.Frame):
 
 class ImportRules(tk.Frame):
 
-    def importrules(self):
-        pass
+    #Method to add rule for importrules
+    def importaddrules(self, num, name, src, dst, srv, act):
+        add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
+        add_rule_result = StartPage.api_call(self, usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
+
+    #Method to import rulebase from csv
+    def importrules(self, filename):
+        csvrules = open(filename, "r").read().split("\n")
+        #Parse Exported Rules File
+        for line in csvrules:
+            #Split Rule Fields
+            fullrule = line.split(',')
+            print (fullrule)
+            num = fullrule[0]
+            name = fullrule[1]
+            try:
+                src = fullrule[2].split(';')
+            except:
+                src = fullrule[2]
+            try:
+                dst = fullrule[3].split(';')
+            except:
+                dst = fullrule[3]
+            try:
+                srv = fullrule[4].split(';')
+            except:
+                srv = fullrule[4]
+            act = fullrule[5]
+            self.importaddrules(num, name, src, dst, srv, act)
+        messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -672,17 +700,29 @@ class ImportRules(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Export Rulebase")
+        addhostlabel = ttk.Label(self, text="Import Rulesbase")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
-        #Button to import csv Rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.importrules())
-        showrulebaseb.grid(row=1, column=0)
+        #File Selection
+        file_l = ttk.Label(self, text = "CSV File Name", background="#494949", foreground="#f44242")
+        file_l.grid(row=1, column=0, sticky=E)
+        file_e = Entry(self, bd=5)
+        file_e.grid(row=1, column=1)
+        file_e.configure(background="#ffffff")
+
+        #Button to import networks
+        exphostb = ttk.Button(self, text="Import Rulebase", command=lambda: self.importrules(file_e.get()))
+        exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=2, column=0)
+        button.grid(row=1, column=3)
+
+        #Example file
+        example_l = ttk.Label(self, text="Example file provided in repository!")
+        example_l.configure(background="#494949", foreground="#f44242")
+        example_l.grid(row=2, columnspan=2)
 
 class ExportRules(tk.Frame):
 
