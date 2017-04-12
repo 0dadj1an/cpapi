@@ -25,7 +25,8 @@ class apiapp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts, ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups):
+        for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
+            ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups, ImportRules, ExportRules):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -132,7 +133,7 @@ class StartPage(tk.Frame):
 
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=5, column=0, columnspan=3)
+        addhosttogroup.grid(row=6, column=3)
 
         #Button to call add host window
         addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
@@ -169,6 +170,14 @@ class StartPage(tk.Frame):
         #Button to call export groups window
         expnetsb = ttk.Button(self, text="Export Groups", command=lambda: controller.show_frame("ExportGroups"))
         expnetsb.grid(row=8, column=2)
+
+        #Button to call import rules window
+        imprulesb = ttk.Button(self, text="Import Rules", command=lambda: controller.show_frame("ImportRules"))
+        imprulesb.grid(row=7, column=3)
+
+        #Button to call export rules window
+        exprulesb = ttk.Button(self, text="Export Rules", command=lambda: controller.show_frame("ExportRules"))
+        exprulesb.grid(row=8, column=3)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -651,6 +660,141 @@ class ExportGroups(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
+
+class ImportRules(tk.Frame):
+
+    def importrules(self):
+        pass
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export Rulebase")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to import csv Rulebase
+        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.importrules())
+        showrulebaseb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=0)
+
+class ExportRules(tk.Frame):
+
+    #Method to get available packages
+    def exportrules(self):
+        #Retrieve Rulebase
+        show_rulebase_data = {"offset":0, "name":"Network", "details-level":"standard", "use-object-dictionary":"true"}
+        show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+        #FOR TROUBLESHOOTING IN CLI
+        #print (show_rulebase_result)
+        #Create Output File
+        rulebaseexport = open(("exportedrules.csv"), "w+")
+        #Parse values for each rule
+        for rule in show_rulebase_result["rulebase"]:
+            countersrc = 0
+            counterdst = 0
+            countersrv = 0
+            #String, String, List, List, List, String
+            name = rule["name"]
+            num = rule["rule-number"]
+            src = rule["source"]
+            dst = rule["destination"]
+            srv = rule["service"]
+            act = rule["action"]
+            #Parse Object Ditcionary to replace UID with Name
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if name == obj["uid"]:
+                    name = obj["name"]
+            #Parse Object Ditcionary to replace UID with Name
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if num == obj["uid"]:
+                    num = obj["name"]
+            #Parse Object Ditcionary to replace UID with Name: Source
+            if len(src) == 1:
+                for obj in show_rulebase_result["objects-dictionary"]:
+                    if src[0] == obj["uid"]:
+                        src = obj["name"]
+            else:
+                for srcobj in src:
+                    for obj in show_rulebase_result["objects-dictionary"]:
+                        if srcobj == obj["uid"]:
+                            src[countersrc] = obj["name"]
+                            countersrc = countersrc + 1
+            #Parse Object Ditcionary to replace UID with Name: Destination
+            if len(dst) == 1:
+                for obj in show_rulebase_result["objects-dictionary"]:
+                    if dst[0] == obj["uid"]:
+                        dst = obj["name"]
+            else:
+                for dstobj in dst:
+                    for obj in show_rulebase_result["objects-dictionary"]:
+                        if dstobj == obj["uid"]:
+                            dst[counterdst] = obj["name"]
+                            counterdst = counterdst + 1
+            #Parse Object Ditcionary to replace UID with Name: Service
+            if len(srv) == 1:
+                for obj in show_rulebase_result["objects-dictionary"]:
+                    if srv[0] == obj["uid"]:
+                        srv = obj["name"]
+            else:
+                for srvobj in srv:
+                    for obj in show_rulebase_result["objects-dictionary"]:
+                        if srvobj == obj["uid"]:
+                            srv[countersrv] = obj["name"]
+                            countersrv = countersrv + 1
+            #Parse Object Ditcionary to replace UID with Name
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if act == obj["uid"]:
+                    act = obj["name"]
+            #Write Rule Number and Name
+            rulebaseexport.write(str(num) + ',' + name + ',')
+            #Write Source, delimit multiple with ;
+            if isinstance(src, str) == True:
+                rulebaseexport.write(src + ',')
+            else:
+                for srcele in src[0:-1]:
+                    rulebaseexport.write(srcele + ';')
+                rulebaseexport.write(src[-1] + ',')
+            #Write Destination, delimit multiple with ;
+            if isinstance(dst, str) == True:
+                rulebaseexport.write(dst + ',')
+            else:
+                for dstele in dst[0:-1]:
+                    rulebaseexport.write(dstele + ';')
+                rulebaseexport.write(dst[-1] + ',')
+            #Write Service, delimit multiple with ;
+            if isinstance(srv, str) == True:
+                rulebaseexport.write(srv + ',')
+            else:
+                for srvele in srv[0:-1]:
+                    rulebaseexport.write(srvele + ';')
+                rulebaseexport.write(srv[-1] + ',')
+            #Write Action and \n
+            rulebaseexport.write(act + '\n')
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export Rulebase")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to retrieve Rulebase
+        showrulebaseb = ttk.Button(self, text="Export Rulebase", command=lambda: self.exportrules())
+        showrulebaseb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
