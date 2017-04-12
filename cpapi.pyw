@@ -177,7 +177,10 @@ class AddHost(tk.Frame):
     def addhost(self, hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        messagebox.showinfo("Add Host Response", new_host_result)
+        if 'creater' in new_host_result:
+            messagebox.showinfo("Add Host Response", "Add Host Successful")
+        else:
+            messagebox.showinfo("Add Host Response", new_host_result)
 
     def __init__(self, parent, controller):
 
@@ -226,7 +229,10 @@ class AddNetwork(tk.Frame):
     def addnetwork(self, netname, netsub, netmask):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-        messagebox.showinfo("Add Network Response", new_network_result)
+        if 'creator' in new_network_result:
+            messagebox.showinfo("Add Network Response", "Successful")
+        else:
+            messagebox.showinfo("Add Network Response", new_network_result)
 
     def __init__(self, parent, controller):
 
@@ -274,7 +280,10 @@ class AddGroup(tk.Frame):
     def addgroup(self, groupname):
         new_group_data = {'name':groupname}
         new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
-        messagebox.showinfo("Add Group Response", new_group_result)
+        if 'creator' in new_group_result:
+            messagebox.showinfo("Add Group Response", "Successful")
+        else:
+            messagebox.showinfo("Add Group Response", new_group_result)
 
     def __init__(self, parent, controller):
 
@@ -308,17 +317,26 @@ class ObjectToGroup(tk.Frame):
     def addhostgroup(self, hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
-        messagebox.showinfo("Add Host Response", addhostgroup_result)
+        if 'creator' in addhostgroup_result:
+            messagebox.showinfo("Add Host Response", "Successful")
+        else:
+            messagebox.showinfo("Add Host Response", addhostgroup_result)
 
     def addnetgroup(self, netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
-        messagebox.showinfo("Add Network Response", addnetgroup_result)
+        if 'creator' in addnetgroup_result:
+            messagebox.showinfo("Add Network Response", "Successful")
+        else:
+            messagebox.showinfo("Add Network Response", addnetgroup_result)
 
     def addgroupgroup(self, addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        messagebox.showinfo("Add Group Response", addgroupgroup_result)
+        if 'creator' in addgroupgroup_result:
+            messagebox.showinfo("Add Group Response", "Successful")
+        else:
+            messagebox.showinfo("Add Group Response", addgroupgroup_result)
 
     #Method to retrieve db hosts and Groups
     def gethostnetgroup(self):
@@ -409,7 +427,7 @@ class ImportHosts(tk.Frame):
         for line in csvhosts:
             apiprep = line.split(',')
             self.importaddhost(apiprep[0], apiprep[1], "black")
-        messagebox.showinfo("Import Host Response", "PLACE HOLDER")
+        messagebox.showinfo("Import Host Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
