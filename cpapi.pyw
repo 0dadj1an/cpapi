@@ -442,6 +442,7 @@ class ImportHosts(tk.Frame):
         for line in csvhosts:
             apiprep = line.split(',')
             self.importaddhost(apiprep[0], apiprep[1], "black")
+        cvshosts.close()
         messagebox.showinfo("Import Host Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -485,6 +486,7 @@ class ExportHosts(tk.Frame):
         for host in show_hosts_result["objects"]:
             hostexportfile = open(("exportedhosts.csv"), "a")
             hostexportfile.write(host["name"] + "," + host["ipv4-address"] + "\n")
+        hostexportfile.close()
         messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -519,6 +521,7 @@ class ImportNetworks(tk.Frame):
         for line in csvnets:
             apiprep = line.split(',')
             self.importaddnetwork(apiprep[0], apiprep[1], apiprep[2])
+        csvnets.close()
         messagebox.showinfo("Import Network Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -562,6 +565,7 @@ class ExportNetworks(tk.Frame):
         for network in show_networks_result["objects"]:
             networksexportfile = open(("exportednetworks.csv"), "a")
             networksexportfile.write(network["name"] + "," + str(network["subnet4"]) + "," + str(network["mask-length4"]) + "\n")
+        networksexportfile.close()
         messagebox.showinfo("Export Network Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -601,6 +605,7 @@ class ImportGroups(tk.Frame):
             memberlist = groupname[1].split(';')
             #Pass to api, last element in memberlist is an empty string
             self.addgroupmembers(groupname[0], memberlist[0:-1])
+        csvgroups.close()
         messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -647,6 +652,7 @@ class ExportGroups(tk.Frame):
             for member in listofmembers:
                 groupsexportfile.write(member["name"] + ";")
             groupsexportfile.write("\n")
+        groupsexportfile.close()
         messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -699,6 +705,7 @@ class ImportRules(tk.Frame):
                 srv = fullrule[4]
             act = fullrule[5]
             self.importaddrules(num, name, src, dst, srv, act)
+        csvrules.close()
         messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
@@ -861,6 +868,7 @@ class ExportRules(tk.Frame):
                 rulebaseexport.write(srv[-1] + ',')
             #Write Action and \n
             rulebaseexport.write(act + '\n')
+        rulebaseexport.close()
 
     def __init__(self, parent, controller):
 
