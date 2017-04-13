@@ -1029,6 +1029,7 @@ class dthomas(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
+
 #Call Main Frame
 if __name__ == "__main__":
     app = apiapp()
