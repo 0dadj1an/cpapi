@@ -1,5 +1,5 @@
 #Import Things
-import sys, re, time, json
+import sys, time, json
 #Import Requests
 import requests
 #Import tkinter
