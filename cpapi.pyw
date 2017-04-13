@@ -26,7 +26,8 @@ class apiapp(tk.Tk):
 
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
-            ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups, ImportRules, ExportRules, RunScript):
+            ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
+            ImportRules, ExportRules, RunScript, dthomas):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -186,6 +187,10 @@ class StartPage(tk.Frame):
         #Button to call run-script window
         runscriptb = ttk.Button(self, text="Run Script", command=lambda: controller.show_frame("RunScript"))
         runscriptb.grid(row=9, column=0)
+
+        #Butto to call dthomas window
+        dthomb = ttk.Button(self, text="dthomas", command=lambda: controller.show_frame("dthomas"))
+        dthomb.grid(row=9, column=1)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -979,6 +984,43 @@ class RunScript(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
+class dthomas(tk.Frame):
+
+    def allobjects(self, ip):
+        all_hosts_data = {'offset':0, 'details-level':'full'}
+        all_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', all_hosts_data , sid)
+        for nat in all_hosts_result["objects"]:
+            if 'ipv4-address' in nat["nat-settings"]:
+                host = nat["name"]
+                found = nat["nat-settings"]["ipv4-address"]
+                if ip == found:
+                    messagebox.showinfo("Results", ("Host %s contains the NAT IP" % host))
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Get All Objects")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Search for IP
+        search_l = ttk.Label(self, text="IP to Search")
+        search_l.configure(background="#494949", foreground="#f44242")
+        search_l.grid(row=1, column=0, sticky=E)
+        search_e = Entry(self, bd=5)
+        search_e.grid(row=1, column=1)
+        search_e.configure(background="#ffffff")
+
+        #Button to retrieve all objects
+        getpackagesb = ttk.Button(self, text="Get Objects", command=lambda: self.allobjects(search_e.get()))
+        getpackagesb.grid(row=2, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=2)
 #Call Main Frame
 if __name__ == "__main__":
     app = apiapp()
