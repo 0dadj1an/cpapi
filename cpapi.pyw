@@ -877,6 +877,7 @@ class ExportRules(tk.Frame):
             #Write Action and \n
             rulebaseexport.write(act + '\n')
         rulebaseexport.close()
+        messagebox.showinfo("Export Rulebase", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -942,7 +943,6 @@ class RunScript(tk.Frame):
         time.sleep(5)
         taskid_data = {'task-id':taskid, 'details-level':'full'}
         taskid_result = StartPage.api_call(self, usrdef_sship, 443, 'show-task', taskid_data , sid)
-        print (taskid_result)
         messagebox.showinfo("Run Script Output", taskid_result)
 
     def __init__(self, parent, controller):
