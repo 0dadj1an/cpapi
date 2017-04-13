@@ -8,10 +8,10 @@ Feedback limited across many tests.
 Only support for Name/Color/IP settings, notably NAT settings not supported currently.
 
 ### IMPORT HOST ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### EXPORT HOST ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### ADD NETWORK ###
 Only support for Name/IP settings, notably NAT settings not supported currently.
