@@ -1010,7 +1010,7 @@ class dthomas(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Get All Objects")
+        addhostlabel = ttk.Label(self, text="Search Objects for NAT IP")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
@@ -1023,7 +1023,7 @@ class dthomas(tk.Frame):
         search_e.configure(background="#ffffff")
 
         #Button to retrieve all objects
-        getpackagesb = ttk.Button(self, text="Get Objects", command=lambda: self.allobjects(search_e.get()))
+        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: self.allobjects(search_e.get()))
         getpackagesb.grid(row=2, column=1)
 
         #Button to return to apiapp
