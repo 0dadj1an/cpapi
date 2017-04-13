@@ -4,3 +4,4 @@ network3;3.3.3.0;24;black;{'auto-rule': True, 'ipv4-address': '90.90.90.90', 'hi
 network4;4.4.4.0;24;blue 1;{'auto-rule': True, 'ipv4-address': '91.91.91.91', 'hide-behind': 'ip-address', 'install-on': 'gateway', 'method': 'hide'}
 network5;5.5.5.0;24;foreground;{'auto-rule': True, 'ipv4-address': '92.92.92.92', 'install-on': 'All', 'method': 'static'}
 network6;6.6.6.0;24;black;{'auto-rule': True, 'ipv4-address': '93.93.93.93', 'install-on': 'gateway', 'method': 'static'}
+network7;7.7.7.0;24;black;{'auto-rule': False}

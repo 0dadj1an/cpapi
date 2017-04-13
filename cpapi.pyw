@@ -248,8 +248,8 @@ class AddHost(tk.Frame):
 class AddNetwork(tk.Frame):
 
     #Method for adding a network object
-    def addnetwork(self, netname, netsub, netmask):
-        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
+    def addnetwork(self, netname, netsub, netmask, netcolor):
+        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
         if 'creator' in new_network_result:
             messagebox.showinfo("Add Network Response", "Successful")
@@ -274,21 +274,29 @@ class AddNetwork(tk.Frame):
         netname_e.configure(background="#ffffff")
 
         #Network Address
-        netaddr_l = ttk.Label(self, text = "Mask-Length", background="#494949", foreground="#f44242")
+        netaddr_l = ttk.Label(self, text = "Network Subnet", background="#494949", foreground="#f44242")
         netaddr_l.grid(row=2, column=0, sticky=E)
         netaddr_e = Entry(self, bd=5)
         netaddr_e.grid(row=2, column=1)
         netaddr_e.configure(background="#ffffff")
 
         #Network Mask
-        netmask_l = ttk.Label(self, text = "Subnet Mask", background="#494949", foreground="#f44242")
+        netmask_l = ttk.Label(self, text = "Mask-Length", background="#494949", foreground="#f44242")
         netmask_l.grid(row=3, column=0, sticky=E)
         netmask_e = Entry(self, bd=5)
         netmask_e.grid(row=3, column=1)
         netmask_e.configure(background="#ffffff")
 
+        #Host Color
+        networkcolor_l = ttk.Label(self, text="Network Color", background="#494949", foreground="#f44242")
+        networkcolor_l.grid(row=4, column=0, sticky=E)
+        defaultcolor = StringVar(self)
+        defaultcolor.set("black")
+        netowrkcolormenu = OptionMenu(self, defaultcolor, "black", "blue", "cyan", "gold", "green", "red", "orange", "yellow")
+        netowrkcolormenu.grid(row=4, column=1)
+
         #Button to run command
-        runapi = ttk.Button(self, text="Add Network", command = lambda: self.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get()))
+        runapi = ttk.Button(self, text="Add Network", command = lambda: self.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
