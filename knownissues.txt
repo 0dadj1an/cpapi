@@ -8,25 +8,27 @@ Feedback limited across many tests.
 Only support for Name/Color/IP settings, notably NAT settings not supported currently.
 
 ### IMPORT HOST ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### EXPORT HOST ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### ADD NETWORK ###
 Only support for Name/IP settings, notably NAT settings not supported currently.
 
 ### IMPORT NETWORK ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### EXPORT NETWORK ###
-Only support for Name/IP settings, notably NAT settings not supported currently.
+Supports Name/IP/Color/NAT-Settings.
 
 ### ADD GROUP ###
 
 ### IMPORT GROUP ###
+No color support.
 
 ### EXPORT GROUP ###
+No color support.
 
 ### ADD OBJECT TO GROUP ###
 Best if only used one time per launch of application. Pulling options a second time currently overlaps dropdowns.

@@ -440,16 +440,17 @@ class ObjectToGroup(tk.Frame):
 class ImportHosts(tk.Frame):
 
     #Method for adding a host object for importhost
-    def importaddhost(self, hostname, hostip, hostcolor):
-        new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
+    def importaddhost(self, hostname, hostip, hostcolor, natset):
+        natset = eval(natset)
+        new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
         new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
 
     #Method to import host from csv file
     def importhosts(self, filename):
-        csvhosts = open(filename, "r").read().split()
+        csvhosts = open(filename, "r").read().split("\n")
         for line in csvhosts:
-            apiprep = line.split(',')
-            self.importaddhost(apiprep[0], apiprep[1], "black")
+            apiprep = line.split(';')
+            self.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
         cvshosts.close()
         messagebox.showinfo("Import Host Response", "PLACEHOLDER")
 
@@ -492,8 +493,14 @@ class ExportHosts(tk.Frame):
         show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         hostexportfile = open(("exportedhosts.csv"), "w+")
         for host in show_hosts_result["objects"]:
+            if 'nat-settings' in host:
+                natsettings = host["nat-settings"]
+                natsettings.pop('ipv6-address', None)
+                natsettings = str(natsettings)
             hostexportfile = open(("exportedhosts.csv"), "a")
-            hostexportfile.write(host["name"] + "," + host["ipv4-address"] + "\n")
+            hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
+            hostexportfile.write(natsettings)
+            hostexportfile.write("\n")
         hostexportfile.close()
         messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
 
@@ -519,16 +526,17 @@ class ExportHosts(tk.Frame):
 class ImportNetworks(tk.Frame):
 
     #Method for adding a network object for importnetworks
-    def importaddnetwork(self, netname, netsub, netmask):
-        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask}
+    def importaddnetwork(self, netname, netsub, netmask, netcolor, natset):
+        natset = eval(natset)
+        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
         new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to import networks from csv
     def importnetworks(self, filename):
-        csvnets = open(filename, "r").read().split()
+        csvnets = open(filename, "r").read().split("\n")
         for line in csvnets:
-            apiprep = line.split(',')
-            self.importaddnetwork(apiprep[0], apiprep[1], apiprep[2])
+            apiprep = line.split(';')
+            self.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
         csvnets.close()
         messagebox.showinfo("Import Network Response", "PLACEHOLDER")
 
@@ -572,7 +580,13 @@ class ExportNetworks(tk.Frame):
         networksexportfile = open(("exportednetworks.csv"), "w+")
         for network in show_networks_result["objects"]:
             networksexportfile = open(("exportednetworks.csv"), "a")
-            networksexportfile.write(network["name"] + "," + str(network["subnet4"]) + "," + str(network["mask-length4"]) + "\n")
+            if 'nat-settings' in network:
+                natsettings = network["nat-settings"]
+                natsettings.pop('ipv6-address', None)
+                natsettings = str(natsettings)
+            networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
+            networksexportfile.write(natsettings)
+            networksexportfile.write("\n")
         networksexportfile.close()
         messagebox.showinfo("Export Network Response", "PLACEHOLDER")
 
