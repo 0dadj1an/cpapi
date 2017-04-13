@@ -943,7 +943,9 @@ class RunScript(tk.Frame):
         time.sleep(5)
         taskid_data = {'task-id':taskid, 'details-level':'full'}
         taskid_result = StartPage.api_call(self, usrdef_sship, 443, 'show-task', taskid_data , sid)
-        messagebox.showinfo("Run Script Output", taskid_result)
+        for line in taskid_result["tasks"]:
+            taskresult = line["task-details"][0]["statusDescription"]
+        messagebox.showinfo("Run Script Output", taskresult)
 
     def __init__(self, parent, controller):
 
