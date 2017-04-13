@@ -27,7 +27,7 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, RunScript, dthomas):
+            ImportRules, ExportRules, RunScript, FindNat):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -189,7 +189,7 @@ class StartPage(tk.Frame):
         runscriptb.grid(row=9, column=0)
 
         #Butto to call dthomas window
-        dthomb = ttk.Button(self, text="dthomas", command=lambda: controller.show_frame("dthomas"))
+        dthomb = ttk.Button(self, text="Find NAT", command=lambda: controller.show_frame("FindNat"))
         dthomb.grid(row=9, column=1)
 
 #Class for add host functionality
@@ -984,9 +984,11 @@ class RunScript(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
-class dthomas(tk.Frame):
+#Class to add find object with associated NAT ip functionality
+class FindNat(tk.Frame):
 
-    def allobjects(self, ip):
+    #Method to search for ip in nat settings
+    def findnat(self, ip):
         all_hosts_data = {'offset':0, 'details-level':'full'}
         all_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', all_hosts_data, sid)
         for nat in all_hosts_result["objects"]:
@@ -994,7 +996,7 @@ class dthomas(tk.Frame):
                 host = nat["name"]
                 found = nat["nat-settings"]["ipv4-address"]
                 if ip == found:
-                    messagebox.showinfo("Results", ("Host %s contains the NAT IP" % host))
+                    messagebox.showinfo("Results", ("Host: %s - contains the NAT IP" % host))
         all_networks_data = {'offset':0, 'details-level':'full'}
         all_networks_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', all_networks_data, sid)
         for nat in all_networks_result["objects"]:
@@ -1002,7 +1004,7 @@ class dthomas(tk.Frame):
                 network = nat["name"]
                 found = nat["nat-settings"]["ipv4-address"]
                 if ip == found:
-                    messagebox.showinfo("Results", ("Network %s contains the NAT IP" % network))
+                    messagebox.showinfo("Results", ("Network: %s - contains the NAT IP" % network))
 
     def __init__(self, parent, controller):
 
@@ -1010,7 +1012,7 @@ class dthomas(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Search Objects for NAT IP")
+        addhostlabel = ttk.Label(self, text="Search Objects for associated NAT IP")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
@@ -1023,7 +1025,7 @@ class dthomas(tk.Frame):
         search_e.configure(background="#ffffff")
 
         #Button to retrieve all objects
-        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: self.allobjects(search_e.get()))
+        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: self.findnat(search_e.get()))
         getpackagesb.grid(row=2, column=1)
 
         #Button to return to apiapp
