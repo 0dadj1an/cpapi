@@ -1,3 +1,4 @@
-1,Rule 1 Name,sourceobject1;sourceobject2,destinationobject1;destinationobject2,service1;service2,Accept
-1,Rule 2 Name,sourceobject3;sourceobject4,destinationobject4;destinationobject5,service3;service4,Drop
-3,Cleanup rule,Any,Any,Any,Drop
+1,ASSIGN NAME,network2;network3,host2,Any,Drop
+2,Parse This Rule,group4,host3,ntp;https,Accept
+3,Sweet Rule,network5;network4,group3,http;ssh,Drop
+4,Cleanup rule,Any,Any,Any,Drop

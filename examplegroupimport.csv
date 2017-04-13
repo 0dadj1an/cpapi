@@ -1,3 +1,5 @@
-group55,member1;member2;
-group66,member3;member4;
-group77,member5;member6;
+group5,
+group3,network1;
+group1,host4;host2;host3;
+group2,network4;network3;network2;
+group4,host1;
