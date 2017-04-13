@@ -26,7 +26,7 @@ class apiapp(tk.Tk):
 
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
-            ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups, ImportRules, ExportRules):
+            ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups, ImportRules, ExportRules, RunScript):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -133,51 +133,59 @@ class StartPage(tk.Frame):
 
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=6, column=3)
+        addhosttogroup.grid(row=5, column=3)
 
         #Button to call add host window
         addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
-        addhostb.grid(row=6)
+        addhostb.grid(row=5)
 
         #Button to call add network window
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
-        addnetworkb.grid(row=6, column=1)
+        addnetworkb.grid(row=5, column=1)
 
         #Button to call add group window
         addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
-        addgroupb.grid(row=6, column=2)
+        addgroupb.grid(row=5, column=2)
 
         #Button to call import hosts window
         imphostb = ttk.Button(self, text="Import Hosts", command=lambda: controller.show_frame("ImportHosts"))
-        imphostb.grid(row=7, column=0)
+        imphostb.grid(row=6, column=0)
 
         #Button to call export hosts window
         exphostsb = ttk.Button(self, text="Export Hosts", command=lambda: controller.show_frame("ExportHosts"))
-        exphostsb.grid(row=8, column=0)
+        exphostsb.grid(row=7, column=0)
 
         #Button to call import networks window
         impnetsb = ttk.Button(self, text="Import Networks", command=lambda: controller.show_frame("ImportNetworks"))
-        impnetsb.grid(row=7, column=1)
+        impnetsb.grid(row=6, column=1)
 
         #Button to call export networks window
         expnetsb = ttk.Button(self, text="Export Networks", command=lambda: controller.show_frame("ExportNetworks"))
-        expnetsb.grid(row=8, column=1)
+        expnetsb.grid(row=7, column=1)
 
         #Button to call import groups window
         impnetsb = ttk.Button(self, text="Import Groups", command=lambda: controller.show_frame("ImportGroups"))
-        impnetsb.grid(row=7, column=2)
+        impnetsb.grid(row=6, column=2)
 
         #Button to call export groups window
         expnetsb = ttk.Button(self, text="Export Groups", command=lambda: controller.show_frame("ExportGroups"))
-        expnetsb.grid(row=8, column=2)
+        expnetsb.grid(row=7, column=2)
 
         #Button to call import rules window
         imprulesb = ttk.Button(self, text="Import Rules", command=lambda: controller.show_frame("ImportRules"))
-        imprulesb.grid(row=7, column=3)
+        imprulesb.grid(row=6, column=3)
 
         #Button to call export rules window
         exprulesb = ttk.Button(self, text="Export Rules", command=lambda: controller.show_frame("ExportRules"))
-        exprulesb.grid(row=8, column=3)
+        exprulesb.grid(row=7, column=3)
+
+        #Create More Space
+        more_space_label = ttk.Label(self, background="#494949")
+        more_space_label.grid(row=8)
+
+        #Button to call run-script window
+        runscriptb = ttk.Button(self, text="Run Script", command=lambda: controller.show_frame("RunScript"))
+        runscriptb.grid(row=9, column=0)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -887,6 +895,67 @@ class ExportRules(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=0)
+
+#Class to add runscript functionality
+class RunScript(tk.Frame):
+
+    #Method to retrieve valid gateways and servers
+    def gettargets(self):
+        #Retrieve Targets
+        get_targets_data = {'offset':0}
+        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        targetslist = []
+        for obj in get_targets_result["objects"]:
+            targetslist.append(obj["name"])
+        #Target Dropdown
+        defaulttarget = StringVar(self)
+        defaulttarget.set("Select Target")
+        targetmenu = OptionMenu(self, defaulttarget, *targetslist)
+        targetmenu.grid(row=1, column=0)
+
+        #Script Name
+        scriptname_l = ttk.Label(self, text="Script Name")
+        scriptname_l.configure(background="#494949", foreground="#f44242")
+        scriptname_l.grid(row=2, column=0, sticky=E)
+        scriptname_e = Entry(self, bd=5)
+        scriptname_e.grid(row=2, column=1)
+        scriptname_e.configure(background="#ffffff")
+
+        #Script Command
+        scriptcommand_l = ttk.Label(self, text="Script Command")
+        scriptcommand_l.configure(background="#494949", foreground="#f44242")
+        scriptcommand_l.grid(row=3, column=0, sticky=E)
+        scriptcommand_e = Entry(self, bd=5)
+        scriptcommand_e.grid(row=3, column=1)
+        scriptcommand_e.configure(background="#ffffff")
+
+        #Button to runscript
+        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: self.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
+        runthescriptb.grid(row=4, column=0)
+
+    #Method to run command
+    def runscript(self, target, name, command):
+        run_script_data = {'script-name':name, 'script':command, 'targets':target}
+        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'run-script', run_script_data ,sid)
+        print (get_targets_result)
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Run Script")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to retrieve targets
+        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: self.gettargets())
+        getpackagesb.grid(row=1, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=2)
 
 #Call Main Frame
 if __name__ == "__main__":
