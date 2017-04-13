@@ -27,7 +27,7 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, RunScript, FindNat):
+            ImportRules, ExportRules, RunScript, PutFile, FindNat):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -188,9 +188,13 @@ class StartPage(tk.Frame):
         runscriptb = ttk.Button(self, text="Run Script", command=lambda: controller.show_frame("RunScript"))
         runscriptb.grid(row=9, column=0)
 
-        #Butto to call dthomas window
+        #Button to call put-file window
+        runscriptb = ttk.Button(self, text="Put File", command=lambda: controller.show_frame("PutFile"))
+        runscriptb.grid(row=9, column=1)
+
+        #Butto to call findnat window
         dthomb = ttk.Button(self, text="Find NAT", command=lambda: controller.show_frame("FindNat"))
-        dthomb.grid(row=9, column=1)
+        dthomb.grid(row=9, column=2)
 
 #Class for add host functionality
 class AddHost(tk.Frame):
@@ -981,6 +985,75 @@ class RunScript(tk.Frame):
         self.controller = controller
         self.configure(background="#494949")
         addhostlabel = ttk.Label(self, text="Run Script")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to retrieve targets
+        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: self.gettargets())
+        getpackagesb.grid(row=1, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=2)
+
+#Class to add putfile functionality
+class PutFile(tk.Frame):
+
+    #Method to retrieve valid gateways and servers
+    def gettargets(self):
+        #Retrieve Targets
+        get_targets_data = {'offset':0}
+        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        targetslist = []
+        for obj in get_targets_result["objects"]:
+            targetslist.append(obj["name"])
+        #Target Dropdown
+        defaulttarget = StringVar(self)
+        defaulttarget.set("Select Target")
+        targetmenu = OptionMenu(self, defaulttarget, *targetslist)
+        targetmenu.grid(row=1, column=0)
+
+        #File Location
+        fileloc_l = ttk.Label(self, text="File Path")
+        fileloc_l.configure(background="#494949", foreground="#f44242")
+        fileloc_l.grid(row=2, column=0, sticky=E)
+        fileloc_e = Entry(self, bd=5)
+        fileloc_e.grid(row=2, column=1)
+        fileloc_e.configure(background="#ffffff")
+
+        #File Name
+        filename_l = ttk.Label(self, text="File Name")
+        filename_l.configure(background="#494949", foreground="#f44242")
+        filename_l.grid(row=3, column=0, sticky=E)
+        filename_e = Entry(self, bd=5)
+        filename_e.grid(row=3, column=1)
+        filename_e.configure(background="#ffffff")
+
+        #Script Command
+        filecontents_l = ttk.Label(self, text="File Contents")
+        filecontents_l.configure(background="#494949", foreground="#f44242")
+        filecontents_l.grid(row=4, column=0, sticky=E)
+        filecontents_e = Entry(self, bd=5)
+        filecontents_e.grid(row=4, column=1)
+        filecontents_e.configure(background="#ffffff")
+
+        #Button to run putfile
+        runthescriptb = ttk.Button(self, text="Put File", command=lambda: self.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
+        runthescriptb.grid(row=5, column=0)
+
+    #Method to run command
+    def putfile(self, target, path, name, contents):
+        put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
+        put_file_result = StartPage.api_call(self, usrdef_sship, 443, 'put-file', put_file_data , sid)
+        messagebox.showinfo("Put File Respons", put_file_result)
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Put File")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
