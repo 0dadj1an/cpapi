@@ -936,8 +936,14 @@ class RunScript(tk.Frame):
     #Method to run command
     def runscript(self, target, name, command):
         run_script_data = {'script-name':name, 'script':command, 'targets':target}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'run-script', run_script_data ,sid)
-        print (get_targets_result)
+        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'run-script', run_script_data , sid)
+        for line in get_targets_result["tasks"]:
+            taskid = line["task-id"]
+        time.sleep(5)
+        taskid_data = {'task-id':taskid, 'details-level':'full'}
+        taskid_result = StartPage.api_call(self, usrdef_sship, 443, 'show-task', taskid_data , sid)
+        print (taskid_result)
+        messagebox.showinfo("Run Script Output", taskid_result)
 
     def __init__(self, parent, controller):
 
