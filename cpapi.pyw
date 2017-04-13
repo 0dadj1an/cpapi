@@ -1029,7 +1029,7 @@ class PutFile(tk.Frame):
         filename_e.grid(row=3, column=1)
         filename_e.configure(background="#ffffff")
 
-        #Script Command
+        #File Contents
         filecontents_l = ttk.Label(self, text="File Contents")
         filecontents_l.configure(background="#494949", foreground="#f44242")
         filecontents_l.grid(row=4, column=0, sticky=E)
