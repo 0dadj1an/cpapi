@@ -106,7 +106,6 @@ class allcalls:
         else:
             messagebox.showinfo("Add Group Response", addgroupgroup_result)
 
-######### OBJECT TO GROUP MORE TO COME ###########
     #Method for retrieving objects
     def getallhosts():
         show_hosts_data = {'offset':0, 'details-level':'standard'}
@@ -249,7 +248,16 @@ class allcalls:
         csvrules.close()
         messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
 
-############ EXPORT RULES MORE TO COME ##############
+    #Method to get packages
+    def getallpackages():
+        get_packages_data = {'offset':0, 'details-level':'full'}
+        get_packages_result = allcalls.api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        return (get_packages_result)
+
+    def getalllayers():
+        get_layers_data = {'name':package}
+        get_layers_result = allcalls.api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        return (get_layers_result)
 
     #Method to get export rules
     def exportrules(package, layer):
@@ -347,7 +355,11 @@ class allcalls:
         rulebaseexport.close()
         messagebox.showinfo("Export Rulebase", "PLACEHOLDER")
 
-############ RUN SCRIPT MORE TO COME ###############
+    def getalltargets():
+        #Retrieve Targets
+        get_targets_data = {'offset':0}
+        get_targets_result = allcalls.api_call(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        return (get_targets_result)
 
     #Method to run command
     def runscript(target, name, command):
@@ -361,8 +373,6 @@ class allcalls:
         for line in taskid_result["tasks"]:
             taskresult = line["task-details"][0]["statusDescription"]
         messagebox.showinfo("Run Script Output", taskresult)
-
-########### PUT FILE MORE TO COME ##################
 
     #Method to run command
     def putfile(target, path, name, contents):

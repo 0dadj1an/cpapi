@@ -547,8 +547,7 @@ class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
     def getpackages(self):
-        get_packages_data = {'offset':0, 'details-level':'full'}
-        get_packages_result = StartPage.api_call(self, usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        get_packages_result = allcalls.getallpackages()
         allpackagelist = []
         for package in get_packages_result["packages"]:
             allpackagelist.append(package["name"])
@@ -563,8 +562,7 @@ class ExportRules(tk.Frame):
         showrulebaseb.grid(row=2, column=1)
 
     def getlayers(self, package):
-        get_layers_data = {'name':package}
-        get_layers_result = StartPage.api_call(self, usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        get_layers_result = allcalls.getalllayers()
         alllayerslist = []
         #print (get_layers_result)
         for layer in get_layers_result["access-layers"]:
@@ -576,7 +574,7 @@ class ExportRules(tk.Frame):
         layermenu.grid(row=2, column=0)
 
         #Button to retrieve rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: self.exportrules(package, defaultlayer.get()))
+        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: allcalls.exportrules(package, defaultlayer.get()))
         showrulebaseb.grid(row=3, column=0)
 
     def __init__(self, parent, controller):
@@ -603,8 +601,7 @@ class RunScript(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_data = {'offset':0}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        get_targets_result = allcalls.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
@@ -631,7 +628,7 @@ class RunScript(tk.Frame):
         scriptcommand_e.configure(background="#ffffff")
 
         #Button to runscript
-        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: self.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
+        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: allcalls.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
         runthescriptb.grid(row=4, column=0)
 
     def __init__(self, parent, controller):
@@ -658,8 +655,7 @@ class PutFile(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_data = {'offset':0}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        get_targets_result = allcalls.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
