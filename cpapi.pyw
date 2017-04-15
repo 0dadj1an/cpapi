@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 #Import cpapicall
-from cpapicall import allcalls
+from apimodule import *
 
 #Class for main frame
 class apiapp(tk.Tk):
@@ -11,7 +11,7 @@ class apiapp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.wm_title("Check Point API Tool")
-        self.iconbitmap("cpapiicon.ico")
+        self.iconbitmap("misc/cpapiicon.ico")
         container = ttk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
@@ -68,15 +68,15 @@ class StartPage(tk.Frame):
         pass_e.configure(background="#ffffff")
 
         #Button to start session
-        sessionb = ttk.Button(self, text="Connect", command=lambda: allcalls.login(sship_e.get(), username_e.get(), pass_e.get()))
+        sessionb = ttk.Button(self, text="Connect", command=lambda: session.login(sship_e.get(), username_e.get(), pass_e.get()))
         sessionb.grid(row=1, column=2)
 
         #Button to publish session
-        publishb = ttk.Button(self, text="Publish", command=lambda: allcalls.publish())
+        publishb = ttk.Button(self, text="Publish", command=lambda: session.publish())
         publishb.grid(row=2, column=2)
 
         #Button to logout session
-        logoutb = ttk.Button(self, text="Logout", command=lambda: allcalls.logout())
+        logoutb = ttk.Button(self, text="Logout", command=lambda: session.logout())
         logoutb.grid(row=3, column=2)
 
         #Create Space
@@ -183,7 +183,7 @@ class AddHost(tk.Frame):
         hostcolormenu.grid(row=3, column=1)
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Host", command=lambda: allcalls.addhost(hostname_e.get(), hostip_e.get(), defaultcolor.get()))
+        runapi = ttk.Button(self, text="Add Host", command=lambda: host.addhost(hostname_e.get(), hostip_e.get(), defaultcolor.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -233,7 +233,7 @@ class AddNetwork(tk.Frame):
         netowrkcolormenu.grid(row=4, column=1)
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Network", command = lambda: allcalls.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get()))
+        runapi = ttk.Button(self, text="Add Network", command = lambda: network.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -261,7 +261,7 @@ class AddGroup(tk.Frame):
         groupname_e.configure(background="#ffffff")
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Group", command = lambda: allcalls.addgroup(groupname_e.get()))
+        runapi = ttk.Button(self, text="Add Group", command = lambda: group.addgroup(groupname_e.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -278,16 +278,16 @@ class ObjectToGroup(tk.Frame):
         allnetlist = []
         allgrouplist = []
         #API Call for each type
-        show_hosts_result = allcalls.getallhosts()
-        show_nets_result = allcalls.getallnetworks()
-        show_groups_result = allcalls.getallgroups()
+        show_hosts_result = host.getallhosts()
+        show_nets_result = network.getallnetworks()
+        show_groups_result = group.getallgroups()
         #Parse out names only
-        for host in show_hosts_result["objects"]:
-            allhostlist.append(host["name"])
-        for net in show_nets_result["objects"]:
-            allnetlist.append(net["name"])
-        for group in show_groups_result["objects"]:
-            allgrouplist.append(group["name"])
+        for hosts in show_hosts_result["objects"]:
+            allhostlist.append(hosts["name"])
+        for nets in show_nets_result["objects"]:
+            allnetlist.append(nets["name"])
+        for groups in show_groups_result["objects"]:
+            allgrouplist.append(groups["name"])
         #Host Dropdown
         allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
         allhost.grid(row=2, column=0, sticky=E)
@@ -318,15 +318,15 @@ class ObjectToGroup(tk.Frame):
         groupmenu.grid(row=3, column=3)
 
         #Button to add host to group
-        hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: allcalls.addhostgroup(defaulthost.get(), defaultgroup.get()))
+        hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: host.addhostgroup(defaulthost.get(), defaultgroup.get()))
         hosttogroupb.grid(row=2, column=2)
 
         #Button to add network to group
-        nettogroupb = ttk.Button(self, text="Add Network", command=lambda: allcalls.addnetgroup(defaultnet.get(), defaultgroup.get()))
+        nettogroupb = ttk.Button(self, text="Add Network", command=lambda: network.addnetgroup(defaultnet.get(), defaultgroup.get()))
         nettogroupb.grid(row=3, column=2)
 
         #Button to add group to group
-        grouptogroup = ttk.Button(self, text="Add Group", command=lambda: allcalls.addgroupgroup(defaultaddgroup.get(), defaultgroup.get()))
+        grouptogroup = ttk.Button(self, text="Add Group", command=lambda: group.addgroupgroup(defaultaddgroup.get(), defaultgroup.get()))
         grouptogroup.grid(row=4, column=2)
 
     def __init__(self, parent, controller):
@@ -368,7 +368,7 @@ class ImportHosts(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import Hosts
-        imphostb = ttk.Button(self, text="Import", command=lambda: allcalls.importhosts(file_e.get()))
+        imphostb = ttk.Button(self, text="Import", command=lambda: host.importhosts(file_e.get()))
         imphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -394,7 +394,7 @@ class ExportHosts(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export hosts
-        exphostb = ttk.Button(self, text="Export Hosts", command=lambda: allcalls.exporthosts())
+        exphostb = ttk.Button(self, text="Export Hosts", command=lambda: host.exporthosts())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -422,7 +422,7 @@ class ImportNetworks(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import networks
-        exphostb = ttk.Button(self, text="Import Networks", command=lambda: allcalls.importnetworks(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Networks", command=lambda: network.importnetworks(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -448,7 +448,7 @@ class ExportNetworks(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export networks
-        exphostb = ttk.Button(self, text="Export Networks", command=lambda: allcalls.exportnetworks())
+        exphostb = ttk.Button(self, text="Export Networks", command=lambda: network.exportnetworks())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -476,7 +476,7 @@ class ImportGroups(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import groups
-        exphostb = ttk.Button(self, text="Import Groups", command=lambda: allcalls.importgroups(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Groups", command=lambda: group.importgroups(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -502,7 +502,7 @@ class ExportGroups(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export groups
-        exphostb = ttk.Button(self, text="Export Groups", command=lambda: allcalls.exportgroups())
+        exphostb = ttk.Button(self, text="Export Groups", command=lambda: group.exportgroups())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -530,7 +530,7 @@ class ImportRules(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import networks
-        exphostb = ttk.Button(self, text="Import Rulebase", command=lambda: allcalls.importrules(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Rulebase", command=lambda: policy.importrules(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -547,7 +547,7 @@ class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
     def getpackages(self):
-        get_packages_result = allcalls.getallpackages()
+        get_packages_result = policy.getallpackages()
         allpackagelist = []
         for package in get_packages_result["packages"]:
             allpackagelist.append(package["name"])
@@ -562,7 +562,7 @@ class ExportRules(tk.Frame):
         showrulebaseb.grid(row=2, column=1)
 
     def getlayers(self, package):
-        get_layers_result = allcalls.getalllayers(package)
+        get_layers_result = policy.getalllayers(package)
         alllayerslist = []
         #print (get_layers_result)
         for layer in get_layers_result["access-layers"]:
@@ -574,7 +574,7 @@ class ExportRules(tk.Frame):
         layermenu.grid(row=2, column=0)
 
         #Button to retrieve rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: allcalls.exportrules(package, defaultlayer.get()))
+        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: policy.exportrules(package, defaultlayer.get()))
         showrulebaseb.grid(row=3, column=0)
 
     def __init__(self, parent, controller):
@@ -601,7 +601,7 @@ class RunScript(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_result = allcalls.getalltargets()
+        get_targets_result = misc.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
@@ -628,7 +628,7 @@ class RunScript(tk.Frame):
         scriptcommand_e.configure(background="#ffffff")
 
         #Button to runscript
-        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: allcalls.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
+        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: misc.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
         runthescriptb.grid(row=4, column=0)
 
     def __init__(self, parent, controller):
@@ -655,7 +655,7 @@ class PutFile(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_result = allcalls.getalltargets()
+        get_targets_result = misc.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
@@ -690,7 +690,7 @@ class PutFile(tk.Frame):
         filecontents_e.configure(background="#ffffff")
 
         #Button to run putfile
-        runthescriptb = ttk.Button(self, text="Put File", command=lambda: allcalls.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
+        runthescriptb = ttk.Button(self, text="Put File", command=lambda: misc.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
         runthescriptb.grid(row=5, column=0)
 
     def __init__(self, parent, controller):
@@ -733,7 +733,7 @@ class FindNat(tk.Frame):
         search_e.configure(background="#ffffff")
 
         #Button to retrieve all objects
-        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: allcalls.findnat(search_e.get()))
+        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: misc.findnat(search_e.get()))
         getpackagesb.grid(row=2, column=1)
 
         #Button to return to apiapp

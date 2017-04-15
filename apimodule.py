@@ -9,7 +9,7 @@ from tkinter import messagebox
 sid = "tbd"
 usrdef_sship = "tbd"
 
-class allcalls:
+class session:
 
     #Method to carry webapi call
     def api_call(ip_addr, port, command, json_payload, sid):
@@ -24,7 +24,7 @@ class allcalls:
     #Method to login over api
     def login(ip, usrdef_username, usrdef_pass):
         payload = {'user':usrdef_username, 'password' : usrdef_pass}
-        response = allcalls.api_call(ip, 443, 'login', payload, '')
+        response = session.api_call(ip, 443, 'login', payload, '')
         global usrdef_sship
         usrdef_sship = ip
         global sid
@@ -40,7 +40,7 @@ class allcalls:
 
     #Method to publish api session
     def publish():
-        publish_result = allcalls.api_call(usrdef_sship, 443, 'publish', {} ,sid)
+        publish_result = session.api_call(usrdef_sship, 443, 'publish', {} ,sid)
         #Return Successful if task-id exist
         if 'task-id' in publish_result:
             messagebox.showinfo("Publish Response", "Publish Successful")
@@ -49,96 +49,54 @@ class allcalls:
 
     #Method to logout over api
     def logout():
-        logout_result = allcalls.api_call(usrdef_sship, 443,"logout", {},sid)
+        logout_result = session.api_call(usrdef_sship, 443,"logout", {},sid)
         messagebox.showinfo("Logout Response", logout_result)
+
+class host:
 
     #Method for adding a host object
     def addhost(hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
-        new_host_result = allcalls.api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
+        new_host_result = session.api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
         if 'creator' in new_host_result:
             messagebox.showinfo("Add Host Response", "Add Host Successful")
         else:
             messagebox.showinfo("Add Host Response", new_host_result)
 
-    #Method for adding a network object
-    def addnetwork(netname, netsub, netmask, netcolor):
-        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
-        new_network_result = allcalls.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
-        if 'creator' in new_network_result:
-            messagebox.showinfo("Add Network Response", "Successful")
-        else:
-            messagebox.showinfo("Add Network Response", new_network_result)
-
-    #Method for adding a group object
-    def addgroup(groupname):
-        new_group_data = {'name':groupname}
-        new_group_result = allcalls.api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
-        if 'creator' in new_group_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
-            messagebox.showinfo("Add Group Response", new_group_result)
-
     #Method to add host to group
     def addhostgroup(hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
-        addhostgroup_result = allcalls.api_call(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
+        addhostgroup_result = session.api_call(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
         if 'creator' in addhostgroup_result:
             messagebox.showinfo("Add Host Response", "Successful")
         else:
             messagebox.showinfo("Add Host Response", addhostgroup_result)
 
-    #Method to add network to group
-    def addnetgroup(netname, groupname):
-        addnetgroup_data = {'name':netname, 'groups':groupname}
-        addnetgroup_result = allcalls.api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
-        if 'creator' in addnetgroup_result:
-            messagebox.showinfo("Add Network Response", "Successful")
-        else:
-            messagebox.showinfo("Add Network Response", addnetgroup_result)
-
-    #Method to add group to group
-    def addgroupgroup(addgroupname, groupname):
-        addgroup_data = {'name':addgroupname, 'groups':groupname}
-        addgroupgroup_result = allcalls.api_call(usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        if 'creator' in addgroupgroup_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
-            messagebox.showinfo("Add Group Response", addgroupgroup_result)
-
-    #Method for retrieving objects
+    #Method to retrieve all hosts
     def getallhosts():
         show_hosts_data = {'offset':0, 'details-level':'standard'}
-        show_hosts_result = allcalls.api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
+        show_hosts_result = session.api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         return (show_hosts_result)
-    def getallgroups():
-        show_groups_data = {'offset':0, 'details-level':'standard'}
-        show_groups_result = allcalls.api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-        return (show_groups_result)
-    def getallnetworks():
-        show_nets_data = {'offset':0, 'details-level':'standard'}
-        show_nets_result = allcalls.api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
-        return (show_nets_result)
 
     #Method for adding a host object for importhost
     def importaddhost(hostname, hostip, hostcolor, natset):
         natset = eval(natset)
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
-        new_host_result = allcalls.api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
+        new_host_result = session.api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
 
     #Method to import host from csv file
     def importhosts(filename):
         csvhosts = open(filename, "r").read().split("\n")
         for line in csvhosts:
             apiprep = line.split(';')
-            allcalls.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
+            host.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
         cvshosts.close()
         messagebox.showinfo("Import Host Response", "PLACEHOLDER")
 
     #Method to export host to csv file
     def exporthosts():
         show_hosts_data = {'offset':0, 'details-level':'full'}
-        show_hosts_result = allcalls.api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
+        show_hosts_result = session.api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         hostexportfile = open(("exportedhosts.csv"), "w+")
         for host in show_hosts_result["objects"]:
             if 'nat-settings' in host:
@@ -152,25 +110,51 @@ class allcalls:
         hostexportfile.close()
         messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
 
+class network:
+
+    #Method for adding a network object
+    def addnetwork(netname, netsub, netmask, netcolor):
+        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
+        new_network_result = session.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
+        if 'creator' in new_network_result:
+            messagebox.showinfo("Add Network Response", "Successful")
+        else:
+            messagebox.showinfo("Add Network Response", new_network_result)
+
+    #Method to add network to group
+    def addnetgroup(netname, groupname):
+        addnetgroup_data = {'name':netname, 'groups':groupname}
+        addnetgroup_result = session.api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
+        if 'creator' in addnetgroup_result:
+            messagebox.showinfo("Add Network Response", "Successful")
+        else:
+            messagebox.showinfo("Add Network Response", addnetgroup_result)
+
+    #Method to retrieve all networks
+    def getallnetworks():
+        show_nets_data = {'offset':0, 'details-level':'standard'}
+        show_nets_result = session.api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
+        return (show_nets_result)
+
     #Method for adding a network object for importnetworks
     def importaddnetwork(netname, netsub, netmask, netcolor, natset):
         natset = eval(natset)
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
-        new_network_result = allcalls.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
+        new_network_result = session.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to import networks from csv
     def importnetworks(filename):
         csvnets = open(filename, "r").read().split("\n")
         for line in csvnets:
             apiprep = line.split(';')
-            allcalls.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
+            network.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
         csvnets.close()
         messagebox.showinfo("Import Network Response", "PLACEHOLDER")
 
     #Method to export host to csv file
     def exportnetworks():
         show_networks_data = {'offset':0, 'details-level':'full'}
-        show_networks_result = allcalls.api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+        show_networks_result = session.api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
         networksexportfile = open(("exportednetworks.csv"), "w+")
         for network in show_networks_result["objects"]:
             networksexportfile = open(("exportednetworks.csv"), "a")
@@ -184,10 +168,36 @@ class allcalls:
         networksexportfile.close()
         messagebox.showinfo("Export Network Response", "PLACEHOLDER")
 
+class group:
+
+    #Method for adding a group object
+    def addgroup(groupname):
+        new_group_data = {'name':groupname}
+        new_group_result = session.api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
+        if 'creator' in new_group_result:
+            messagebox.showinfo("Add Group Response", "Successful")
+        else:
+            messagebox.showinfo("Add Group Response", new_group_result)
+
+    #Method to add group to group
+    def addgroupgroup(addgroupname, groupname):
+        addgroup_data = {'name':addgroupname, 'groups':groupname}
+        addgroupgroup_result = session.api_call(usrdef_sship, 443, 'set-group', addgroup_data, sid)
+        if 'creator' in addgroupgroup_result:
+            messagebox.showinfo("Add Group Response", "Successful")
+        else:
+            messagebox.showinfo("Add Group Response", addgroupgroup_result)
+
+    #Method for retrieving all groups
+    def getallgroups():
+        show_groups_data = {'offset':0, 'details-level':'standard'}
+        show_groups_result = session.api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
+        return (show_groups_result)
+
     #Method for adding a group object with members
     def addgroupmembers(groupname, members):
         new_group_data = {'name':groupname, 'members':members}
-        new_group_result = allcalls.api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
+        new_group_result = session.api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
     #Method to import group from csv
     def importgroups(filename):
@@ -199,14 +209,14 @@ class allcalls:
             #Split Members from each other
             memberlist = groupname[1].split(';')
             #Pass to api, last element in memberlist is an empty string
-            allcalls.addgroupmembers(groupname[0], memberlist[0:-1])
+            group.addgroupmembers(groupname[0], memberlist[0:-1])
         csvgroups.close()
         messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
 
     #Method to export host to csv file
     def exportgroups():
         show_groups_data = {'offset':0, 'details-level':'full'}
-        show_groups_result = allcalls.api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
+        show_groups_result = session.api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
         groupsexportfile = open(("exportedgroups.csv"), "w+")
         for group in show_groups_result["objects"]:
             groupsexportfile.write(group["name"] + ",")
@@ -217,10 +227,12 @@ class allcalls:
         groupsexportfile.close()
         messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
 
+class policy:
+
     #Method to add rule for importrules
     def importaddrules(num, name, src, dst, srv, act):
         add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
-        add_rule_result = allcalls.api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
+        add_rule_result = session.api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
 
     #Method to import rulebase from csv
     def importrules(filename):
@@ -244,26 +256,27 @@ class allcalls:
             except:
                 srv = fullrule[4]
             act = fullrule[5]
-            allcalls.importaddrules(num, name, src, dst, srv, act)
+            policy.importaddrules(num, name, src, dst, srv, act)
         csvrules.close()
         messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
 
     #Method to get packages
     def getallpackages():
         get_packages_data = {'offset':0, 'details-level':'full'}
-        get_packages_result = allcalls.api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        get_packages_result = session.api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
         return (get_packages_result)
 
+    #Method to get layers
     def getalllayers(package):
         get_layers_data = {'name':package}
-        get_layers_result = allcalls.api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        get_layers_result = session.api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
         return (get_layers_result)
 
     #Method to get export rules
     def exportrules(package, layer):
         #Retrieve Rulebase
         show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
-        show_rulebase_result = allcalls.api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+        show_rulebase_result = session.api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
         #Create Output File
         rulebaseexport = open(("exportedrules.csv"), "w+")
         #Parse values for each rule
@@ -355,35 +368,38 @@ class allcalls:
         rulebaseexport.close()
         messagebox.showinfo("Export Rulebase", "PLACEHOLDER")
 
+class misc:
+
+    #Method to retrieve gateways-and-servers
     def getalltargets():
         #Retrieve Targets
         get_targets_data = {'offset':0}
-        get_targets_result = allcalls.api_call(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        get_targets_result = session.api_call(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
         return (get_targets_result)
 
-    #Method to run command
+    #Method to run script
     def runscript(target, name, command):
         run_script_data = {'script-name':name, 'script':command, 'targets':target}
-        get_targets_result = allcalls.api_call(usrdef_sship, 443, 'run-script', run_script_data , sid)
+        get_targets_result = session.api_call(usrdef_sship, 443, 'run-script', run_script_data , sid)
         for line in get_targets_result["tasks"]:
             taskid = line["task-id"]
         time.sleep(5)
         taskid_data = {'task-id':taskid, 'details-level':'full'}
-        taskid_result = allcalls.api_call(usrdef_sship, 443, 'show-task', taskid_data , sid)
+        taskid_result = session.api_call(usrdef_sship, 443, 'show-task', taskid_data , sid)
         for line in taskid_result["tasks"]:
             taskresult = line["task-details"][0]["statusDescription"]
         messagebox.showinfo("Run Script Output", taskresult)
 
-    #Method to run command
+    #Method to put file
     def putfile(target, path, name, contents):
         put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
-        put_file_result = allcalls.api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)
+        put_file_result = session.api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)
         messagebox.showinfo("Put File Respons", put_file_result)
 
     #Method to search for ip in nat settings
     def findnat(ip):
         all_hosts_data = {'offset':0, 'details-level':'full'}
-        all_hosts_result = allcalls.api_call(usrdef_sship, 443, 'show-hosts', all_hosts_data, sid)
+        all_hosts_result = session.api_call(usrdef_sship, 443, 'show-hosts', all_hosts_data, sid)
         for nat in all_hosts_result["objects"]:
             if 'ipv4-address' in nat["nat-settings"]:
                 host = nat["name"]
@@ -391,7 +407,7 @@ class allcalls:
                 if ip == found:
                     messagebox.showinfo("Results", ("Host: %s - contains the NAT IP" % host))
         all_networks_data = {'offset':0, 'details-level':'full'}
-        all_networks_result = allcalls.api_call(usrdef_sship, 443, 'show-networks', all_networks_data, sid)
+        all_networks_result = session.api_call(usrdef_sship, 443, 'show-networks', all_networks_data, sid)
         for nat in all_networks_result["objects"]:
             if 'ipv4-address' in nat["nat-settings"]:
                 network = nat["name"]
