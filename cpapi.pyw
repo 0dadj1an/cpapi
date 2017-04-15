@@ -562,7 +562,7 @@ class ExportRules(tk.Frame):
         showrulebaseb.grid(row=2, column=1)
 
     def getlayers(self, package):
-        get_layers_result = allcalls.getalllayers()
+        get_layers_result = allcalls.getalllayers(package)
         alllayerslist = []
         #print (get_layers_result)
         for layer in get_layers_result["access-layers"]:
@@ -588,7 +588,7 @@ class ExportRules(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to retrieve packages
-        getpackagesb = ttk.Button(self, text="Get Packages", command=lambda: allcalls.getpackages())
+        getpackagesb = ttk.Button(self, text="Get Packages", command=lambda: self.getpackages())
         getpackagesb.grid(row=1, column=1)
 
         #Button to return to apiapp
@@ -642,7 +642,7 @@ class RunScript(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to retrieve targets
-        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: allcalls.gettargets())
+        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: self.gettargets())
         getpackagesb.grid(row=1, column=1)
 
         #Button to return to apiapp
@@ -690,7 +690,7 @@ class PutFile(tk.Frame):
         filecontents_e.configure(background="#ffffff")
 
         #Button to run putfile
-        runthescriptb = ttk.Button(self, text="Put File", command=lambda: self.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
+        runthescriptb = ttk.Button(self, text="Put File", command=lambda: allcalls.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
         runthescriptb.grid(row=5, column=0)
 
     def __init__(self, parent, controller):
@@ -704,7 +704,7 @@ class PutFile(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to retrieve targets
-        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: allcalls.gettargets())
+        getpackagesb = ttk.Button(self, text="Get Targets", command=lambda: self.gettargets())
         getpackagesb.grid(row=1, column=1)
 
         #Button to return to apiapp

@@ -254,7 +254,7 @@ class allcalls:
         get_packages_result = allcalls.api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
         return (get_packages_result)
 
-    def getalllayers():
+    def getalllayers(package):
         get_layers_data = {'name':package}
         get_layers_result = allcalls.api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
         return (get_layers_result)
