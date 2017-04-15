@@ -1,16 +1,9 @@
-#Import Things
-import sys, time, json
-#Import Requests
-import requests
 #Import tkinter
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from tkinter import messagebox
-
-#Global Variables
-sid = "tbd"
-usrdef_sship = "tbd"
+#Import cpapicall
+from cpapicall import allcalls
 
 #Class for main frame
 class apiapp(tk.Tk):
@@ -42,48 +35,6 @@ class apiapp(tk.Tk):
 
 #Class for starting window
 class StartPage(tk.Frame):
-
-    #Method to carry webapi call
-    def api_call(self, ip_addr, port, command, json_payload, sid):
-        url = 'https://' + str(ip_addr) + ':' + str(port) + '/web_api/' + command
-        if sid == '':
-            request_headers = {'Content-Type' : 'application/json'}
-        else:
-            request_headers = {'Content-Type' : 'application/json', 'X-chkp-sid' : sid}
-        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, verify=False)
-        return (r.json())
-
-    #Method to login over api
-    def login(self, ip, usrdef_username, usrdef_pass):
-        payload = {'user':usrdef_username, 'password' : usrdef_pass}
-        response = self.api_call(ip, 443, 'login', payload, '')
-        global usrdef_sship
-        usrdef_sship = ip
-        global sid
-        #Return Error Message if sid does not exist
-        if 'sid' not in response:
-            messagebox.showinfo("Login Response", response["message"])
-        elif 'sid' in response:
-            messagebox.showinfo("Login Response", "Login Successful")
-            sid = (response["sid"])
-        ### CURRENTLY NOT WORKING ###
-        else:
-            messagebox.showinfo("Login Response", "Connection Failed")
-
-    #Method to publish api session
-    def publish(self):
-        publish_result = self.api_call(usrdef_sship, 443, 'publish', {} ,sid)
-        #Return Successful if task-id exist
-        if 'task-id' in publish_result:
-            messagebox.showinfo("Publish Response", "Publish Successful")
-        else:
-            messagebox.showinfo("Publish Response", "Publish Failed")
-
-    #Method to logout over api
-    def logout(self):
-        logout_result = self.api_call(usrdef_sship, 443,"logout", {},sid)
-        messagebox.showinfo("Logout Response", logout_result)
-
 
     def __init__(self, parent, controller):
 
@@ -117,15 +68,15 @@ class StartPage(tk.Frame):
         pass_e.configure(background="#ffffff")
 
         #Button to start session
-        sessionb = ttk.Button(self, text="Connect", command=lambda: self.login(sship_e.get(), username_e.get(), pass_e.get()))
+        sessionb = ttk.Button(self, text="Connect", command=lambda: allcalls.login(sship_e.get(), username_e.get(), pass_e.get()))
         sessionb.grid(row=1, column=2)
 
         #Button to publish session
-        publishb = ttk.Button(self, text="Publish", command=lambda: self.publish())
+        publishb = ttk.Button(self, text="Publish", command=lambda: allcalls.publish())
         publishb.grid(row=2, column=2)
 
         #Button to logout session
-        logoutb = ttk.Button(self, text="Logout", command=lambda: self.logout())
+        logoutb = ttk.Button(self, text="Logout", command=lambda: allcalls.logout())
         logoutb.grid(row=3, column=2)
 
         #Create Space
@@ -199,15 +150,6 @@ class StartPage(tk.Frame):
 #Class for add host functionality
 class AddHost(tk.Frame):
 
-    #Method for adding a host object
-    def addhost(self, hostname, hostip, hostcolor):
-        new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
-        new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-        if 'creator' in new_host_result:
-            messagebox.showinfo("Add Host Response", "Add Host Successful")
-        else:
-            messagebox.showinfo("Add Host Response", new_host_result)
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -241,7 +183,7 @@ class AddHost(tk.Frame):
         hostcolormenu.grid(row=3, column=1)
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Host", command=lambda: self.addhost(hostname_e.get(), hostip_e.get(), defaultcolor.get()))
+        runapi = ttk.Button(self, text="Add Host", command=lambda: allcalls.addhost(hostname_e.get(), hostip_e.get(), defaultcolor.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -250,15 +192,6 @@ class AddHost(tk.Frame):
 
 #Class for add network functionality
 class AddNetwork(tk.Frame):
-
-    #Method for adding a network object
-    def addnetwork(self, netname, netsub, netmask, netcolor):
-        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
-        new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-        if 'creator' in new_network_result:
-            messagebox.showinfo("Add Network Response", "Successful")
-        else:
-            messagebox.showinfo("Add Network Response", new_network_result)
 
     def __init__(self, parent, controller):
 
@@ -300,7 +233,7 @@ class AddNetwork(tk.Frame):
         netowrkcolormenu.grid(row=4, column=1)
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Network", command = lambda: self.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get()))
+        runapi = ttk.Button(self, text="Add Network", command = lambda: allcalls.addnetwork(netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -309,15 +242,6 @@ class AddNetwork(tk.Frame):
 
 #Class for add network functionality
 class AddGroup(tk.Frame):
-
-    #Method for adding a group object
-    def addgroup(self, groupname):
-        new_group_data = {'name':groupname}
-        new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
-        if 'creator' in new_group_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
-            messagebox.showinfo("Add Group Response", new_group_result)
 
     def __init__(self, parent, controller):
 
@@ -337,7 +261,7 @@ class AddGroup(tk.Frame):
         groupname_e.configure(background="#ffffff")
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Group", command = lambda: self.addgroup(groupname_e.get()))
+        runapi = ttk.Button(self, text="Add Group", command = lambda: allcalls.addgroup(groupname_e.get()))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -347,33 +271,6 @@ class AddGroup(tk.Frame):
 #Class for adding objects to a group functionality
 class ObjectToGroup(tk.Frame):
 
-    #Method to add host to group
-    def addhostgroup(self, hostname, groupname):
-        addhostgroup_data = {'name':hostname, 'groups':groupname}
-        addhostgroup_result = StartPage.api_call(self, usrdef_sship, 443,'set-host', addhostgroup_data, sid)
-        if 'creator' in addhostgroup_result:
-            messagebox.showinfo("Add Host Response", "Successful")
-        else:
-            messagebox.showinfo("Add Host Response", addhostgroup_result)
-
-    #Method to add network to group
-    def addnetgroup(self, netname, groupname):
-        addnetgroup_data = {'name':netname, 'groups':groupname}
-        addnetgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
-        if 'creator' in addnetgroup_result:
-            messagebox.showinfo("Add Network Response", "Successful")
-        else:
-            messagebox.showinfo("Add Network Response", addnetgroup_result)
-
-    #Method to add group to group
-    def addgroupgroup(self, addgroupname, groupname):
-        addgroup_data = {'name':addgroupname, 'groups':groupname}
-        addgroupgroup_result = StartPage.api_call(self, usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        if 'creator' in addgroupgroup_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
-            messagebox.showinfo("Add Group Response", addgroupgroup_result)
-
     #Method to retrieve hosts,networks,groups
     def gethostnetgroup(self):
         #Create list for each type
@@ -381,12 +278,9 @@ class ObjectToGroup(tk.Frame):
         allnetlist = []
         allgrouplist = []
         #API Call for each type
-        show_hosts_data = {'offset':0, 'details-level':'standard'}
-        show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-        show_groups_data = {'offset':0, 'details-level':'standard'}
-        show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-        show_nets_data = {'offset':0, 'details-level':'standard'}
-        show_nets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_nets_data, sid)
+        show_hosts_result = allcalls.getallhosts()
+        show_nets_result = allcalls.getallnetworks()
+        show_groups_result = allcalls.getallgroups()
         #Parse out names only
         for host in show_hosts_result["objects"]:
             allhostlist.append(host["name"])
@@ -424,15 +318,15 @@ class ObjectToGroup(tk.Frame):
         groupmenu.grid(row=3, column=3)
 
         #Button to add host to group
-        hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: self.addhostgroup(defaulthost.get(), defaultgroup.get()))
+        hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: allcalls.addhostgroup(defaulthost.get(), defaultgroup.get()))
         hosttogroupb.grid(row=2, column=2)
 
         #Button to add network to group
-        nettogroupb = ttk.Button(self, text="Add Network", command=lambda: self.addnetgroup(defaultnet.get(), defaultgroup.get()))
+        nettogroupb = ttk.Button(self, text="Add Network", command=lambda: allcalls.addnetgroup(defaultnet.get(), defaultgroup.get()))
         nettogroupb.grid(row=3, column=2)
 
         #Button to add group to group
-        grouptogroup = ttk.Button(self, text="Add Group", command=lambda: self.addgroupgroup(defaultaddgroup.get(), defaultgroup.get()))
+        grouptogroup = ttk.Button(self, text="Add Group", command=lambda: allcalls.addgroupgroup(defaultaddgroup.get(), defaultgroup.get()))
         grouptogroup.grid(row=4, column=2)
 
     def __init__(self, parent, controller):
@@ -456,21 +350,6 @@ class ObjectToGroup(tk.Frame):
 #Class for adding importhost functionality
 class ImportHosts(tk.Frame):
 
-    #Method for adding a host object for importhost
-    def importaddhost(self, hostname, hostip, hostcolor, natset):
-        natset = eval(natset)
-        new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
-        new_host_result = StartPage.api_call(self, usrdef_sship, 443,'add-host', new_host_data ,sid)
-
-    #Method to import host from csv file
-    def importhosts(self, filename):
-        csvhosts = open(filename, "r").read().split("\n")
-        for line in csvhosts:
-            apiprep = line.split(';')
-            self.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
-        cvshosts.close()
-        messagebox.showinfo("Import Host Response", "PLACEHOLDER")
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -489,7 +368,7 @@ class ImportHosts(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import Hosts
-        imphostb = ttk.Button(self, text="Import", command=lambda: self.importhosts(file_e.get()))
+        imphostb = ttk.Button(self, text="Import", command=lambda: allcalls.importhosts(file_e.get()))
         imphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -504,23 +383,6 @@ class ImportHosts(tk.Frame):
 #Class for adding exporthost functionality
 class ExportHosts(tk.Frame):
 
-    #Method to export host to csv file
-    def exporthosts(self):
-        show_hosts_data = {'offset':0, 'details-level':'full'}
-        show_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-        hostexportfile = open(("exportedhosts.csv"), "w+")
-        for host in show_hosts_result["objects"]:
-            if 'nat-settings' in host:
-                natsettings = host["nat-settings"]
-                natsettings.pop('ipv6-address', None)
-                natsettings = str(natsettings)
-            hostexportfile = open(("exportedhosts.csv"), "a")
-            hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
-            hostexportfile.write(natsettings)
-            hostexportfile.write("\n")
-        hostexportfile.close()
-        messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -532,7 +394,7 @@ class ExportHosts(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export hosts
-        exphostb = ttk.Button(self, text="Export Hosts", command=lambda: self.exporthosts())
+        exphostb = ttk.Button(self, text="Export Hosts", command=lambda: allcalls.exporthosts())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -541,21 +403,6 @@ class ExportHosts(tk.Frame):
 
 #Class for adding importnetwork functionality
 class ImportNetworks(tk.Frame):
-
-    #Method for adding a network object for importnetworks
-    def importaddnetwork(self, netname, netsub, netmask, netcolor, natset):
-        natset = eval(natset)
-        new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
-        new_network_result = StartPage.api_call(self, usrdef_sship, 443,'add-network', new_network_data ,sid)
-
-    #Method to import networks from csv
-    def importnetworks(self, filename):
-        csvnets = open(filename, "r").read().split("\n")
-        for line in csvnets:
-            apiprep = line.split(';')
-            self.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
-        csvnets.close()
-        messagebox.showinfo("Import Network Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -575,7 +422,7 @@ class ImportNetworks(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import networks
-        exphostb = ttk.Button(self, text="Import Networks", command=lambda: self.importnetworks(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Networks", command=lambda: allcalls.importnetworks(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -590,23 +437,6 @@ class ImportNetworks(tk.Frame):
 #Class for adding exportnetwork functionality
 class ExportNetworks(tk.Frame):
 
-    #Method to export host to csv file
-    def exportnetworks(self):
-        show_networks_data = {'offset':0, 'details-level':'full'}
-        show_networks_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
-        networksexportfile = open(("exportednetworks.csv"), "w+")
-        for network in show_networks_result["objects"]:
-            networksexportfile = open(("exportednetworks.csv"), "a")
-            if 'nat-settings' in network:
-                natsettings = network["nat-settings"]
-                natsettings.pop('ipv6-address', None)
-                natsettings = str(natsettings)
-            networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
-            networksexportfile.write(natsettings)
-            networksexportfile.write("\n")
-        networksexportfile.close()
-        messagebox.showinfo("Export Network Response", "PLACEHOLDER")
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -618,7 +448,7 @@ class ExportNetworks(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export networks
-        exphostb = ttk.Button(self, text="Export Networks", command=lambda: self.exportnetworks())
+        exphostb = ttk.Button(self, text="Export Networks", command=lambda: allcalls.exportnetworks())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -627,25 +457,6 @@ class ExportNetworks(tk.Frame):
 
 #Class for adding importgroup functionality
 class ImportGroups(tk.Frame):
-
-    #Method for adding a group object with members
-    def addgroupmembers(self, groupname, members):
-        new_group_data = {'name':groupname, 'members':members}
-        new_group_result = StartPage.api_call(self, usrdef_sship, 443,'add-group', new_group_data ,sid)
-
-    #Method to import group from csv
-    def importgroups(self, filename):
-        csvgroups = open(filename, "r").read().split()
-        #Parse Exported Groups File
-        for line in csvgroups:
-            #Split Group name from members
-            groupname = line.split(',')
-            #Split Members from each other
-            memberlist = groupname[1].split(';')
-            #Pass to api, last element in memberlist is an empty string
-            self.addgroupmembers(groupname[0], memberlist[0:-1])
-        csvgroups.close()
-        messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -665,7 +476,7 @@ class ImportGroups(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import groups
-        exphostb = ttk.Button(self, text="Import Groups", command=lambda: self.importgroups(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Groups", command=lambda: allcalls.importgroups(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -680,20 +491,6 @@ class ImportGroups(tk.Frame):
 #Class for adding exporthost functionality
 class ExportGroups(tk.Frame):
 
-    #Method to export host to csv file
-    def exportgroups(self):
-        show_groups_data = {'offset':0, 'details-level':'full'}
-        show_groups_result = StartPage.api_call(self, usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        groupsexportfile = open(("exportedgroups.csv"), "w+")
-        for group in show_groups_result["objects"]:
-            groupsexportfile.write(group["name"] + ",")
-            listofmembers = group["members"]
-            for member in listofmembers:
-                groupsexportfile.write(member["name"] + ";")
-            groupsexportfile.write("\n")
-        groupsexportfile.close()
-        messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -705,7 +502,7 @@ class ExportGroups(tk.Frame):
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
         #Button to export groups
-        exphostb = ttk.Button(self, text="Export Groups", command=lambda: self.exportgroups())
+        exphostb = ttk.Button(self, text="Export Groups", command=lambda: allcalls.exportgroups())
         exphostb.grid(row=1, column=0)
 
         #Button to return to apiapp
@@ -714,38 +511,6 @@ class ExportGroups(tk.Frame):
 
 #Class for adding importrule functionality
 class ImportRules(tk.Frame):
-
-    #Method to add rule for importrules
-    def importaddrules(self, num, name, src, dst, srv, act):
-        add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
-        add_rule_result = StartPage.api_call(self, usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
-
-    #Method to import rulebase from csv
-    def importrules(self, filename):
-        csvrules = open(filename, "r").read().split("\n")
-        #Parse Exported Rules File
-        for line in csvrules:
-            #Split Rule Fields
-            fullrule = line.split(',')
-            print (fullrule)
-            num = fullrule[0]
-            name = fullrule[1]
-            try:
-                src = fullrule[2].split(';')
-            except:
-                src = fullrule[2]
-            try:
-                dst = fullrule[3].split(';')
-            except:
-                dst = fullrule[3]
-            try:
-                srv = fullrule[4].split(';')
-            except:
-                srv = fullrule[4]
-            act = fullrule[5]
-            self.importaddrules(num, name, src, dst, srv, act)
-        csvrules.close()
-        messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -765,7 +530,7 @@ class ImportRules(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import networks
-        exphostb = ttk.Button(self, text="Import Rulebase", command=lambda: self.importrules(file_e.get()))
+        exphostb = ttk.Button(self, text="Import Rulebase", command=lambda: allcalls.importrules(file_e.get()))
         exphostb.grid(row=1, column=2)
 
         #Button to return to apiapp
@@ -782,8 +547,7 @@ class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
     def getpackages(self):
-        get_packages_data = {'offset':0, 'details-level':'full'}
-        get_packages_result = StartPage.api_call(self, usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        get_packages_result = allcalls.getallpackages()
         allpackagelist = []
         for package in get_packages_result["packages"]:
             allpackagelist.append(package["name"])
@@ -798,8 +562,7 @@ class ExportRules(tk.Frame):
         showrulebaseb.grid(row=2, column=1)
 
     def getlayers(self, package):
-        get_layers_data = {'name':package}
-        get_layers_result = StartPage.api_call(self, usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        get_layers_result = allcalls.getalllayers(package)
         alllayerslist = []
         #print (get_layers_result)
         for layer in get_layers_result["access-layers"]:
@@ -811,104 +574,8 @@ class ExportRules(tk.Frame):
         layermenu.grid(row=2, column=0)
 
         #Button to retrieve rulebase
-        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: self.exportrules(package, defaultlayer.get()))
+        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: allcalls.exportrules(package, defaultlayer.get()))
         showrulebaseb.grid(row=3, column=0)
-
-    #Method to get export rules
-    def exportrules(self, package, layer):
-        #Retrieve Rulebase
-        show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
-        show_rulebase_result = StartPage.api_call(self, usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-        #Create Output File
-        rulebaseexport = open(("exportedrules.csv"), "w+")
-        #Parse values for each rule
-        for rule in show_rulebase_result["rulebase"]:
-            countersrc = 0
-            counterdst = 0
-            countersrv = 0
-            #String, String, List, List, List, String
-            ### NAME CAN BE EMPTY ###
-            if 'name' in rule:
-                name = rule["name"]
-            else:
-                name = "ASSIGN NAME"
-            num = rule["rule-number"]
-            src = rule["source"]
-            dst = rule["destination"]
-            srv = rule["service"]
-            act = rule["action"]
-            #Parse Object Ditcionary to replace UID with Name
-            for obj in show_rulebase_result["objects-dictionary"]:
-                if name == obj["uid"]:
-                    name = obj["name"]
-            #Parse Object Ditcionary to replace UID with Name
-            for obj in show_rulebase_result["objects-dictionary"]:
-                if num == obj["uid"]:
-                    num = obj["name"]
-            #Parse Object Ditcionary to replace UID with Name: Source
-            if len(src) == 1:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if src[0] == obj["uid"]:
-                        src = obj["name"]
-            else:
-                for srcobj in src:
-                    for obj in show_rulebase_result["objects-dictionary"]:
-                        if srcobj == obj["uid"]:
-                            src[countersrc] = obj["name"]
-                            countersrc = countersrc + 1
-            #Parse Object Ditcionary to replace UID with Name: Destination
-            if len(dst) == 1:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if dst[0] == obj["uid"]:
-                        dst = obj["name"]
-            else:
-                for dstobj in dst:
-                    for obj in show_rulebase_result["objects-dictionary"]:
-                        if dstobj == obj["uid"]:
-                            dst[counterdst] = obj["name"]
-                            counterdst = counterdst + 1
-            #Parse Object Ditcionary to replace UID with Name: Service
-            if len(srv) == 1:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if srv[0] == obj["uid"]:
-                        srv = obj["name"]
-            else:
-                for srvobj in srv:
-                    for obj in show_rulebase_result["objects-dictionary"]:
-                        if srvobj == obj["uid"]:
-                            srv[countersrv] = obj["name"]
-                            countersrv = countersrv + 1
-            #Parse Object Ditcionary to replace UID with Name
-            for obj in show_rulebase_result["objects-dictionary"]:
-                if act == obj["uid"]:
-                    act = obj["name"]
-            #Write Rule Number and Name
-            rulebaseexport.write(str(num) + ',' + name + ',')
-            #Write Source, delimit multiple with ;
-            if isinstance(src, str) == True:
-                rulebaseexport.write(src + ',')
-            else:
-                for srcele in src[0:-1]:
-                    rulebaseexport.write(srcele + ';')
-                rulebaseexport.write(src[-1] + ',')
-            #Write Destination, delimit multiple with ;
-            if isinstance(dst, str) == True:
-                rulebaseexport.write(dst + ',')
-            else:
-                for dstele in dst[0:-1]:
-                    rulebaseexport.write(dstele + ';')
-                rulebaseexport.write(dst[-1] + ',')
-            #Write Service, delimit multiple with ;
-            if isinstance(srv, str) == True:
-                rulebaseexport.write(srv + ',')
-            else:
-                for srvele in srv[0:-1]:
-                    rulebaseexport.write(srvele + ';')
-                rulebaseexport.write(srv[-1] + ',')
-            #Write Action and \n
-            rulebaseexport.write(act + '\n')
-        rulebaseexport.close()
-        messagebox.showinfo("Export Rulebase", "PLACEHOLDER")
 
     def __init__(self, parent, controller):
 
@@ -934,8 +601,7 @@ class RunScript(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_data = {'offset':0}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        get_targets_result = allcalls.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
@@ -962,21 +628,8 @@ class RunScript(tk.Frame):
         scriptcommand_e.configure(background="#ffffff")
 
         #Button to runscript
-        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: self.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
+        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: allcalls.runscript(defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get()))
         runthescriptb.grid(row=4, column=0)
-
-    #Method to run command
-    def runscript(self, target, name, command):
-        run_script_data = {'script-name':name, 'script':command, 'targets':target}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'run-script', run_script_data , sid)
-        for line in get_targets_result["tasks"]:
-            taskid = line["task-id"]
-        time.sleep(5)
-        taskid_data = {'task-id':taskid, 'details-level':'full'}
-        taskid_result = StartPage.api_call(self, usrdef_sship, 443, 'show-task', taskid_data , sid)
-        for line in taskid_result["tasks"]:
-            taskresult = line["task-details"][0]["statusDescription"]
-        messagebox.showinfo("Run Script Output", taskresult)
 
     def __init__(self, parent, controller):
 
@@ -1002,8 +655,7 @@ class PutFile(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_data = {'offset':0}
-        get_targets_result = StartPage.api_call(self, usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+        get_targets_result = allcalls.getalltargets()
         targetslist = []
         for obj in get_targets_result["objects"]:
             targetslist.append(obj["name"])
@@ -1038,14 +690,8 @@ class PutFile(tk.Frame):
         filecontents_e.configure(background="#ffffff")
 
         #Button to run putfile
-        runthescriptb = ttk.Button(self, text="Put File", command=lambda: self.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
+        runthescriptb = ttk.Button(self, text="Put File", command=lambda: allcalls.putfile(defaulttarget.get(), fileloc_e.get(), filename_e.get(), filecontents_e.get()))
         runthescriptb.grid(row=5, column=0)
-
-    #Method to run command
-    def putfile(self, target, path, name, contents):
-        put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
-        put_file_result = StartPage.api_call(self, usrdef_sship, 443, 'put-file', put_file_data , sid)
-        messagebox.showinfo("Put File Respons", put_file_result)
 
     def __init__(self, parent, controller):
 
@@ -1068,25 +714,6 @@ class PutFile(tk.Frame):
 #Class to add find object with associated NAT ip functionality
 class FindNat(tk.Frame):
 
-    #Method to search for ip in nat settings
-    def findnat(self, ip):
-        all_hosts_data = {'offset':0, 'details-level':'full'}
-        all_hosts_result = StartPage.api_call(self, usrdef_sship, 443, 'show-hosts', all_hosts_data, sid)
-        for nat in all_hosts_result["objects"]:
-            if 'ipv4-address' in nat["nat-settings"]:
-                host = nat["name"]
-                found = nat["nat-settings"]["ipv4-address"]
-                if ip == found:
-                    messagebox.showinfo("Results", ("Host: %s - contains the NAT IP" % host))
-        all_networks_data = {'offset':0, 'details-level':'full'}
-        all_networks_result = StartPage.api_call(self, usrdef_sship, 443, 'show-networks', all_networks_data, sid)
-        for nat in all_networks_result["objects"]:
-            if 'ipv4-address' in nat["nat-settings"]:
-                network = nat["name"]
-                found = nat["nat-settings"]["ipv4-address"]
-                if ip == found:
-                    messagebox.showinfo("Results", ("Network: %s - contains the NAT IP" % network))
-
     def __init__(self, parent, controller):
 
         #Style Configuration for page
@@ -1106,7 +733,7 @@ class FindNat(tk.Frame):
         search_e.configure(background="#ffffff")
 
         #Button to retrieve all objects
-        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: self.findnat(search_e.get()))
+        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: allcalls.findnat(search_e.get()))
         getpackagesb.grid(row=2, column=1)
 
         #Button to return to apiapp
