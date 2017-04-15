@@ -5,7 +5,7 @@ from tkinter import ttk
 #Import cpapicall
 from apimodule import *
 
-#Class for main frame
+
 class apiapp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -33,7 +33,6 @@ class apiapp(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-#Class for starting window
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -147,7 +146,6 @@ class StartPage(tk.Frame):
         dthomb = ttk.Button(self, text="Find NAT", command=lambda: controller.show_frame("FindNat"))
         dthomb.grid(row=9, column=2)
 
-#Class for add host functionality
 class AddHost(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -190,7 +188,6 @@ class AddHost(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
-#Class for add network functionality
 class AddNetwork(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -240,7 +237,6 @@ class AddNetwork(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
-#Class for add network functionality
 class AddGroup(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -268,7 +264,6 @@ class AddGroup(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=2)
 
-#Class for adding objects to a group functionality
 class ObjectToGroup(tk.Frame):
 
     #Method to retrieve hosts,networks,groups
@@ -347,7 +342,6 @@ class ObjectToGroup(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
-#Class for adding importhost functionality
 class ImportHosts(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -380,7 +374,6 @@ class ImportHosts(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
-#Class for adding exporthost functionality
 class ExportHosts(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -401,7 +394,6 @@ class ExportHosts(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
-#Class for adding importnetwork functionality
 class ImportNetworks(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -434,7 +426,6 @@ class ImportNetworks(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
-#Class for adding exportnetwork functionality
 class ExportNetworks(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -455,7 +446,6 @@ class ExportNetworks(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
-#Class for adding importgroup functionality
 class ImportGroups(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -488,7 +478,6 @@ class ImportGroups(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
-#Class for adding exporthost functionality
 class ExportGroups(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -509,7 +498,6 @@ class ExportGroups(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=1)
 
-#Class for adding importrule functionality
 class ImportRules(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -542,7 +530,6 @@ class ImportRules(tk.Frame):
         example_l.configure(background="#494949", foreground="#f44242")
         example_l.grid(row=2, columnspan=2)
 
-#Class for adding exportrule functionality
 class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
@@ -595,7 +582,6 @@ class ExportRules(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=0)
 
-#Class to add runscript functionality
 class RunScript(tk.Frame):
 
     #Method to retrieve valid gateways and servers
@@ -649,7 +635,6 @@ class RunScript(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
-#Class to add putfile functionality
 class PutFile(tk.Frame):
 
     #Method to retrieve valid gateways and servers
@@ -711,7 +696,6 @@ class PutFile(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
-#Class to add find object with associated NAT ip functionality
 class FindNat(tk.Frame):
 
     def __init__(self, parent, controller):
