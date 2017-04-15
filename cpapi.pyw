@@ -282,12 +282,12 @@ class ObjectToGroup(tk.Frame):
         show_nets_result = network.getallnetworks()
         show_groups_result = group.getallgroups()
         #Parse out names only
-        for host in show_hosts_result["objects"]:
-            allhostlist.append(host["name"])
-        for net in show_nets_result["objects"]:
-            allnetlist.append(net["name"])
-        for group in show_groups_result["objects"]:
-            allgrouplist.append(group["name"])
+        for hosts in show_hosts_result["objects"]:
+            allhostlist.append(hosts["name"])
+        for nets in show_nets_result["objects"]:
+            allnetlist.append(nets["name"])
+        for groups in show_groups_result["objects"]:
+            allgrouplist.append(groups["name"])
         #Host Dropdown
         allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
         allhost.grid(row=2, column=0, sticky=E)
