@@ -74,6 +74,10 @@ class StartPage(tk.Frame):
         publishb = ttk.Button(self, text="Publish", command=lambda: session.publish())
         publishb.grid(row=2, column=2)
 
+        #Button to discard changes
+        discardb = ttk.Button(self, text="Discard", command=lambda: session.discard())
+        discardb.grid(row=2, column=3)
+
         #Button to logout session
         logoutb = ttk.Button(self, text="Logout", command=lambda: session.logout())
         logoutb.grid(row=3, column=2)
