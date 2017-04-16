@@ -64,17 +64,19 @@ class host:
     def addhost(hostname, hostip, hostcolor):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = session.api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
-        if 'creator' in new_host_result:
+        if 'uid' in new_host_result:
             messagebox.showinfo("Add Host Response", "Add Host Successful")
-        else:
+        elif 'warnings' in new_host_result:
             messagebox.showinfo("Add Host Response", new_host_result)
+        else:
+            messagebox.showinfo("Add Host Response", "ERROR!")
 
     #Method to add host to group
     def addhostgroup(hostname, groupname):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = session.api_call(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
-        if 'creator' in addhostgroup_result:
-            messagebox.showinfo("Add Host Response", "Successful")
+        if 'uid' in addhostgroup_result:
+            messagebox.showinfo("Add Host Response", "Add Host to Group Successful")
         else:
             messagebox.showinfo("Add Host Response", addhostgroup_result)
 
@@ -94,10 +96,11 @@ class host:
     def importhosts(filename):
         csvhosts = open(filename, "r").read().split("\n")
         for line in csvhosts:
+            if not line:
+                continue
             apiprep = line.split(';')
             host.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
-        cvshosts.close()
-        messagebox.showinfo("Import Host Response", "PLACEHOLDER")
+        messagebox.showinfo("Import Host Response", "Operation Done: For Better or Worse.")
 
     #Method to export host to csv file
     def exporthosts():
@@ -114,7 +117,7 @@ class host:
             hostexportfile.write(natsettings)
             hostexportfile.write("\n")
         hostexportfile.close()
-        messagebox.showinfo("Export Hosts Response", "PLACEHOLDER")
+        messagebox.showinfo("Export Hosts Response", "Operation Done: For Better or Worse.")
 
 class network:
 
@@ -122,17 +125,19 @@ class network:
     def addnetwork(netname, netsub, netmask, netcolor):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
         new_network_result = session.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
-        if 'creator' in new_network_result:
-            messagebox.showinfo("Add Network Response", "Successful")
-        else:
+        if 'uid' in new_network_result:
+            messagebox.showinfo("Add Network Response", "Add Network Successful")
+        elif 'warning' in new_network_result:
             messagebox.showinfo("Add Network Response", new_network_result)
+        else:
+            messagebox.showinfo("Add Network Response", "ERROR!")
 
     #Method to add network to group
     def addnetgroup(netname, groupname):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = session.api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
         if 'creator' in addnetgroup_result:
-            messagebox.showinfo("Add Network Response", "Successful")
+            messagebox.showinfo("Add Network Response", "Add Network to Group Successful")
         else:
             messagebox.showinfo("Add Network Response", addnetgroup_result)
 
@@ -152,10 +157,11 @@ class network:
     def importnetworks(filename):
         csvnets = open(filename, "r").read().split("\n")
         for line in csvnets:
+            if not line:
+                continue
             apiprep = line.split(';')
             network.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
-        csvnets.close()
-        messagebox.showinfo("Import Network Response", "PLACEHOLDER")
+        messagebox.showinfo("Import Network Response", "Operation Done: For Better or Worse.")
 
     #Method to export host to csv file
     def exportnetworks():
@@ -172,7 +178,7 @@ class network:
             networksexportfile.write(natsettings)
             networksexportfile.write("\n")
         networksexportfile.close()
-        messagebox.showinfo("Export Network Response", "PLACEHOLDER")
+        messagebox.showinfo("Export Network Response", "Operation Done: For Better or Worse.")
 
 class group:
 
@@ -180,19 +186,23 @@ class group:
     def addgroup(groupname):
         new_group_data = {'name':groupname}
         new_group_result = session.api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
-        if 'creator' in new_group_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
+        if 'uid' in new_group_result:
+            messagebox.showinfo("Add Group Response", "Add Group Successful")
+        elif 'warnings' in new_group_result:
             messagebox.showinfo("Add Group Response", new_group_result)
+        else:
+            messagebox.showinfo("Add Group Response", "ERROR!")
 
     #Method to add group to group
     def addgroupgroup(addgroupname, groupname):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = session.api_call(usrdef_sship, 443, 'set-group', addgroup_data, sid)
-        if 'creator' in addgroupgroup_result:
-            messagebox.showinfo("Add Group Response", "Successful")
-        else:
+        if 'uid' in addgroupgroup_result:
+            messagebox.showinfo("Add Group Response", "Add Group to Group Successful")
+        elif 'warnings' in addgroupgroup_result:
             messagebox.showinfo("Add Group Response", addgroupgroup_result)
+        else:
+            messagebox.showinfo("Add Group Response", "ERROR!")
 
     #Method for retrieving all groups
     def getallgroups():
@@ -208,16 +218,13 @@ class group:
     #Method to import group from csv
     def importgroups(filename):
         csvgroups = open(filename, "r").read().split()
-        #Parse Exported Groups File
         for line in csvgroups:
-            #Split Group name from members
+            if not line:
+                continue
             groupname = line.split(',')
-            #Split Members from each other
             memberlist = groupname[1].split(';')
-            #Pass to api, last element in memberlist is an empty string
             group.addgroupmembers(groupname[0], memberlist[0:-1])
-        csvgroups.close()
-        messagebox.showinfo("Import Groups Response", "PLACEHOLDER")
+        messagebox.showinfo("Import Groups Response", "Operation Done: For Better or Worse.")
 
     #Method to export host to csv file
     def exportgroups():
@@ -231,7 +238,7 @@ class group:
                 groupsexportfile.write(member["name"] + ";")
             groupsexportfile.write("\n")
         groupsexportfile.close()
-        messagebox.showinfo("Export Groups Response", "PLACEHOLDER")
+        messagebox.showinfo("Export Groups Response", "Operation Done: For Better or Worse.")
 
 class policy:
 
@@ -243,9 +250,9 @@ class policy:
     #Method to import rulebase from csv
     def importrules(filename):
         csvrules = open(filename, "r").read().split("\n")
-        #Parse Exported Rules File
         for line in csvrules:
-            #Split Rule Fields
+            if not line:
+                continue
             fullrule = line.split(',')
             num = fullrule[0]
             name = fullrule[1]
@@ -263,8 +270,7 @@ class policy:
                 srv = fullrule[4]
             act = fullrule[5]
             policy.importaddrules(num, name, src, dst, srv, act)
-        csvrules.close()
-        messagebox.showinfo("Import Rules Response", "PLACEHOLDER")
+        messagebox.showinfo("Import Rules Response", "Operation Done: For Better or Worse.")
 
     #Method to get packages
     def getallpackages():
@@ -372,7 +378,7 @@ class policy:
             #Write Action and \n
             rulebaseexport.write(act + '\n')
         rulebaseexport.close()
-        messagebox.showinfo("Export Rulebase", "PLACEHOLDER")
+        messagebox.showinfo("Export Rulebase", "Operation Done: For Better or Worse.")
 
 class misc:
 
@@ -400,7 +406,7 @@ class misc:
     def putfile(target, path, name, contents):
         put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
         put_file_result = session.api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)
-        messagebox.showinfo("Put File Respons", put_file_result)
+        messagebox.showinfo("Put File Respons", "Operation Done: For Better or Worse.")
 
     #Method to search for ip in nat settings
     def findnat(ip):
