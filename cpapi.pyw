@@ -5,7 +5,6 @@ from tkinter import ttk
 #Import cpapicall
 from apimodule import *
 
-
 class apiapp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
