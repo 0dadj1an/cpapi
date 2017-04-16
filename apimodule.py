@@ -50,7 +50,13 @@ class session:
     #Method to logout over api
     def logout():
         logout_result = session.api_call(usrdef_sship, 443,"logout", {},sid)
-        messagebox.showinfo("Logout Response", logout_result)
+        if 'message' in logout_result:
+            if logout_result["message"] == "OK":
+                messagebox.showinfo("Logout Response", "Logged Out")
+            else:
+                messagebox.showinfo("Logoug Response", logout_result)
+        else:
+            messagebox.showinfo("Logout Response", "ERROR!")
 
 class host:
 
