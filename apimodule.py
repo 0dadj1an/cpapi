@@ -28,7 +28,6 @@ class session:
         global usrdef_sship
         usrdef_sship = ip
         global sid
-        #Return Error Message if sid does not exist
         if 'sid' not in response:
             messagebox.showinfo("Login Response", response["message"])
         elif 'sid' in response:
@@ -40,16 +39,20 @@ class session:
 
     #Method to publish api session
     def publish():
-        publish_result = session.api_call(usrdef_sship, 443, 'publish', {} ,sid)
-        #Return Successful if task-id exist
+        publish_result = session.api_call(usrdef_sship, 443, 'publish', {} , sid)
         if 'task-id' in publish_result:
             messagebox.showinfo("Publish Response", "Publish Successful")
         else:
             messagebox.showinfo("Publish Response", "Publish Failed")
 
+    #Method to discard api changes
+    def discard():
+        discard_result = session.api_call(usrdef_sship, 443, 'discard', {}, sid)
+        messagebox.showinfo("Discard Response", discard_result)
+
     #Method to logout over api
     def logout():
-        logout_result = session.api_call(usrdef_sship, 443,"logout", {},sid)
+        logout_result = session.api_call(usrdef_sship, 443,"logout", {}, sid)
         if 'message' in logout_result:
             if logout_result["message"] == "OK":
                 messagebox.showinfo("Logout Response", "Logged Out")
