@@ -14,7 +14,7 @@ class apiapp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.wm_title("Check Point API Tool")
-        self.iconbitmap("misc/cpapiicon.ico")
+        self.iconbitmap("extra/cpapiicon.ico")
         container = ttk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
