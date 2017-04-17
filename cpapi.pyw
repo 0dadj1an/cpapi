@@ -19,7 +19,7 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, RunScript, PutFile, FindNat):
+            ImportRules, ExportRules, RunScript, PutFile):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -144,10 +144,6 @@ class StartPage(tk.Frame):
         #Button to call put-file window
         runscriptb = ttk.Button(self, text="Put File", command=lambda: controller.show_frame("PutFile"))
         runscriptb.grid(row=9, column=1)
-
-        #Butto to call findnat window
-        dthomb = ttk.Button(self, text="Find NAT", command=lambda: controller.show_frame("FindNat"))
-        dthomb.grid(row=9, column=2)
 
 class AddHost(tk.Frame):
 
@@ -698,34 +694,6 @@ class PutFile(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
-
-class FindNat(tk.Frame):
-
-    def __init__(self, parent, controller):
-
-        #Style Configuration for page
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Search Objects for associated NAT IP")
-        addhostlabel.configure(background="#494949", foreground="#f44242")
-        addhostlabel.grid(row=0, column=0, columnspan=2)
-
-        #Search for IP
-        search_l = ttk.Label(self, text="IP to Search")
-        search_l.configure(background="#494949", foreground="#f44242")
-        search_l.grid(row=1, column=0, sticky=E)
-        search_e = Entry(self, bd=5)
-        search_e.grid(row=1, column=1)
-        search_e.configure(background="#ffffff")
-
-        #Button to retrieve all objects
-        getpackagesb = ttk.Button(self, text="Search Objects", command=lambda: misc.findnat(search_e.get()))
-        getpackagesb.grid(row=2, column=1)
-
-        #Button to return to apiapp
-        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=2, column=2)
 
 #Call Main Frame
 if __name__ == "__main__":
