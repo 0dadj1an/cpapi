@@ -3,9 +3,8 @@ import sys, time
 #Import Messagebox
 from post import api_call as ac
 
-#Global Variables
+#Global Variable
 sid = "tbd"
-#usrdef_sship = "tbd"
 
 class session:
 
