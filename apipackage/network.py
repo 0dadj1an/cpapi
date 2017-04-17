@@ -1,17 +1,15 @@
 #Import Post
 from apipackage.post import api_call
-#Import
-import sys
 
 #Method for adding a network object
 def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):
     new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
-    new_network_result = api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
+    api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
 #Method to add network to group
 def addnetgroup(usrdef_sship, netname, groupname, sid):
     addnetgroup_data = {'name':netname, 'groups':groupname}
-    addnetgroup_result = api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
+    api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
 
 #Method to retrieve all networks
 def getallnetworks(usrdef_sship, sid):
@@ -26,7 +24,7 @@ def getallnetworks(usrdef_sship, sid):
 def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, sid):
     natset = eval(natset)
     new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
-    new_network_result = api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
+    api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
 #Method to import networks from csv
 def importnetworks(usrdef_sship, filename, sid):

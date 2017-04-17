@@ -1,17 +1,15 @@
 #Import Post
 from apipackage.post import api_call
-#Import
-import sys
 
 #Method for adding a group object
 def addgroup(usrdef_sship, groupname, sid):
     new_group_data = {'name':groupname}
-    new_group_result = api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
+    api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
 #Method to add group to group
 def addgroupgroup(usrdef_sship, addgroupname, groupname, sid):
     addgroup_data = {'name':addgroupname, 'groups':groupname}
-    addgroupgroup_result = api_call(usrdef_sship, 443, 'set-group', addgroup_data, sid)
+    api_call(usrdef_sship, 443, 'set-group', addgroup_data, sid)
 
 #Method for retrieving all groups
 def getallgroups(usrdef_sship, sid):
@@ -25,7 +23,7 @@ def getallgroups(usrdef_sship, sid):
 #Method for adding a group object with members
 def addgroupmembers(usrdef_sship, groupname, members, sid):
     new_group_data = {'name':groupname, 'members':members}
-    new_group_result = api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
+    api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
 #Method to import group from csv
 def importgroups(usrdef_sship, filename, sid):

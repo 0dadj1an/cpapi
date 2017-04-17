@@ -10,12 +10,12 @@ def login(usrdef_sship, usrdef_username, usrdef_pass):
 
 #Method to publish api session
 def publish(usrdef_sship, sid):
-    publish_result = api_call(usrdef_sship, 443, 'publish', {} , sid)
+    api_call(usrdef_sship, 443, 'publish', {} , sid)
 
 #Method to discard api changes
 def discard(usrdef_sship, sid):
-    discard_result = api_call(usrdef_sship, 443, 'discard', {}, sid)
+    api_call(usrdef_sship, 443, 'discard', {}, sid)
 
 #Method to logout over api
 def logout(usrdef_sship, sid):
-    logout_result = api_call(usrdef_sship, 443,"logout", {}, sid)
+    api_call(usrdef_sship, 443,"logout", {}, sid)

@@ -1,17 +1,15 @@
 #Import Post
 from apipackage.post import api_call
-#Import
-import sys
 
 #Method for adding a host object
 def addhost(usrdef_sship, hostname, hostip, hostcolor, sid):
     new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
-    new_host_result = api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
+    api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
 
 #Method to add host to group
 def addhostgroup(usrdef_sship, hostname, groupname, sid):
     addhostgroup_data = {'name':hostname, 'groups':groupname}
-    addhostgroup_result = api_call(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
+    api_call(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
 
 #Method to retrieve all hosts
 def getallhosts(usrdef_sship, sid):
@@ -26,7 +24,7 @@ def getallhosts(usrdef_sship, sid):
 def importaddhost(usrdef_sship, hostname, hostip, hostcolor, natset, sid):
     natset = eval(natset)
     new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
-    new_host_result = api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
+    api_call(usrdef_sship, 443,'add-host', new_host_data ,sid)
 
 #Method to import host from csv file
 def importhosts(usrdef_sship, filename, sid):

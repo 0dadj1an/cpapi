@@ -13,9 +13,9 @@ def getalltargets(usrdef_sship, sid):
 #Method to run script
 def runcommand(usrdef_sship, target, name, command, sid):
     run_script_data = {'script-name':name, 'script':command, 'targets':target}
-    get_targets_result = api_call(usrdef_sship, 443, 'run-script', run_script_data , sid)
+    api_call(usrdef_sship, 443, 'run-script', run_script_data , sid)
 
 #Method to put file
 def putfile(usrdef_sship, target, path, name, contents, sid):
     put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
-    put_file_result = api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)
+    api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)

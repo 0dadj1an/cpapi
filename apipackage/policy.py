@@ -1,12 +1,10 @@
 #Import Post
 from apipackage.post import api_call
-#Import
-import sys
 
 #Method to add rule for importrules
 def importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid):
     add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
-    add_rule_result = api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
+    api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
 
 #Method to import rulebase from csv
 def importrules(usrdef_sship, filename, sid):
