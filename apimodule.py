@@ -9,11 +9,9 @@ sid = "tbd"
 class session:
 
     #Method to login over api
-    def login(ip, usrdef_username, usrdef_pass):
+    def login(usrdef_sship, usrdef_username, usrdef_pass):
         payload = {'user':usrdef_username, 'password' : usrdef_pass}
-        response = ac(ip, 443, 'login', payload, '')
-        global usrdef_sship
-        usrdef_sship = ip
+        response = ac(usrdef_sship, 443, 'login', payload, '')
         global sid
         sid = (response["sid"])
 
