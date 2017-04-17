@@ -3,68 +3,62 @@ import sys, time
 #Import Messagebox
 from post import api_call as ac
 
-#Global Variables
-sid = "tbd"
-usrdef_sship = "tbd"
-
 class session:
 
     #Method to login over api
-    def login(ip, usrdef_username, usrdef_pass):
+    def login(usrdef_sship, usrdef_username, usrdef_pass):
         payload = {'user':usrdef_username, 'password' : usrdef_pass}
-        response = ac(ip, 443, 'login', payload, '')
-        global usrdef_sship
-        usrdef_sship = ip
-        global sid
+        response = ac(usrdef_sship, 443, 'login', payload, '')
         sid = (response["sid"])
+        return (sid)
 
     #Method to publish api session
-    def publish():
+    def publish(usrdef_sship, sid):
         publish_result = ac(usrdef_sship, 443, 'publish', {} , sid)
 
     #Method to discard api changes
-    def discard():
+    def discard(usrdef_sship, sid):
         discard_result = ac(usrdef_sship, 443, 'discard', {}, sid)
 
     #Method to logout over api
-    def logout():
+    def logout(usrdef_sship, sid):
         logout_result = ac(usrdef_sship, 443,"logout", {}, sid)
 
 class host:
 
     #Method for adding a host object
-    def addhost(hostname, hostip, hostcolor):
+    def addhost(usrdef_sship, hostname, hostip, hostcolor, sid):
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor}
         new_host_result = ac(usrdef_sship, 443,'add-host', new_host_data ,sid)
 
     #Method to add host to group
-    def addhostgroup(hostname, groupname):
+    def addhostgroup(usrdef_sship, hostname, groupname, sid):
         addhostgroup_data = {'name':hostname, 'groups':groupname}
         addhostgroup_result = ac(usrdef_sship, 443,'set-host', addhostgroup_data, sid)
 
     #Method to retrieve all hosts
-    def getallhosts():
+    def getallhosts(usrdef_sship, sid):
         show_hosts_data = {'offset':0, 'details-level':'standard'}
         show_hosts_result = ac(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         return (show_hosts_result)
 
     #Method for adding a host object for importhost
-    def importaddhost(hostname, hostip, hostcolor, natset):
+    def importaddhost(usrdef_sship, hostname, hostip, hostcolor, natset, sid):
         natset = eval(natset)
         new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
         new_host_result = ac(usrdef_sship, 443,'add-host', new_host_data ,sid)
 
     #Method to import host from csv file
-    def importhosts(filename):
+    def importhosts(usrdef_sship, filename, sid):
         csvhosts = open(filename, "r").read().split("\n")
         for line in csvhosts:
             if not line:
                 continue
             apiprep = line.split(';')
-            host.importaddhost(apiprep[0], apiprep[1], apiprep[2], apiprep[3])
+            host.importaddhost(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], sid)
 
     #Method to export host to csv file
-    def exporthosts():
+    def exporthosts(usrdef_sship, sid):
         show_hosts_data = {'offset':0, 'details-level':'full'}
         show_hosts_result = ac(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         hostexportfile = open(("exportedhosts.csv"), "w+")
@@ -82,38 +76,38 @@ class host:
 class network:
 
     #Method for adding a network object
-    def addnetwork(netname, netsub, netmask, netcolor):
+    def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
         new_network_result = ac(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to add network to group
-    def addnetgroup(netname, groupname):
+    def addnetgroup(usrdef_sship, netname, groupname, sid):
         addnetgroup_data = {'name':netname, 'groups':groupname}
         addnetgroup_result = ac(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
 
     #Method to retrieve all networks
-    def getallnetworks():
+    def getallnetworks(usrdef_sship, sid):
         show_nets_data = {'offset':0, 'details-level':'standard'}
         show_nets_result = ac(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
         return (show_nets_result)
 
     #Method for adding a network object for importnetworks
-    def importaddnetwork(netname, netsub, netmask, netcolor, natset):
+    def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, sid):
         natset = eval(natset)
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
         new_network_result = ac(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to import networks from csv
-    def importnetworks(filename):
+    def importnetworks(usrdef_sship, filename, sid):
         csvnets = open(filename, "r").read().split("\n")
         for line in csvnets:
             if not line:
                 continue
             apiprep = line.split(';')
-            network.importaddnetwork(apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4])
+            network.importaddnetwork(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4], sid)
 
     #Method to export host to csv file
-    def exportnetworks():
+    def exportnetworks(usrdef_sship, sid):
         show_networks_data = {'offset':0, 'details-level':'full'}
         show_networks_result = ac(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
         networksexportfile = open(("exportednetworks.csv"), "w+")
@@ -131,38 +125,38 @@ class network:
 class group:
 
     #Method for adding a group object
-    def addgroup(groupname):
+    def addgroup(usrdef_sship, groupname, sid):
         new_group_data = {'name':groupname}
         new_group_result = ac(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
     #Method to add group to group
-    def addgroupgroup(addgroupname, groupname):
+    def addgroupgroup(usrdef_sship, addgroupname, groupname, sid):
         addgroup_data = {'name':addgroupname, 'groups':groupname}
         addgroupgroup_result = ac(usrdef_sship, 443, 'set-group', addgroup_data, sid)
 
     #Method for retrieving all groups
-    def getallgroups():
+    def getallgroups(usrdef_sship, sid):
         show_groups_data = {'offset':0, 'details-level':'standard'}
         show_groups_result = ac(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
         return (show_groups_result)
 
     #Method for adding a group object with members
-    def addgroupmembers(groupname, members):
+    def addgroupmembers(usrdef_sship, groupname, members, sid):
         new_group_data = {'name':groupname, 'members':members}
         new_group_result = ac(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
     #Method to import group from csv
-    def importgroups(filename):
+    def importgroups(usrdef_sship, filename, sid):
         csvgroups = open(filename, "r").read().split()
         for line in csvgroups:
             if not line:
                 continue
             groupname = line.split(',')
             memberlist = groupname[1].split(';')
-            group.addgroupmembers(groupname[0], memberlist[0:-1])
+            group.addgroupmembers(usrdef_sship, groupname[0], memberlist[0:-1], sid)
 
     #Method to export host to csv file
-    def exportgroups():
+    def exportgroups(usrdef_sship, sid):
         show_groups_data = {'offset':0, 'details-level':'full'}
         show_groups_result = ac(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
         groupsexportfile = open(("exportedgroups.csv"), "w+")
@@ -177,12 +171,12 @@ class group:
 class policy:
 
     #Method to add rule for importrules
-    def importaddrules(num, name, src, dst, srv, act):
+    def importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid):
         add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
         add_rule_result = ac(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
 
     #Method to import rulebase from csv
-    def importrules(filename):
+    def importrules(usrdef_sship, filename, sid):
         csvrules = open(filename, "r").read().split("\n")
         for line in csvrules:
             if not line:
@@ -203,22 +197,22 @@ class policy:
             except:
                 srv = fullrule[4]
             act = fullrule[5]
-            policy.importaddrules(num, name, src, dst, srv, act)
+            policy.importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid)
 
     #Method to get packages
-    def getallpackages():
+    def getallpackages(usrdef_sship, sid):
         get_packages_data = {'offset':0, 'details-level':'full'}
         get_packages_result = ac(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
         return (get_packages_result)
 
     #Method to get layers
-    def getalllayers(package):
+    def getalllayers(usrdef_sship, package, sid):
         get_layers_data = {'name':package}
         get_layers_result = ac(usrdef_sship, 443, 'show-package', get_layers_data, sid)
         return (get_layers_result)
 
     #Method to get export rules
-    def exportrules(package, layer):
+    def exportrules(usrdef_sship, package, layer, sid):
         #Retrieve Rulebase
         show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
         show_rulebase_result = ac(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
@@ -315,14 +309,14 @@ class policy:
 class misc:
 
     #Method to retrieve gateways-and-servers
-    def getalltargets():
+    def getalltargets(usrdef_sship, sid):
         #Retrieve Targets
         get_targets_data = {'offset':0}
         get_targets_result = ac(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
         return (get_targets_result)
 
     #Method to run script
-    def runscript(target, name, command):
+    def runscript(usrdef_sship, target, name, command, sid):
         run_script_data = {'script-name':name, 'script':command, 'targets':target}
         get_targets_result = ac(usrdef_sship, 443, 'run-script', run_script_data , sid)
         for line in get_targets_result["tasks"]:
@@ -334,6 +328,6 @@ class misc:
             taskresult = line["task-details"][0]["statusDescription"]
 
     #Method to put file
-    def putfile(target, path, name, contents):
+    def putfile(usrdef_sship, target, path, name, contents, sid):
         put_file_data = {'file-path':path, 'file-name':name, 'file-content':contents, 'targets':target}
         put_file_result = ac(usrdef_sship, 443, 'put-file', put_file_data , sid)

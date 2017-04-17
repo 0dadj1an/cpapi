@@ -13,8 +13,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
     if r.status_code == None:
         messagebox.showinfo("Command Response", "No Response")
     elif r.status_code == 200:
-        messagebox.showinfo("Command Response", "Command Successful")
         return (r.json())
     else:
-        messagebox.showinfo("Command Response", r)
+        messagebox.showinfo("Command Response", r.json())
         return (r.json())
