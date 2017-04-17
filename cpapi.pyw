@@ -23,7 +23,7 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, RunScript, PutFile):
+            ImportRules, ExportRules, RunCommand, PutFile):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -98,7 +98,7 @@ class StartPage(tk.Frame):
         space_label.grid(row=4)
 
         #Button to call add object to group
-        addhosttogroup = ttk.Button(self, text="Add Object To Group", command=lambda: controller.show_frame("ObjectToGroup"))
+        addhosttogroup = ttk.Button(self, text="Add To Group", command=lambda: controller.show_frame("ObjectToGroup"))
         addhosttogroup.grid(row=5, column=3)
 
         #Button to call add host window
@@ -149,13 +149,13 @@ class StartPage(tk.Frame):
         more_space_label = ttk.Label(self, background="#494949")
         more_space_label.grid(row=8)
 
-        #Button to call run-script window
-        runscriptb = ttk.Button(self, text="Run Script", command=lambda: controller.show_frame("RunScript"))
-        runscriptb.grid(row=9, column=0)
+        #Button to call run-command window
+        runcommandb = ttk.Button(self, text="Run Command", command=lambda: controller.show_frame("RunCommand"))
+        runcommandb.grid(row=9, column=0)
 
         #Button to call put-file window
-        runscriptb = ttk.Button(self, text="Put File", command=lambda: controller.show_frame("PutFile"))
-        runscriptb.grid(row=9, column=1)
+        putfileb = ttk.Button(self, text="Put File", command=lambda: controller.show_frame("PutFile"))
+        putfileb.grid(row=9, column=1)
 
 class AddHost(tk.Frame):
 
@@ -586,36 +586,38 @@ class ExportRules(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=0)
 
-class RunScript(tk.Frame):
+class RunCommand(tk.Frame):
 
     #Method to retrieve valid gateways and servers
     def gettargets(self):
+
         #Retrieve Targets
         targetslist = misc.getalltargets(usrdef_sship, sid)
+
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
         targetmenu = OptionMenu(self, defaulttarget, *targetslist)
         targetmenu.grid(row=1, column=0)
 
-        #Script Name
-        scriptname_l = ttk.Label(self, text="Script Name")
+        #Command Name
+        scriptname_l = ttk.Label(self, text="Command Name")
         scriptname_l.configure(background="#494949", foreground="#f44242")
         scriptname_l.grid(row=2, column=0, sticky=E)
         scriptname_e = Entry(self, bd=5)
         scriptname_e.grid(row=2, column=1)
         scriptname_e.configure(background="#ffffff")
 
-        #Script Command
-        scriptcommand_l = ttk.Label(self, text="Script Command")
+        #Command Syntax
+        scriptcommand_l = ttk.Label(self, text="Command Syntax")
         scriptcommand_l.configure(background="#494949", foreground="#f44242")
         scriptcommand_l.grid(row=3, column=0, sticky=E)
         scriptcommand_e = Entry(self, bd=5)
         scriptcommand_e.grid(row=3, column=1)
         scriptcommand_e.configure(background="#ffffff")
 
-        #Button to runscript
-        runthescriptb = ttk.Button(self, text="Run Script", command=lambda: misc.runscript(usrdef_sship, defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get(), sid))
+        #Button to run-command
+        runthescriptb = ttk.Button(self, text="Run Command", command=lambda: misc.runcommand(usrdef_sship, defaulttarget.get(), scriptname_e.get(), scriptcommand_e.get(), sid))
         runthescriptb.grid(row=4, column=0)
 
     def __init__(self, parent, controller):
@@ -624,7 +626,7 @@ class RunScript(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
-        addhostlabel = ttk.Label(self, text="Run Script")
+        addhostlabel = ttk.Label(self, text="Run Command")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 

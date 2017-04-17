@@ -11,7 +11,7 @@ def getalltargets(usrdef_sship, sid):
     return (targetslist)
 
 #Method to run script
-def runscript(usrdef_sship, target, name, command, sid):
+def runcommand(usrdef_sship, target, name, command, sid):
     run_script_data = {'script-name':name, 'script':command, 'targets':target}
     get_targets_result = api_call(usrdef_sship, 443, 'run-script', run_script_data , sid)
 
