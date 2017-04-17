@@ -17,7 +17,10 @@ def addnetgroup(usrdef_sship, netname, groupname, sid):
 def getallnetworks(usrdef_sship, sid):
     show_nets_data = {'offset':0, 'details-level':'standard'}
     show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
-    return (show_nets_result)
+    allnetlist = []
+    for nets in show_nets_result["objects"]:
+        allnetlist.append(nets["name"])
+    return (allnetlist)
 
 #Method for adding a network object for importnetworks
 def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, sid):

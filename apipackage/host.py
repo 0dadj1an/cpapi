@@ -17,7 +17,10 @@ def addhostgroup(usrdef_sship, hostname, groupname, sid):
 def getallhosts(usrdef_sship, sid):
     show_hosts_data = {'offset':0, 'details-level':'standard'}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-    return (show_hosts_result)
+    allhostlist = []
+    for hosts in show_hosts_result["objects"]:
+        allhostlist.append(hosts["name"])
+    return (allhostlist)
 
 #Method for adding a host object for importhost
 def importaddhost(usrdef_sship, hostname, hostip, hostcolor, natset, sid):

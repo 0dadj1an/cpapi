@@ -3,10 +3,12 @@ from apipackage.post import api_call
 
 #Method to retrieve gateways-and-servers
 def getalltargets(usrdef_sship, sid):
-    #Retrieve Targets
     get_targets_data = {'offset':0}
     get_targets_result = api_call(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
-    return (get_targets_result)
+    targetslist = []
+    for obj in get_targets_result["objects"]:
+        targetslist.append(obj["name"])
+    return (targetslist)
 
 #Method to run script
 def runscript(usrdef_sship, target, name, command, sid):

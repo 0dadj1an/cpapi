@@ -38,6 +38,7 @@ class apiapp(tk.Tk):
 
 class StartPage(tk.Frame):
 
+    #Method to establish global variables
     def setup(self, ip, username, password):
         global usrdef_sship
         usrdef_sship = ip
@@ -278,21 +279,12 @@ class ObjectToGroup(tk.Frame):
 
     #Method to retrieve hosts,networks,groups
     def gethostnetgroup(self):
-        #Create list for each type
-        allhostlist = []
-        allnetlist = []
-        allgrouplist = []
-        #API Call for each type
-        show_hosts_result = host.getallhosts(usrdef_sship, sid)
-        show_nets_result = network.getallnetworks(usrdef_sship, sid)
-        show_groups_result = group.getallgroups(usrdef_sship, sid)
-        #Parse out names only
-        for hosts in show_hosts_result["objects"]:
-            allhostlist.append(hosts["name"])
-        for nets in show_nets_result["objects"]:
-            allnetlist.append(nets["name"])
-        for groups in show_groups_result["objects"]:
-            allgrouplist.append(groups["name"])
+
+        #Retrieve lists of host/nets/groups
+        allhostlist = host.getallhosts(usrdef_sship, sid)
+        allnetlist = network.getallnetworks(usrdef_sship, sid)
+        allgrouplist = group.getallgroups(usrdef_sship, sid)
+
         #Host Dropdown
         allhost = ttk.Label(self, text="All Hosts", background="#494949", foreground="#f44242")
         allhost.grid(row=2, column=0, sticky=E)
@@ -300,6 +292,7 @@ class ObjectToGroup(tk.Frame):
         defaulthost.set("Select Host")
         hostmenu = OptionMenu(self, defaulthost, *allhostlist)
         hostmenu.grid(row=2, column=1)
+
         #Network Dropdown
         allnet = ttk.Label(self, text="All Networks", background="#494949", foreground="#f44242")
         allnet.grid(row=3, column=0, sticky=E)
@@ -307,6 +300,7 @@ class ObjectToGroup(tk.Frame):
         defaultnet.set("Select Network")
         netmenu = OptionMenu(self, defaultnet, *allnetlist)
         netmenu.grid(row=3, column=1)
+
         #Group Dropdown
         allgroup1 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
         allgroup1.grid(row=4, column=0, sticky=E)
@@ -314,6 +308,7 @@ class ObjectToGroup(tk.Frame):
         defaultaddgroup.set("Select Group")
         groupaddmenu = OptionMenu(self, defaultaddgroup, *allgrouplist)
         groupaddmenu.grid(row=4, column=1)
+
         #Target Group Dropdown
         allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
         allgroup2.grid(row=2, column=3)
@@ -544,10 +539,10 @@ class ExportRules(tk.Frame):
 
     #Method to retrieve available packages
     def getpackages(self):
-        get_packages_result = policy.getallpackages(usrdef_sship, sid)
-        allpackagelist = []
-        for package in get_packages_result["packages"]:
-            allpackagelist.append(package["name"])
+
+        #Retrieve list of packages
+        allpackagelist = policy.getallpackages(usrdef_sship, sid)
+
         #Package Dropdown
         defaultpackage = StringVar(self)
         defaultpackage.set("Select Package")
@@ -559,11 +554,10 @@ class ExportRules(tk.Frame):
         showrulebaseb.grid(row=2, column=1)
 
     def getlayers(self, package):
-        get_layers_result = policy.getalllayers(usrdef_sship, package, sid)
-        alllayerslist = []
-        #print (get_layers_result)
-        for layer in get_layers_result["access-layers"]:
-            alllayerslist.append(layer["name"])
+
+        #Retrieve list of layers
+        alllayerslist = policy.getalllayers(usrdef_sship, package, sid)
+
         #Layer Dropdown
         defaultlayer = StringVar(self)
         defaultlayer.set("Select Layer")
@@ -597,10 +591,7 @@ class RunScript(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_result = misc.getalltargets(usrdef_sship, sid)
-        targetslist = []
-        for obj in get_targets_result["objects"]:
-            targetslist.append(obj["name"])
+        targetslist = misc.getalltargets(usrdef_sship, sid)
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
@@ -650,10 +641,7 @@ class PutFile(tk.Frame):
     #Method to retrieve valid gateways and servers
     def gettargets(self):
         #Retrieve Targets
-        get_targets_result = misc.getalltargets(usrdef_sship, sid)
-        targetslist = []
-        for obj in get_targets_result["objects"]:
-            targetslist.append(obj["name"])
+        targetslist = misc.getalltargets(usrdef_sship, sid)
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
@@ -706,7 +694,6 @@ class PutFile(tk.Frame):
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
 
-#Call Main Frame
 if __name__ == "__main__":
     app = apiapp()
     app.mainloop()

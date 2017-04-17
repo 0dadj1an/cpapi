@@ -17,7 +17,10 @@ def addgroupgroup(usrdef_sship, addgroupname, groupname, sid):
 def getallgroups(usrdef_sship, sid):
     show_groups_data = {'offset':0, 'details-level':'standard'}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-    return (show_groups_result)
+    allgrouplist = []
+    for groups in show_groups_result["objects"]:
+        allgrouplist.append(groups["name"])
+    return (allgrouplist)
 
 #Method for adding a group object with members
 def addgroupmembers(usrdef_sship, groupname, members, sid):
