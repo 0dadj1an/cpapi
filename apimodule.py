@@ -1,7 +1,5 @@
 #Import Things
 import sys, time
-#Import Requests
-import requests
 #Import Messagebox
 from post import api_call as ac
 
