@@ -36,28 +36,29 @@ def importrules(usrdef_sship, filename, sid):
 def getallpackages(usrdef_sship, sid):
     get_packages_data = {'offset':0, 'details-level':'full'}
     get_packages_result = api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
-    return (get_packages_result)
+    allpackagelist = []
+    for package in get_packages_result["packages"]:
+        allpackagelist.append(package["name"])
+    return (allpackagelist)
 
 #Method to get layers
 def getalllayers(usrdef_sship, package, sid):
     get_layers_data = {'name':package}
     get_layers_result = api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
-    return (get_layers_result)
+    alllayerslist = []
+    for layer in get_layers_result["access-layers"]:
+        alllayerslist.append(layer["name"])
+    return (alllayerslist)
 
 #Method to get export rules
 def exportrules(usrdef_sship, package, layer, sid):
-    #Retrieve Rulebase
     show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
     show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-    #Create Output File
     rulebaseexport = open(("exportedrules.csv"), "w+")
-    #Parse values for each rule
     for rule in show_rulebase_result["rulebase"]:
         countersrc = 0
         counterdst = 0
         countersrv = 0
-        #String, String, List, List, List, String
-        ### NAME CAN BE EMPTY ###
         if 'name' in rule:
             name = rule["name"]
         else:
@@ -67,15 +68,12 @@ def exportrules(usrdef_sship, package, layer, sid):
         dst = rule["destination"]
         srv = rule["service"]
         act = rule["action"]
-        #Parse Object Ditcionary to replace UID with Name
         for obj in show_rulebase_result["objects-dictionary"]:
             if name == obj["uid"]:
                 name = obj["name"]
-        #Parse Object Ditcionary to replace UID with Name
         for obj in show_rulebase_result["objects-dictionary"]:
             if num == obj["uid"]:
                 num = obj["name"]
-        #Parse Object Ditcionary to replace UID with Name: Source
         if len(src) == 1:
             for obj in show_rulebase_result["objects-dictionary"]:
                 if src[0] == obj["uid"]:
@@ -86,7 +84,6 @@ def exportrules(usrdef_sship, package, layer, sid):
                     if srcobj == obj["uid"]:
                         src[countersrc] = obj["name"]
                         countersrc = countersrc + 1
-        #Parse Object Ditcionary to replace UID with Name: Destination
         if len(dst) == 1:
             for obj in show_rulebase_result["objects-dictionary"]:
                 if dst[0] == obj["uid"]:
@@ -97,7 +94,6 @@ def exportrules(usrdef_sship, package, layer, sid):
                     if dstobj == obj["uid"]:
                         dst[counterdst] = obj["name"]
                         counterdst = counterdst + 1
-        #Parse Object Ditcionary to replace UID with Name: Service
         if len(srv) == 1:
             for obj in show_rulebase_result["objects-dictionary"]:
                 if srv[0] == obj["uid"]:
@@ -108,33 +104,27 @@ def exportrules(usrdef_sship, package, layer, sid):
                     if srvobj == obj["uid"]:
                         srv[countersrv] = obj["name"]
                         countersrv = countersrv + 1
-        #Parse Object Ditcionary to replace UID with Name
         for obj in show_rulebase_result["objects-dictionary"]:
             if act == obj["uid"]:
                 act = obj["name"]
-        #Write Rule Number and Name
         rulebaseexport.write(str(num) + ',' + name + ',')
-        #Write Source, delimit multiple with ;
         if isinstance(src, str) == True:
             rulebaseexport.write(src + ',')
         else:
             for srcele in src[0:-1]:
                 rulebaseexport.write(srcele + ';')
             rulebaseexport.write(src[-1] + ',')
-        #Write Destination, delimit multiple with ;
         if isinstance(dst, str) == True:
             rulebaseexport.write(dst + ',')
         else:
             for dstele in dst[0:-1]:
                 rulebaseexport.write(dstele + ';')
             rulebaseexport.write(dst[-1] + ',')
-        #Write Service, delimit multiple with ;
         if isinstance(srv, str) == True:
             rulebaseexport.write(srv + ',')
         else:
             for srvele in srv[0:-1]:
                 rulebaseexport.write(srvele + ';')
             rulebaseexport.write(srv[-1] + ',')
-        #Write Action and \n
         rulebaseexport.write(act + '\n')
     rulebaseexport.close()
