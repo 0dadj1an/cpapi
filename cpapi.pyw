@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 #Import cpapicall
-from apimodule import *
+from apipackage import *
 
 #Global Variable
 usrdef_sship = "tbd"
