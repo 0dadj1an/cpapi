@@ -15,5 +15,5 @@ def api_call(ip_addr, port, command, json_payload, sid):
     elif r.status_code == 200:
         return (r.json())
     else:
-        messagebox.showinfo("Command Response", r)
+        messagebox.showinfo("Command Response", r.json())
         return (r.json())
