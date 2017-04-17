@@ -41,7 +41,7 @@ class StartPage(tk.Frame):
     def setup(self, ip, username, password):
         global usrdef_sship
         usrdef_sship = ip
-        response = session.login(usrdef_sship, username, password)
+        response = session.session.login(usrdef_sship, username, password)
         global sid
         sid = response
 

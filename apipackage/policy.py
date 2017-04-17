@@ -1,3 +1,6 @@
+#Import Post
+from post import api_call
+
 #Import
 import sys
 
@@ -6,7 +9,7 @@ class policy:
     #Method to add rule for importrules
     def importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid):
         add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
-        add_rule_result = ac(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
+        add_rule_result = post.api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
 
     #Method to import rulebase from csv
     def importrules(usrdef_sship, filename, sid):
@@ -35,20 +38,20 @@ class policy:
     #Method to get packages
     def getallpackages(usrdef_sship, sid):
         get_packages_data = {'offset':0, 'details-level':'full'}
-        get_packages_result = ac(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+        get_packages_result = post.api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
         return (get_packages_result)
 
     #Method to get layers
     def getalllayers(usrdef_sship, package, sid):
         get_layers_data = {'name':package}
-        get_layers_result = ac(usrdef_sship, 443, 'show-package', get_layers_data, sid)
+        get_layers_result = post.api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
         return (get_layers_result)
 
     #Method to get export rules
     def exportrules(usrdef_sship, package, layer, sid):
         #Retrieve Rulebase
         show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
-        show_rulebase_result = ac(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+        show_rulebase_result = post.api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
         #Create Output File
         rulebaseexport = open(("exportedrules.csv"), "w+")
         #Parse values for each rule

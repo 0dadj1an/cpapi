@@ -1,3 +1,5 @@
+#Import Post
+from post import api_call
 #Import
 import sys
 
@@ -6,24 +8,24 @@ class network:
     #Method for adding a network object
     def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor}
-        new_network_result = ac(usrdef_sship, 443,'add-network', new_network_data ,sid)
+        new_network_result = post.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to add network to group
     def addnetgroup(usrdef_sship, netname, groupname, sid):
         addnetgroup_data = {'name':netname, 'groups':groupname}
-        addnetgroup_result = ac(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
+        addnetgroup_result = post.api_call(usrdef_sship, 443, 'set-network', addnetgroup_data, sid)
 
     #Method to retrieve all networks
     def getallnetworks(usrdef_sship, sid):
         show_nets_data = {'offset':0, 'details-level':'standard'}
-        show_nets_result = ac(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
+        show_nets_result = post.api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
         return (show_nets_result)
 
     #Method for adding a network object for importnetworks
     def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, sid):
         natset = eval(natset)
         new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
-        new_network_result = ac(usrdef_sship, 443,'add-network', new_network_data ,sid)
+        new_network_result = post.api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
 
     #Method to import networks from csv
     def importnetworks(usrdef_sship, filename, sid):
@@ -37,7 +39,7 @@ class network:
     #Method to export host to csv file
     def exportnetworks(usrdef_sship, sid):
         show_networks_data = {'offset':0, 'details-level':'full'}
-        show_networks_result = ac(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+        show_networks_result = post.api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
         networksexportfile = open(("exportednetworks.csv"), "w+")
         for network in show_networks_result["objects"]:
             networksexportfile = open(("exportednetworks.csv"), "a")
