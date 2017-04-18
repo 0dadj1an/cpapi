@@ -23,8 +23,8 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, ImportServices, ExportServices, ExportTCP, ExportUDP,
-            RunCommand, PutFile):
+            ImportRules, ExportRules, ImportServices, ImportTCP, ImportUDP, ExportServices,
+            ExportTCP, ExportUDP, RunCommand, PutFile):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -603,6 +603,34 @@ class ImportServices(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export Services")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to import all services
+        expallb = ttk.Button(self, text="ALL", command=lambda: service.importallservices(usrdef_sship, sid))
+        expallb.grid(row=1, column=0)
+
+        #Button to call import tcp window
+        exptcpb = ttk.Button(self, text="TCP", command=lambda: controller.show_frame("ImportTCP"))
+        exptcpb.grid(row=1, column=1)
+
+        #Button to call import udp window
+        expudpb = ttk.Button(self, text="UDP", command=lambda: controller.show_frame("ImportUDP"))
+        expudpb.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=3)
+
+class ImportTCP(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
         addhostlabel = ttk.Label(self, text="Import Services")
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
@@ -615,11 +643,43 @@ class ImportServices(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import tcp services
-        impservb = ttk.Button(self, text="Import Services", command=lambda: service.importtcpservice(usrdef_sship, file_e.get(), sid))
+        impservb = ttk.Button(self, text="Import TCP Services", command=lambda: service.importtcpservice(usrdef_sship, file_e.get(), sid))
         impservb.grid(row=1, column=2)
 
         #Button to return to apiapp
-        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("ImportServices"))
+        button.grid(row=1, column=3)
+
+        #Example file
+        example_l = ttk.Label(self, text="Example file provided in repository!")
+        example_l.configure(background="#494949", foreground="#f44242")
+        example_l.grid(row=2, columnspan=2)
+
+class ImportUDP(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Import Services")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #File Selection
+        file_l = ttk.Label(self, text = "CSV File Name", background="#494949", foreground="#f44242")
+        file_l.grid(row=1, column=0, sticky=E)
+        file_e = Entry(self, bd=5)
+        file_e.grid(row=1, column=1)
+        file_e.configure(background="#ffffff")
+
+        #Button to import udp services
+        impservb = ttk.Button(self, text="Import UDP Services", command=lambda: service.importudpservice(usrdef_sship, file_e.get(), sid))
+        impservb.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("ImportServices"))
         button.grid(row=1, column=3)
 
         #Example file
