@@ -2,8 +2,8 @@
 from apipackage.post import api_call
 
 #Method to add rule for importrules
-def importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid):
-    add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act}
+def importaddrules(usrdef_sship, num, name, src, dst, srv, act, trc, trg, sid):
+    add_rule_data = {'layer':'Network', 'position':num, 'name':name, 'source':src, 'destination':dst, 'service':srv, 'action':act, 'track':trc, 'install-on':trg}
     api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
 
 #Method to import rulebase from csv
@@ -28,7 +28,12 @@ def importrules(usrdef_sship, filename, sid):
         except:
             srv = fullrule[4]
         act = fullrule[5]
-        importaddrules(usrdef_sship, num, name, src, dst, srv, act, sid)
+        trc = fullrule[6]
+        try:
+            trg = fullrule[7].split(';')
+        except:
+            trg = fullrule[7]
+        importaddrules(usrdef_sship, num, name, src, dst, srv, act, trc, trg, sid)
 
 #Method to get packages
 def getallpackages(usrdef_sship, sid):
@@ -57,6 +62,7 @@ def exportrules(usrdef_sship, package, layer, sid):
         countersrc = 0
         counterdst = 0
         countersrv = 0
+        countertrg = 0
         if 'name' in rule:
             name = rule["name"]
         else:
@@ -66,6 +72,8 @@ def exportrules(usrdef_sship, package, layer, sid):
         dst = rule["destination"]
         srv = rule["service"]
         act = rule["action"]
+        trc = rule["track"]
+        trg = rule["install-on"]
         for obj in show_rulebase_result["objects-dictionary"]:
             if name == obj["uid"]:
                 name = obj["name"]
@@ -105,6 +113,19 @@ def exportrules(usrdef_sship, package, layer, sid):
         for obj in show_rulebase_result["objects-dictionary"]:
             if act == obj["uid"]:
                 act = obj["name"]
+        for obj in show_rulebase_result["objects-dictionary"]:
+            if trc == obj["uid"]:
+                trc = obj["name"]
+        if len(trg) == 1:
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if trg[0] == obj["uid"]:
+                    trg = obj["name"]
+        else:
+            for trgobj in trg:
+                for obj in show_rulebase_result["objects-dictionary"]:
+                    if trgobj == obj["uid"]:
+                        trg[countertrg] = obj["name"]
+                        countertrg = countertrg + 1
         rulebaseexport.write(str(num) + ',' + name + ',')
         if isinstance(src, str) == True:
             rulebaseexport.write(src + ',')
@@ -124,5 +145,12 @@ def exportrules(usrdef_sship, package, layer, sid):
             for srvele in srv[0:-1]:
                 rulebaseexport.write(srvele + ';')
             rulebaseexport.write(srv[-1] + ',')
-        rulebaseexport.write(act + '\n')
+        rulebaseexport.write(act + ',')
+        rulebaseexport.write(trc + ',')
+        if isinstance(trg, str) == True:
+            rulebaseexport.write(trg + '\n')
+        else:
+            for trgele in trg[0:-1]:
+                rulebaseexport.write(trgele + ';')
+            rulebaseexport.write(trg[-1] + '\n')
     rulebaseexport.close()
