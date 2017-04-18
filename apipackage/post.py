@@ -9,11 +9,14 @@ def api_call(ip_addr, port, command, json_payload, sid):
         request_headers = {'Content-Type' : 'application/json'}
     else:
         request_headers = {'Content-Type' : 'application/json', 'X-chkp-sid' : sid}
-    r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, verify=False)
-    if r.status_code == None:
-        messagebox.showinfo("Command Response", "No Response")
-    elif r.status_code == 200:
-        return (r.json())
-    else:
-        messagebox.showinfo("Command Response", r.json())
-        return (r.json())
+    try:
+        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=5, verify=False)
+        if r.status_code == 200:
+            return (r.json())
+        else:
+            messagebox.showinfo("Command Response", r.json())
+            return (r.json())
+    except requests.exceptions.Timeout:
+        messagebox.showinfo("Command Response", "Request Timeout")
+    except requests.exceptions.ConnectionError:
+        messagebox.showinfo("Command Response", "Connection Error")
