@@ -22,7 +22,7 @@ def exporttcpservices(usrdef_sship, sid):
     tcpexport.close()
 
 #Method for adding tcp service for importtcpservice
-def importaddtcp(usrdef_sship, name, port, kcoapi, st, sp, mfa, sync, aa, srvcol, sid):
+def importaddtcp(usrdef_sship, name, port, kcoapi, st, sp, mfa, sync, srvcol, aa, sid):
     aa = eval(aa)
     if sp == 'none':
         new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'match-for-any':mfa,
