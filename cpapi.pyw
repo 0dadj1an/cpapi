@@ -645,7 +645,7 @@ class PutFile(tk.Frame):
 
         #Retrieve Targets
         targetslist = misc.getalltargets(usrdef_sship, sid)
-        
+
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
