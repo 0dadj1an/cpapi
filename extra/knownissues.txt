@@ -33,6 +33,7 @@ No color support.
 ### ADD OBJECT TO GROUP ###
 
 ### IMPORT RULES ###
+Default Imports to Package-Standard, Layer-Network, Policy
 Supported Fields - Number/Name/Source/Destination/Service/Action/Track/Install-On
     - No support for alert settings inside of Track
 Does not support negated objects.
