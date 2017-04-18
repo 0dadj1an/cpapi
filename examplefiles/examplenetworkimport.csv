@@ -1,3 +1,6 @@
+#### FIELDS #### ###EXCLUDE THESE LINES IN REAL FILE ###
+#### networkname;networkip;networkmask;color;natsetting ####
+
 network1;1.1.1.0;24;light sea green;{'auto-rule': True, 'hide-behind': 'gateway', 'install-on': 'All', 'method': 'hide'}
 network2;2.2.2.0;24;orange;{'auto-rule': True, 'hide-behind': 'gateway', 'install-on': 'gateway', 'method': 'hide'}
 network3;3.3.3.0;24;black;{'auto-rule': True, 'ipv4-address': '90.90.90.90', 'hide-behind': 'ip-address', 'install-on': 'All', 'method': 'hide'}
