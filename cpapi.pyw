@@ -642,8 +642,10 @@ class PutFile(tk.Frame):
 
     #Method to retrieve valid gateways and servers
     def gettargets(self):
+
         #Retrieve Targets
         targetslist = misc.getalltargets(usrdef_sship, sid)
+        
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
