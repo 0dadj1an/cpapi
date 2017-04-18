@@ -2,7 +2,7 @@
 from apipackage.post import api_call
 
 #Method to export host to csv file
-def exportservices(usrdef_sship, sid):
+def exporttcpservices(usrdef_sship, sid):
     show_tcp_data = {'offset':0, 'details-level':'full'}
     show_tcp_result = api_call(usrdef_sship, 443, 'show-services-tcp', show_tcp_data ,sid)
     print (show_tcp_result)

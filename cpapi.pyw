@@ -23,7 +23,8 @@ class apiapp(tk.Tk):
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
-            ImportRules, ExportRules, ImportServices, ExportServices, RunCommand, PutFile):
+            ImportRules, ExportRules, ImportServices, ExportServices, ExportTCP, ExportUDP,
+            RunCommand, PutFile):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -614,8 +615,8 @@ class ImportServices(tk.Frame):
         file_e.configure(background="#ffffff")
 
         #Button to import tcp services
-        exphostb = ttk.Button(self, text="Import Services", command=lambda: service.importtcpservice(usrdef_sship, file_e.get(), sid))
-        exphostb.grid(row=1, column=2)
+        impservb = ttk.Button(self, text="Import Services", command=lambda: service.importtcpservice(usrdef_sship, file_e.get(), sid))
+        impservb.grid(row=1, column=2)
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
@@ -638,12 +639,60 @@ class ExportServices(tk.Frame):
         addhostlabel.configure(background="#494949", foreground="#f44242")
         addhostlabel.grid(row=0, column=0, columnspan=2)
 
-        #Button to export services
-        exphostb = ttk.Button(self, text="Export Services", command=lambda: service.exportservices(usrdef_sship, sid))
-        exphostb.grid(row=1, column=0)
+        #Button to export all services
+        expallb = ttk.Button(self, text="ALL", command=lambda: service.exportallservices(usrdef_sship, sid))
+        expallb.grid(row=1, column=0)
+
+        #Button to call export tcp window
+        exptcpb = ttk.Button(self, text="TCP", command=lambda: controller.show_frame("ExportTCP"))
+        exptcpb.grid(row=1, column=1)
+
+        #Button to call export udp window
+        expudpb = ttk.Button(self, text="UDP", command=lambda: controller.show_frame("ExportUDP"))
+        expudpb.grid(row=1, column=2)
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=3)
+
+class ExportTCP(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export TCP Services")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to export services
+        exptcpb = ttk.Button(self, text="Export TCP Services", command=lambda: service.exporttcpservices(usrdef_sship, sid))
+        exptcpb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("ExportServices"))
+        button.grid(row=1, column=1)
+
+class ExportUDP(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export UDP Services")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to export services
+        expudpb = ttk.Button(self, text="Export UDP Services", command=lambda: service.exportudpservices(usrdef_sship, sid))
+        expudpb.grid(row=1, column=0)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("ExportServices"))
         button.grid(row=1, column=1)
 
 class RunCommand(tk.Frame):
