@@ -13,7 +13,7 @@ def addgroupgroup(usrdef_sship, addgroupname, groupname, sid):
 
 #Method for retrieving all groups
 def getallgroups(usrdef_sship, sid):
-    show_groups_data = {'offset':0, 'details-level':'standard'}
+    show_groups_data = {'limit':500, 'details-level':'standard'}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
     allgrouplist = []
     for groups in show_groups_result["objects"]:
@@ -37,7 +37,7 @@ def importgroups(usrdef_sship, filename, sid):
 
 #Method to export host to csv file
 def exportgroups(usrdef_sship, sid):
-    show_groups_data = {'offset':0, 'details-level':'full'}
+    show_groups_data = {'limit':500, 'details-level':'full'}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
     groupsexportfile = open(("exportedgroups.csv"), "w+")
     for group in show_groups_result["objects"]:

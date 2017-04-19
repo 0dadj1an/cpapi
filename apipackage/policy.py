@@ -37,7 +37,7 @@ def importrules(usrdef_sship, filename, sid):
 
 #Method to get packages
 def getallpackages(usrdef_sship, sid):
-    get_packages_data = {'offset':0, 'details-level':'full'}
+    get_packages_data = {'limit':500, 'details-level':'full'}
     get_packages_result = api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
     allpackagelist = []
     for package in get_packages_result["packages"]:
@@ -46,7 +46,7 @@ def getallpackages(usrdef_sship, sid):
 
 #Method to get layers
 def getalllayers(usrdef_sship, package, sid):
-    get_layers_data = {'name':package}
+    get_layers_data = {'limit':500, 'name':package}
     get_layers_result = api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
     alllayerslist = []
     for layer in get_layers_result["access-layers"]:
@@ -55,7 +55,7 @@ def getalllayers(usrdef_sship, package, sid):
 
 #Method to get export rules
 def exportrules(usrdef_sship, package, layer, sid):
-    show_rulebase_data = {"offset":0, "package":package, "name":layer, "details-level":"standard", "use-object-dictionary":"true"}
+    show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
     rulebaseexport = open(("exportedrules.csv"), "w+")
     for rule in show_rulebase_result["rulebase"]:

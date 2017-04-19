@@ -13,7 +13,7 @@ def addhostgroup(usrdef_sship, hostname, groupname, sid):
 
 #Method to retrieve all hosts
 def getallhosts(usrdef_sship, sid):
-    show_hosts_data = {'offset':0, 'details-level':'standard'}
+    show_hosts_data = {'limit':500, 'details-level':'standard'}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     allhostlist = []
     for hosts in show_hosts_result["objects"]:
@@ -37,7 +37,7 @@ def importhosts(usrdef_sship, filename, sid):
 
 #Method to export host to csv file
 def exporthosts(usrdef_sship, sid):
-    show_hosts_data = {'offset':0, 'details-level':'full'}
+    show_hosts_data = {'limit':500, 'details-level':'full'}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     hostexportfile = open(("exportedhosts.csv"), "w+")
     for host in show_hosts_result["objects"]:

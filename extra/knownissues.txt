@@ -11,6 +11,7 @@ Supports Name/IP/Color/NAT-Settings.
 
 ### EXPORT HOST ###
 Supports Name/IP/Color/NAT-Settings.
+Supports up to 500 objects.
 
 ### ADD NETWORK ###
 Only support for Name/Color/IP settings, notably NAT settings not supported currently.
@@ -20,6 +21,7 @@ Supports Name/IP/Color/NAT-Settings.
 
 ### EXPORT NETWORK ###
 Supports Name/IP/Color/NAT-Settings.
+Supports up to 500 objects.
 
 ### ADD GROUP ###
 No color support.
@@ -29,8 +31,10 @@ No color support.
 
 ### EXPORT GROUP ###
 No color support.
+Supports up to 500 objects.
 
 ### ADD OBJECT TO GROUP ###
+Supports up to 500 objects.
 
 ### IMPORT RULES ###
 Default Imports to Package-Standard, Layer-Network, Policy
@@ -53,5 +57,6 @@ API does not support Protocol Inspection Field
 API provides non-standard session-timeout value, but will set to default upon import.
 API does not support "Enable for TCP resource" field.
 API does not support custom time for start sync.
+Supports up to 500 objects.
 
 ### THANK YOU ###

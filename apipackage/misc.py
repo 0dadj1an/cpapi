@@ -3,7 +3,7 @@ from apipackage.post import api_call
 
 #Method to retrieve gateways-and-servers
 def getalltargets(usrdef_sship, sid):
-    get_targets_data = {'offset':0}
+    get_targets_data = {'limit':500}
     get_targets_result = api_call(usrdef_sship, 443, 'show-gateways-and-servers', get_targets_data ,sid)
     targetslist = []
     for obj in get_targets_result["objects"]:

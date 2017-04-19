@@ -13,7 +13,7 @@ def addnetgroup(usrdef_sship, netname, groupname, sid):
 
 #Method to retrieve all networks
 def getallnetworks(usrdef_sship, sid):
-    show_nets_data = {'offset':0, 'details-level':'standard'}
+    show_nets_data = {'limit':500, 'details-level':'standard'}
     show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
     allnetlist = []
     for nets in show_nets_result["objects"]:
@@ -37,7 +37,7 @@ def importnetworks(usrdef_sship, filename, sid):
 
 #Method to export host to csv file
 def exportnetworks(usrdef_sship, sid):
-    show_networks_data = {'offset':0, 'details-level':'full'}
+    show_networks_data = {'limit':500, 'details-level':'full'}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
     networksexportfile = open(("exportednetworks.csv"), "w+")
     for network in show_networks_result["objects"]:
