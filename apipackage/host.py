@@ -48,7 +48,7 @@ def importhosts(usrdef_sship, filename, sid):
 #Method to export host to csv file
 def exporthosts(usrdef_sship, sid):
     count = 500
-    show_hosts_data = {'offset':0, 'limit':500, 'details-level':'full'}
+    show_hosts_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     hostexportfile = open(("exportedhosts.csv"), "w+")
     for host in show_hosts_result["objects"]:
@@ -60,7 +60,7 @@ def exporthosts(usrdef_sship, sid):
         hostexportfile.write(natsettings)
         hostexportfile.write("\n")
     while show_hosts_result["to"] != show_hosts_result["total"]:
-        show_hosts_data = {'offset':count, 'limit':500, 'details-level':'full'}
+        show_hosts_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
         for host in show_hosts_result["objects"]:
             if 'nat-settings' in host:

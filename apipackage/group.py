@@ -48,7 +48,7 @@ def importgroups(usrdef_sship, filename, sid):
 #Method to export host to csv file
 def exportgroups(usrdef_sship, sid):
     count = 500
-    show_groups_data = {'offset':0, 'limit':500, 'details-level':'full'}
+    show_groups_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
     groupsexportfile = open(("exportedgroups.csv"), "w+")
     for group in show_groups_result["objects"]:
@@ -58,7 +58,7 @@ def exportgroups(usrdef_sship, sid):
             groupsexportfile.write(member["name"] + ";")
         groupsexportfile.write("\n")
     while show_groups_result["to"] != show_groups_result["total"]:
-        show_groups_data = {'offset':count, 'limit':500, 'details-level':'full'}
+        show_groups_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
         for group in show_groups_result["objects"]:
             groupsexportfile.write(group["name"] + ",")

@@ -48,7 +48,7 @@ def importnetworks(usrdef_sship, filename, sid):
 #Method to export host to csv file
 def exportnetworks(usrdef_sship, sid):
     count = 500
-    show_networks_data = {'offset':0, 'limit':500, 'details-level':'full'}
+    show_networks_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
     networksexportfile = open(("exportednetworks.csv"), "w+")
     for network in show_networks_result["objects"]:
@@ -60,7 +60,7 @@ def exportnetworks(usrdef_sship, sid):
         networksexportfile.write(natsettings)
         networksexportfile.write("\n")
     while show_networks_result["to"] != show_networks_result["total"]:
-        show_networks_data = {'offset':count, 'limit':500, 'details-level':'full'}
+        show_networks_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
         for network in show_networks_result["objects"]:
             if 'nat-settings' in network:
