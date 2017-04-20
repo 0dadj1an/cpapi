@@ -1,5 +1,6 @@
 #Import Post
 from apipackage.post import api_call
+import threading, time
 
 #Method for adding a network object
 def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):
@@ -13,18 +14,27 @@ def addnetgroup(usrdef_sship, netname, groupname, sid):
 
 #Method to retrieve all networks
 def getallnetworks(usrdef_sship, sid):
+    count = 500
     show_nets_data = {'limit':500, 'details-level':'standard'}
     show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
     allnetlist = []
     for nets in show_nets_result["objects"]:
         allnetlist.append(nets["name"])
+    while show_nets_result["to"] != show_nets_result["total"]:
+        show_nets_data = {'offset':count, 'limit':500, 'details-level':'standard'}
+        show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data ,sid)
+        for nets in show_nets_result["objects"]:
+            allnetlist.append(nets["name"])
+        count = count + 500
     return (allnetlist)
 
 #Method for adding a network object for importnetworks
 def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, sid):
     natset = eval(natset)
     new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
-    api_call(usrdef_sship, 443,'add-network', new_network_data ,sid)
+    t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443,'add-network', new_network_data ,sid))
+    t1.start()
+    time.sleep(0.1)
 
 #Method to import networks from csv
 def importnetworks(usrdef_sship, filename, sid):
@@ -37,11 +47,11 @@ def importnetworks(usrdef_sship, filename, sid):
 
 #Method to export host to csv file
 def exportnetworks(usrdef_sship, sid):
-    show_networks_data = {'limit':500, 'details-level':'full'}
+    count = 500
+    show_networks_data = {'offset':0, 'limit':500, 'details-level':'full'}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
     networksexportfile = open(("exportednetworks.csv"), "w+")
     for network in show_networks_result["objects"]:
-        networksexportfile = open(("exportednetworks.csv"), "a")
         if 'nat-settings' in network:
             natsettings = network["nat-settings"]
             natsettings.pop('ipv6-address', None)
@@ -49,4 +59,16 @@ def exportnetworks(usrdef_sship, sid):
         networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
         networksexportfile.write(natsettings)
         networksexportfile.write("\n")
+    while show_networks_result["to"] != show_networks_result["total"]:
+        show_networks_data = {'offset':count, 'limit':500, 'details-level':'full'}
+        show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+        for network in show_networks_result["objects"]:
+            if 'nat-settings' in host:
+                natsettings = network["nat-settings"]
+                natsettings.pop('ipv6-address', None)
+                natsettings = str(natsettings)
+            networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
+            networksexportfile.write(natsettings)
+            networksexportfile.write("\n")
+        count = count + 500
     networksexportfile.close()

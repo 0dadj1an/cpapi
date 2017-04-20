@@ -14,11 +14,18 @@ def addhostgroup(usrdef_sship, hostname, groupname, sid):
 
 #Method to retrieve all hosts
 def getallhosts(usrdef_sship, sid):
+    count = 500
     show_hosts_data = {'limit':500, 'details-level':'standard'}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     allhostlist = []
     for hosts in show_hosts_result["objects"]:
         allhostlist.append(hosts["name"])
+    while show_hosts_result["to"] != show_hosts_result["total"]:
+        show_hosts_data = {'offset':count, 'limit':500, 'details-level':'standard'}
+        show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
+        for host in show_hosts_result["objects"]:
+            allhostlist.append(hosts["name"])
+        count = count + 500
     return (allhostlist)
 
 #Method for adding a host object for importhost
@@ -49,7 +56,6 @@ def exporthosts(usrdef_sship, sid):
             natsettings = host["nat-settings"]
             natsettings.pop('ipv6-address', None)
             natsettings = str(natsettings)
-        hostexportfile = open(("exportedhosts.csv"), "a")
         hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
         hostexportfile.write(natsettings)
         hostexportfile.write("\n")
@@ -61,7 +67,6 @@ def exporthosts(usrdef_sship, sid):
                 natsettings = host["nat-settings"]
                 natsettings.pop('ipv6-address', None)
                 natsettings = str(natsettings)
-            hostexportfile = open(("exportedhosts.csv"), "a")
             hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
             hostexportfile.write(natsettings)
             hostexportfile.write("\n")
