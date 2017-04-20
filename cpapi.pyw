@@ -299,7 +299,8 @@ class ObjectToGroup(tk.Frame):
         allhost.grid(row=2, column=0, sticky=E)
         defaulthost = StringVar(self)
         defaulthost.set("Select Host")
-        hostmenu = OptionMenu(self, defaulthost, *allhostlist)
+        hostmenu = ttk.Combobox(self, textvariable=defaulthost, state='readonly')
+        hostmenu['value'] = allhostlist
         hostmenu.grid(row=2, column=1)
 
         #Network Dropdown
@@ -307,7 +308,8 @@ class ObjectToGroup(tk.Frame):
         allnet.grid(row=3, column=0, sticky=E)
         defaultnet = StringVar(self)
         defaultnet.set("Select Network")
-        netmenu = OptionMenu(self, defaultnet, *allnetlist)
+        netmenu = ttk.Combobox(self, textvariable=defaultnet, state='readonly')
+        netmenu['value'] = allnetlist
         netmenu.grid(row=3, column=1)
 
         #Group Dropdown
@@ -315,7 +317,8 @@ class ObjectToGroup(tk.Frame):
         allgroup1.grid(row=4, column=0, sticky=E)
         defaultaddgroup = StringVar(self)
         defaultaddgroup.set("Select Group")
-        groupaddmenu = OptionMenu(self, defaultaddgroup, *allgrouplist)
+        groupaddmenu = ttk.Combobox(self, textvariable=defaultaddgroup, state='readonly')
+        groupaddmenu['value'] = allgrouplist
         groupaddmenu.grid(row=4, column=1)
 
         #Target Group Dropdown
@@ -323,7 +326,8 @@ class ObjectToGroup(tk.Frame):
         allgroup2.grid(row=2, column=3)
         defaultgroup = StringVar(self)
         defaultgroup.set("Target Group")
-        groupmenu = OptionMenu(self, defaultgroup, *allgrouplist)
+        groupmenu = ttk.Combobox(self, textvariable=defaultgroup, state='readonly')
+        groupmenu['value'] = allgrouplist
         groupmenu.grid(row=3, column=3)
 
         #Button to add host to group
@@ -555,7 +559,8 @@ class ExportRules(tk.Frame):
         #Package Dropdown
         defaultpackage = StringVar(self)
         defaultpackage.set("Select Package")
-        packagemenu = OptionMenu(self, defaultpackage, *allpackagelist)
+        packagemenu = ttk.Combobox(self, textvariable=defaultpackage, state='readonly')
+        packagemenu['value'] = allpackagelist
         packagemenu.grid(row=1, column=0)
 
         #Button to retrieve layers from package
@@ -570,7 +575,8 @@ class ExportRules(tk.Frame):
         #Layer Dropdown
         defaultlayer = StringVar(self)
         defaultlayer.set("Select Layer")
-        layermenu = OptionMenu(self, defaultlayer, *alllayerslist)
+        layermenu = ttk.Combobox(self, textvariable=defaultlayer, state='readonly')
+        layermenu['value'] = alllayerslist
         layermenu.grid(row=2, column=0)
 
         #Button to retrieve rulebase
@@ -758,7 +764,8 @@ class RunCommand(tk.Frame):
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
-        targetmenu = OptionMenu(self, defaulttarget, *targetslist)
+        targetmenu = ttk.Combobox(self, textvariable=defaulttarget, state='readonly')
+        targetmenu['value'] = targetslist
         targetmenu.grid(row=1, column=0)
 
         #Command Name
@@ -810,7 +817,8 @@ class PutFile(tk.Frame):
         #Target Dropdown
         defaulttarget = StringVar(self)
         defaulttarget.set("Select Target")
-        targetmenu = OptionMenu(self, defaulttarget, *targetslist)
+        targetmenu = ttk.Combobox(self, textvariable=defaulttarget, state='readonly')
+        targetmenu['value'] = targetslist
         targetmenu.grid(row=1, column=0)
 
         #File Location

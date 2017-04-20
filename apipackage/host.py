@@ -15,7 +15,7 @@ def addhostgroup(usrdef_sship, hostname, groupname, sid):
 #Method to retrieve all hosts
 def getallhosts(usrdef_sship, sid):
     count = 500
-    show_hosts_data = {'limit':500, 'details-level':'standard'}
+    show_hosts_data = {'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     allhostlist = []
     for hosts in show_hosts_result["objects"]:

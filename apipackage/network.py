@@ -15,7 +15,7 @@ def addnetgroup(usrdef_sship, netname, groupname, sid):
 #Method to retrieve all networks
 def getallnetworks(usrdef_sship, sid):
     count = 500
-    show_nets_data = {'limit':500, 'details-level':'standard'}
+    show_nets_data = {'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data, sid)
     allnetlist = []
     for nets in show_nets_result["objects"]:

@@ -15,7 +15,7 @@ def addgroupgroup(usrdef_sship, addgroupname, groupname, sid):
 #Method for retrieving all groups
 def getallgroups(usrdef_sship, sid):
     count = 500
-    show_groups_data = {'offset':0, 'limit':500, 'details-level':'standard'}
+    show_groups_data = {'offset':0, 'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
     allgrouplist = []
     for groups in show_groups_result["objects"]:
