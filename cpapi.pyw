@@ -286,14 +286,14 @@ class AddGroup(tk.Frame):
         #Group Color
         groupcolor_l = ttk.Label(self, text="Group Color", background="#494949", foreground="#f44242")
         groupcolor_l.grid(row=2, column=0, sticky=E)
-        groupcolor = StringVar(self)
-        groupcolor.set("black")
-        groupcolormenu = ttk.Combobox(self, textvariable=groupcolor, state='readonly')
+        defaultcolor = StringVar(self)
+        defaultcolor.set("black")
+        groupcolormenu = ttk.Combobox(self, textvariable=defaultcolor, state='readonly')
         groupcolormenu['value'] = allcolors
         groupcolormenu.grid(row=2, column=1)
 
         #Button to run command
-        runapi = ttk.Button(self, text="Add Group", command = lambda: group.addgroup(usrdef_sship, groupname_e.get(), sid))
+        runapi = ttk.Button(self, text="Add Group", command = lambda: group.addgroup(usrdef_sship, groupname_e.get(), defaultcolor.get(), sid))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp

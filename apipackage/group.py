@@ -3,8 +3,8 @@ from apipackage.post import api_call
 import threading, time
 
 #Method for adding a group object
-def addgroup(usrdef_sship, groupname, sid):
-    new_group_data = {'name':groupname}
+def addgroup(usrdef_sship, groupname, groupcolor, sid):
+    new_group_data = {'name':groupname, 'color':groupcolor}
     api_call(usrdef_sship, 443,'add-group', new_group_data ,sid)
 
 #Method to add group to group
