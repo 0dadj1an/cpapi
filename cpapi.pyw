@@ -8,6 +8,11 @@ from apipackage import *
 #Global Variable
 usrdef_sship = "tbd"
 sid = "tbd"
+allcolors = ['aquamarine', 'black', 'blue', 'crete blue', 'burlywood', 'cyan', 'dark green', 'khaki',
+            'orchid', 'dark orange', 'dark sea green', 'pink', 'turquoise', 'dark blue', 'firebrick',
+            'brown', 'forest green', 'gold', 'dark gold', 'gray', 'dark gray', 'light green', 'lemon chiffon',
+            'coral', 'sea green', 'sky blue', 'magenta', 'purple', 'slate blue', 'violet red', 'navy blue',
+            'olive', 'orange', 'red', 'sienna', 'yellow']
 
 class apiapp(tk.Tk):
 
@@ -197,7 +202,8 @@ class AddHost(tk.Frame):
         hostcolor_l.grid(row=3, column=0, sticky=E)
         defaultcolor = StringVar(self)
         defaultcolor.set("black")
-        hostcolormenu = OptionMenu(self, defaultcolor, "black", "blue", "cyan", "gold", "green", "red", "orange", "yellow")
+        hostcolormenu = ttk.Combobox(self, textvariable=defaultcolor, state='readonly')
+        hostcolormenu['value'] = allcolors
         hostcolormenu.grid(row=3, column=1)
 
         #Button to run command
@@ -241,13 +247,14 @@ class AddNetwork(tk.Frame):
         netmask_e.grid(row=3, column=1)
         netmask_e.configure(background="#ffffff")
 
-        #Host Color
+        #Network Color
         networkcolor_l = ttk.Label(self, text="Network Color", background="#494949", foreground="#f44242")
         networkcolor_l.grid(row=4, column=0, sticky=E)
         defaultcolor = StringVar(self)
         defaultcolor.set("black")
-        netowrkcolormenu = OptionMenu(self, defaultcolor, "black", "blue", "cyan", "gold", "green", "red", "orange", "yellow")
-        netowrkcolormenu.grid(row=4, column=1)
+        networkcolormenu = ttk.Combobox(self, textvariable=defaultcolor, state='readonly')
+        networkcolormenu['value'] = allcolors
+        networkcolormenu.grid(row=4, column=1)
 
         #Button to run command
         runapi = ttk.Button(self, text="Add Network", command = lambda: network.addnetwork(usrdef_sship, netname_e.get(), netaddr_e.get(), netmask_e.get(), defaultcolor.get(), sid))
@@ -275,6 +282,15 @@ class AddGroup(tk.Frame):
         groupname_e = Entry(self, bd=5)
         groupname_e.grid(row=1, column=1)
         groupname_e.configure(background="#ffffff")
+
+        #Group Color
+        groupcolor_l = ttk.Label(self, text="Group Color", background="#494949", foreground="#f44242")
+        groupcolor_l.grid(row=2, column=0, sticky=E)
+        groupcolor = StringVar(self)
+        groupcolor.set("black")
+        groupcolormenu = ttk.Combobox(self, textvariable=groupcolor, state='readonly')
+        groupcolormenu['value'] = allcolors
+        groupcolormenu.grid(row=2, column=1)
 
         #Button to run command
         runapi = ttk.Button(self, text="Add Group", command = lambda: group.addgroup(usrdef_sship, groupname_e.get(), sid))
