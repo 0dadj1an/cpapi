@@ -46,7 +46,7 @@ def getallpackages(usrdef_sship, sid):
 
 #Method to get layers
 def getalllayers(usrdef_sship, package, sid):
-    get_layers_data = {'limit':500, 'name':package}
+    get_layers_data = {'name':package}
     get_layers_result = api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
     alllayerslist = []
     for layer in get_layers_result["access-layers"]:
