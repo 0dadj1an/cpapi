@@ -63,7 +63,7 @@ def exportnetworks(usrdef_sship, sid):
         show_networks_data = {'offset':count, 'limit':500, 'details-level':'full'}
         show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
         for network in show_networks_result["objects"]:
-            if 'nat-settings' in host:
+            if 'nat-settings' in network:
                 natsettings = network["nat-settings"]
                 natsettings.pop('ipv6-address', None)
                 natsettings = str(natsettings)
