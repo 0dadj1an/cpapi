@@ -317,7 +317,7 @@ class ObjectToGroup(tk.Frame):
         defaulthost.set("Select Host")
         hostmenu = ttk.Combobox(self, textvariable=defaulthost, state='readonly')
         hostmenu['value'] = allhostlist
-        hostmenu.grid(row=2, column=1)
+        hostmenu.grid(row=2, column=1, columnspan=2)
 
         #Network Dropdown
         allnet = ttk.Label(self, text="All Networks", background="#494949", foreground="#f44242")
@@ -326,7 +326,7 @@ class ObjectToGroup(tk.Frame):
         defaultnet.set("Select Network")
         netmenu = ttk.Combobox(self, textvariable=defaultnet, state='readonly')
         netmenu['value'] = allnetlist
-        netmenu.grid(row=3, column=1)
+        netmenu.grid(row=3, column=1, columnspan=2)
 
         #Group Dropdown
         allgroup1 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
@@ -335,7 +335,7 @@ class ObjectToGroup(tk.Frame):
         defaultaddgroup.set("Select Group")
         groupaddmenu = ttk.Combobox(self, textvariable=defaultaddgroup, state='readonly')
         groupaddmenu['value'] = allgrouplist
-        groupaddmenu.grid(row=4, column=1)
+        groupaddmenu.grid(row=4, column=1, columnspan=2)
 
         #Target Group Dropdown
         allgroup2 = ttk.Label(self, text="All Groups", background="#494949", foreground="#f44242")
@@ -344,19 +344,19 @@ class ObjectToGroup(tk.Frame):
         defaultgroup.set("Target Group")
         groupmenu = ttk.Combobox(self, textvariable=defaultgroup, state='readonly')
         groupmenu['value'] = allgrouplist
-        groupmenu.grid(row=3, column=3)
+        groupmenu.grid(row=3, column=4)
 
         #Button to add host to group
         hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: host.addhostgroup(usrdef_sship, defaulthost.get(), defaultgroup.get(), sid))
-        hosttogroupb.grid(row=2, column=2)
+        hosttogroupb.grid(row=2, column=3)
 
         #Button to add network to group
         nettogroupb = ttk.Button(self, text="Add Network", command=lambda: network.addnetgroup(usrdef_sship, defaultnet.get(), defaultgroup.get(), sid))
-        nettogroupb.grid(row=3, column=2)
+        nettogroupb.grid(row=3, column=3)
 
         #Button to add group to group
         grouptogroup = ttk.Button(self, text="Add Group", command=lambda: group.addgroupgroup(usrdef_sship, defaultaddgroup.get(), defaultgroup.get(), sid))
-        grouptogroup.grid(row=4, column=2)
+        grouptogroup.grid(row=4, column=3)
 
     def __init__(self, parent, controller):
 
@@ -366,7 +366,7 @@ class ObjectToGroup(tk.Frame):
         self.configure(background="#494949")
         addhostlabel = ttk.Label(self, text="Add Object to Group")
         addhostlabel.configure(background="#494949", foreground="#f44242")
-        addhostlabel.grid(row=0, column=0, columnspan=2)
+        addhostlabel.grid(row=0, column=0, columnspan=3)
 
         #Button to retrieve objects
         runapi = ttk.Button(self, text="Get Objects", command=lambda: self.gethostnetgroup())
@@ -374,7 +374,7 @@ class ObjectToGroup(tk.Frame):
 
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        button.grid(row=1, column=2)
+        button.grid(row=1, column=3)
 
 class ImportHosts(tk.Frame):
 
