@@ -3,14 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 #Import cpapicall
-from cpapipackage import group
-from cpapipackage import host
-from cpapipackage import misc
-from cpapipackage import network
-from cpapipackage import policy
-from cpapipackage import post
-from cpapipackage import service
-from cpapipackage import session
+from cpapipackage import *
 
 #Global Variable
 usrdef_sship = "tbd"
