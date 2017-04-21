@@ -344,7 +344,7 @@ class ObjectToGroup(tk.Frame):
         defaultgroup.set("Target Group")
         groupmenu = ttk.Combobox(self, textvariable=defaultgroup, state='readonly')
         groupmenu['value'] = allgrouplist
-        groupmenu.grid(row=3, column=4)
+        groupmenu.grid(row=3, column=4, columnspan=2)
 
         #Button to add host to group
         hosttogroupb = ttk.Button(self, text="Add Host", command=lambda: host.addhostgroup(usrdef_sship, defaulthost.get(), defaultgroup.get(), sid))
