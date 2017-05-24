@@ -6,8 +6,6 @@ Requirements: Python3+
 
 Additional Packages Needed:
 
-pip install cpapipackage
-
 pip install requests
 
 ### GUIDE ###
