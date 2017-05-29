@@ -50,6 +50,9 @@ def exporthosts(usrdef_sship, sid):
     count = 500
     show_hosts_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
+    exporthostslog = open((".\logs\host\exporthostslog.log"), "w+")
+    exporthostslog.write(str(show_hosts_result))
+    exporthostslog.close()
     hostexportfile = open(("exportedhosts.csv"), "w+")
     for host in show_hosts_result["objects"]:
         if 'nat-settings' in host:

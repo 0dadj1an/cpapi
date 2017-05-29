@@ -57,9 +57,9 @@ def getalllayers(usrdef_sship, package, sid):
 def exportrules(usrdef_sship, package, layer, sid):
     show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-    policylog = open((".\logs\policy.log"), "w+")
-    policylog.write(str(show_rulebase_result))
-    policylog.close()
+    exportruleslog = open((".\logs\policy\exportruleslog.log"), "w+")
+    exportruleslog.write(str(show_rulebase_result))
+    exportruleslog.close()
     rulebaseexport = open(("exportedrules.csv"), "w+")
     for rule in show_rulebase_result["rulebase"]:
         countersrc = 0
