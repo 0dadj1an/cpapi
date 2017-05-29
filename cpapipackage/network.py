@@ -50,9 +50,6 @@ def exportnetworks(usrdef_sship, sid):
     count = 500
     show_networks_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
-    exportnetslog = open((".\logs\network\exportnetslog.log"), "w+")
-    exportnetslog.write(str(show_networks_result))
-    exportnetslog.close()
     networksexportfile = open(("exportednetworks.csv"), "w+")
     for network in show_networks_result["objects"]:
         if 'nat-settings' in network:

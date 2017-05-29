@@ -50,9 +50,6 @@ def exportgroups(usrdef_sship, sid):
     count = 500
     show_groups_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-    exportgroupslog = open((".\logs\group\exportgroupslog.log"), "w+")
-    exportgroupslog.write(str(show_groups_result))
-    exportgroupslog.close()
     groupsexportfile = open(("exportedgroups.csv"), "w+")
     for group in show_groups_result["objects"]:
         groupsexportfile.write(group["name"] + ",")
