@@ -33,7 +33,7 @@ def addgroupmembers(usrdef_sship, groupname, members, sid):
     new_group_data = {'name':groupname, 'members':members}
     t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443, 'add-group', new_group_data ,sid))
     t1.start()
-    time.sleep(0.1)
+    time.sleep(0.5)
 
 #Method to import group from csv
 def importgroups(usrdef_sship, filename, sid):

@@ -34,7 +34,7 @@ def importaddhost(usrdef_sship, hostname, hostip, hostcolor, natset, sid):
     new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
     t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443,'add-host', new_host_data ,sid))
     t1.start()
-    time.sleep(0.1)
+    time.sleep(0.5)
 
 #Method to import host from csv file
 def importhosts(usrdef_sship, filename, sid):

@@ -34,7 +34,7 @@ def importaddnetwork(usrdef_sship, netname, netsub, netmask, netcolor, natset, s
     new_network_data = {'name':netname, 'subnet':netsub, 'mask-length':netmask, 'color':netcolor, 'nat-settings':natset}
     t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443,'add-network', new_network_data ,sid))
     t1.start()
-    time.sleep(0.1)
+    time.sleep(0.5)
 
 #Method to import networks from csv
 def importnetworks(usrdef_sship, filename, sid):
