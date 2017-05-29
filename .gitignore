@@ -91,4 +91,11 @@ ENV/
 # Custom
 exported*.csv
 batch*.csv
-.\logs\*
+.\logs\group\*
+.\logs\host\*
+.\logs\misc\*
+.\logs\network\*
+.\logs\policy\*
+.\logs\post\*
+.\logs\service\*
+.\logs\session\*
