@@ -10,7 +10,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
     else:
         request_headers = {'Content-Type' : 'application/json', 'X-chkp-sid' : sid}
     try:
-        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=(10, 30), verify=False)
+        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=(30, 90), verify=False)
         if r.status_code == 200:
             return (r.json())
         else:
