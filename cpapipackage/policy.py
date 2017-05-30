@@ -72,7 +72,10 @@ def exportrules(usrdef_sship, package, layer, sid):
         dst = rule["destination"]
         srv = rule["service"]
         act = rule["action"]
-        trc = rule["track"]["type"]
+        if rule["track"]["type"]:
+            trc = rule["track"]["type"]
+        else:
+            trc = rule["track"]
         trg = rule["install-on"]
         for obj in show_rulebase_result["objects-dictionary"]:
             if name == obj["uid"]:
