@@ -157,3 +157,72 @@ def exportrules(usrdef_sship, package, layer, sid):
                 rulebaseexport.write(trgele + ';')
             rulebaseexport.write(trg[-1] + '\n')
     rulebaseexport.close()
+
+def importnat(usrdef_sship, filename, sid):
+    pass
+
+def exportnat(usrdef_sship, package, sid):
+    show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
+    show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    print (show_natrulebase_result)
+    natrulebasefile = open(("exportednatrules.csv"), "w+")
+    for rule in show_natrulebase_result["rulebase"]:
+        countertrg = 0
+        if 'auto-generated' in rule:
+            print ("made it")
+            ena = rule["enabled"]
+            met = rule["method"]
+            num = rule["rule-number"]
+            osc = rule["original-source"]
+            ods = rule["original-destination"]
+            osr = rule["original-service"]
+            tsc = rule["translated-source"]
+            tds = rule["translated-destination"]
+            tsr = rule["translated-service"]
+            trg = rule["install-on"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if ena == obj["uid"]:
+                    ena = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if met == obj["uid"]:
+                    met = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if num == obj["uid"]:
+                    num = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if osc == obj["uid"]:
+                    osc = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if ods == obj["uid"]:
+                    ods = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if osr == obj["uid"]:
+                    osr = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if tsc == obj["uid"]:
+                    tsc = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if tds == obj["uid"]:
+                    tds = obj["name"]
+            for obj in show_natrulebase_result["objects-dictionary"]:
+                if tsr == obj["uid"]:
+                    tsr = obj["name"]
+            if len(trg) == 1:
+                for obj in show_natrulebase_result["objects-dictionary"]:
+                    if trg[0] == obj["uid"]:
+                        trg = obj["name"]
+            else:
+                for trgobj in trg:
+                    for obj in show_natrulebase_result["objects-dictionary"]:
+                        if trgobj == obj["uid"]:
+                            trg[countertrg] = obj["name"]
+                            countertrg = countertrg + 1
+            print ("{};{};{};{};{};{};{};{};{};".format(ena, met, num, osc, ods, osr, tsc, tds, tsr))
+            natrulebasefile.write("{};{};{};{};{};{};{};{};{};".format(ena, met, num, osc, ods, osr, tsc, tds, tsr))
+            if isinstance(trg, str) == True:
+                natrulebasefile.write(trg + '\n')
+            else:
+                for trgele in trg[0:-1]:
+                    natrulebasefile.write(trgele + ',')
+                natrulebasefile.write(trg[-1] + '\n')
+    natrulebasefile.close()

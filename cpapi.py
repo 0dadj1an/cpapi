@@ -29,7 +29,7 @@ class apiapp(tk.Tk):
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
             ImportRules, ExportRules, ImportServices, ImportTCP, ImportUDP, ExportServices,
-            ExportTCP, ExportUDP, RunCommand, PutFile):
+            ExportTCP, ExportUDP, RunCommand, PutFile, ImportNat, ExportNat):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -153,11 +153,11 @@ class StartPage(tk.Frame):
 
         #Button to call import services window
         impservsb = ttk.Button(self, text="Import Services", command=lambda: controller.show_frame("ImportServices"))
-        impservsb.grid(row=6, column=4)
+        impservsb.grid(row=9, column=1)
 
         #Button to call export services window
         expservsb = ttk.Button(self, text="Export Services", command=lambda: controller.show_frame("ExportServices"))
-        expservsb.grid(row=7, column=4)
+        expservsb.grid(row=10, column=1)
 
         #Create More Space
         more_space_label = ttk.Label(self, background="#494949")
@@ -165,11 +165,19 @@ class StartPage(tk.Frame):
 
         #Button to call run-command window
         runcommandb = ttk.Button(self, text="Run Command", command=lambda: controller.show_frame("RunCommand"))
-        runcommandb.grid(row=9, column=0)
+        runcommandb.grid(row=1, column=3)
 
         #Button to call put-file window
         putfileb = ttk.Button(self, text="Put File", command=lambda: controller.show_frame("PutFile"))
-        putfileb.grid(row=9, column=1)
+        putfileb.grid(row=3, column=3)
+
+        #Button to call importnat
+        impnatb = ttk.Button(self, text="Import NAT", command=lambda: controller.show_frame("ImportNat"))
+        impnatb.grid(row=9, column=0)
+
+        #Button to call exportnat
+        impnatb = ttk.Button(self, text="Export NAT", command=lambda: controller.show_frame("ExportNat"))
+        impnatb.grid(row=10, column=0)
 
 class AddHost(tk.Frame):
 
@@ -882,6 +890,75 @@ class PutFile(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=1, column=2)
+
+class ImportNat(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Import NAT Services")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #File Selection
+        file_l = ttk.Label(self, text = "CSV File Name", background="#494949", foreground="#f44242")
+        file_l.grid(row=1, column=0, sticky=E)
+        file_e = Entry(self, bd=5)
+        file_e.grid(row=1, column=1)
+        file_e.configure(background="#ffffff")
+
+        #Button to import udp services
+        impservb = ttk.Button(self, text="Import NAT Rules", command=lambda: policy.importnat(usrdef_sship, file_e.get(), sid))
+        impservb.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=1, column=3)
+
+        #Example file
+        example_l = ttk.Label(self, text="Example file provided in repository!")
+        example_l.configure(background="#494949", foreground="#f44242")
+        example_l.grid(row=2, columnspan=2)
+
+class ExportNat(tk.Frame):
+
+    #Method to retrieve available packages
+    def getpackages(self):
+
+        #Retrieve list of packages
+        allpackagelist = policy.getallpackages(usrdef_sship, sid)
+
+        #Package Dropdown
+        defaultpackage = StringVar(self)
+        defaultpackage.set("Select Package")
+        packagemenu = ttk.Combobox(self, textvariable=defaultpackage, state='readonly')
+        packagemenu['value'] = allpackagelist
+        packagemenu.grid(row=1, column=0)
+
+        #Button to retrieve rulebase
+        showrulebaseb = ttk.Button(self, text="Export Rules", command=lambda: policy.exportnat(usrdef_sship, defaultpackage.get(), sid))
+        showrulebaseb.grid(row=3, column=0)
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Export NAT Rules")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=2)
+
+        #Button to retrieve packages
+        getpackagesb = ttk.Button(self, text="Get Packages", command=lambda: self.getpackages())
+        getpackagesb.grid(row=1, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=4, column=0)
 
 if __name__ == "__main__":
     app = apiapp()
