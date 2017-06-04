@@ -57,108 +57,118 @@ def getalllayers(usrdef_sship, package, sid):
 def exportrules(usrdef_sship, package, layer, sid):
     show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
-    resulttofile = open(("export.txt"), "w+")
-    resulttofile.write(str(show_rulebase_result))
-    resulttofile.close()
+    logfile = open(("logfile.txt"), "w+")
+    logfile.write(str(show_rulebase_result))
+    logfile.close()
     rulebaseexport = open(("exportedrules.csv"), "w+")
-    for rule in show_rulebase_result["rulebase"]:
-        countersrc = 0
-        counterdst = 0
-        countersrv = 0
-        countertrg = 0
-        if 'name' in rule:
-            name = rule["name"]
-        else:
-            name = "ASSIGN NAME"
-        num = rule["rule-number"]
-        src = rule["source"]
-        dst = rule["destination"]
-        srv = rule["service"]
-        act = rule["action"]
-        if rule["track"]["type"]:
-            trc = rule["track"]["type"]
-        else:
-            trc = rule["track"]
-        trg = rule["install-on"]
+    if 'rulebase' in show_rulebase_result["rulebase"]:
+        for rule in show_rulebase_result["rulebase"]:
+            if "type" == "access-rule":
+                filterpolicyrule()
+        for rule in show_rulebase_result["rulebase"]["rulebase"]:
+            filterpolicyrule()
+        for rule in show_rulebase_result["rulebase"]:
+            filterpolicyrule()
+
+#Method to save policy rule
+def filterpolicyrule():
+    countersrc = 0
+    counterdst = 0
+    countersrv = 0
+    countertrg = 0
+    if 'name' in rule:
+        name = rule["name"]
+    else:
+        name = "ASSIGN NAME"
+    num = rule["rule-number"]
+    src = rule["source"]
+    dst = rule["destination"]
+    srv = rule["service"]
+    act = rule["action"]
+    if rule["track"]["type"]:
+        trc = rule["track"]["type"]
+    else:
+        trc = rule["track"]
+    trg = rule["install-on"]
+    for obj in show_rulebase_result["objects-dictionary"]:
+        if name == obj["uid"]:
+            name = obj["name"]
+    for obj in show_rulebase_result["objects-dictionary"]:
+        if num == obj["uid"]:
+            num = obj["name"]
+    if len(src) == 1:
         for obj in show_rulebase_result["objects-dictionary"]:
-            if name == obj["uid"]:
-                name = obj["name"]
+            if src[0] == obj["uid"]:
+                src = obj["name"]
+    else:
+        for srcobj in src:
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if srcobj == obj["uid"]:
+                    src[countersrc] = obj["name"]
+                    countersrc = countersrc + 1
+    if len(dst) == 1:
         for obj in show_rulebase_result["objects-dictionary"]:
-            if num == obj["uid"]:
-                num = obj["name"]
-        if len(src) == 1:
+            if dst[0] == obj["uid"]:
+                dst = obj["name"]
+    else:
+        for dstobj in dst:
             for obj in show_rulebase_result["objects-dictionary"]:
-                if src[0] == obj["uid"]:
-                    src = obj["name"]
-        else:
-            for srcobj in src:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if srcobj == obj["uid"]:
-                        src[countersrc] = obj["name"]
-                        countersrc = countersrc + 1
-        if len(dst) == 1:
-            for obj in show_rulebase_result["objects-dictionary"]:
-                if dst[0] == obj["uid"]:
-                    dst = obj["name"]
-        else:
-            for dstobj in dst:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if dstobj == obj["uid"]:
-                        dst[counterdst] = obj["name"]
-                        counterdst = counterdst + 1
-        if len(srv) == 1:
-            for obj in show_rulebase_result["objects-dictionary"]:
-                if srv[0] == obj["uid"]:
-                    srv = obj["name"]
-        else:
-            for srvobj in srv:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if srvobj == obj["uid"]:
-                        srv[countersrv] = obj["name"]
-                        countersrv = countersrv + 1
+                if dstobj == obj["uid"]:
+                    dst[counterdst] = obj["name"]
+                    counterdst = counterdst + 1
+    if len(srv) == 1:
         for obj in show_rulebase_result["objects-dictionary"]:
-            if act == obj["uid"]:
-                act = obj["name"]
-        for obj in show_rulebase_result["objects-dictionary"]:
-            if trc == obj["uid"]:
-                trc = obj["name"]
-        if len(trg) == 1:
+            if srv[0] == obj["uid"]:
+                srv = obj["name"]
+    else:
+        for srvobj in srv:
             for obj in show_rulebase_result["objects-dictionary"]:
-                if trg[0] == obj["uid"]:
-                    trg = obj["name"]
-        else:
-            for trgobj in trg:
-                for obj in show_rulebase_result["objects-dictionary"]:
-                    if trgobj == obj["uid"]:
-                        trg[countertrg] = obj["name"]
-                        countertrg = countertrg + 1
-        rulebaseexport.write(str(num) + ',' + name + ',')
-        if isinstance(src, str) == True:
-            rulebaseexport.write(src + ',')
-        else:
-            for srcele in src[0:-1]:
-                rulebaseexport.write(srcele + ';')
-            rulebaseexport.write(src[-1] + ',')
-        if isinstance(dst, str) == True:
-            rulebaseexport.write(dst + ',')
-        else:
-            for dstele in dst[0:-1]:
-                rulebaseexport.write(dstele + ';')
-            rulebaseexport.write(dst[-1] + ',')
-        if isinstance(srv, str) == True:
-            rulebaseexport.write(srv + ',')
-        else:
-            for srvele in srv[0:-1]:
-                rulebaseexport.write(srvele + ';')
-            rulebaseexport.write(srv[-1] + ',')
-        rulebaseexport.write(act + ',')
-        rulebaseexport.write(trc + ',')
-        if isinstance(trg, str) == True:
-            rulebaseexport.write(trg + '\n')
-        else:
-            for trgele in trg[0:-1]:
-                rulebaseexport.write(trgele + ';')
-            rulebaseexport.write(trg[-1] + '\n')
+                if srvobj == obj["uid"]:
+                    srv[countersrv] = obj["name"]
+                    countersrv = countersrv + 1
+    for obj in show_rulebase_result["objects-dictionary"]:
+        if act == obj["uid"]:
+            act = obj["name"]
+    for obj in show_rulebase_result["objects-dictionary"]:
+        if trc == obj["uid"]:
+            trc = obj["name"]
+    if len(trg) == 1:
+        for obj in show_rulebase_result["objects-dictionary"]:
+            if trg[0] == obj["uid"]:
+                trg = obj["name"]
+    else:
+        for trgobj in trg:
+            for obj in show_rulebase_result["objects-dictionary"]:
+                if trgobj == obj["uid"]:
+                    trg[countertrg] = obj["name"]
+                    countertrg = countertrg + 1
+    rulebaseexport.write(str(num) + ',' + name + ',')
+    if isinstance(src, str) == True:
+        rulebaseexport.write(src + ',')
+    else:
+        for srcele in src[0:-1]:
+            rulebaseexport.write(srcele + ';')
+        rulebaseexport.write(src[-1] + ',')
+    if isinstance(dst, str) == True:
+        rulebaseexport.write(dst + ',')
+    else:
+        for dstele in dst[0:-1]:
+            rulebaseexport.write(dstele + ';')
+        rulebaseexport.write(dst[-1] + ',')
+    if isinstance(srv, str) == True:
+        rulebaseexport.write(srv + ',')
+    else:
+        for srvele in srv[0:-1]:
+            rulebaseexport.write(srvele + ';')
+        rulebaseexport.write(srv[-1] + ',')
+    rulebaseexport.write(act + ',')
+    rulebaseexport.write(trc + ',')
+    if isinstance(trg, str) == True:
+        rulebaseexport.write(trg + '\n')
+    else:
+        for trgele in trg[0:-1]:
+            rulebaseexport.write(trgele + ';')
+        rulebaseexport.write(trg[-1] + '\n')
     rulebaseexport.close()
 
 def importnat(usrdef_sship, filename, sid):
@@ -167,7 +177,9 @@ def importnat(usrdef_sship, filename, sid):
 def exportnat(usrdef_sship, package, sid):
     show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
     show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
-    print (show_natrulebase_result)
+    logfile = open(("logfile.txt"), "w+")
+    logfile.write(str(show_natrulebase_result))
+    logfile.close()
     natrulebasefile = open(("exportednatrules.csv"), "w+")
     for rule in show_natrulebase_result["rulebase"]:
         countertrg = 0
