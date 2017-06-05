@@ -60,18 +60,18 @@ def exportrules(usrdef_sship, package, layer, sid):
     logfile = open(("logfile.txt"), "w+")
     logfile.write(str(show_rulebase_result))
     logfile.close()
-    rulebaseexport = open(("exportedrules.csv"), "w+")
-    if 'rulebase' in show_rulebase_result["rulebase"]:
-        for rule in show_rulebase_result["rulebase"]:
-            if "type" == "access-rule":
-                filterpolicyrule()
-        for rule in show_rulebase_result["rulebase"]["rulebase"]:
-            filterpolicyrule()
-        for rule in show_rulebase_result["rulebase"]:
-            filterpolicyrule()
+    for rule in show_rulebase_result["rulebase"]:
+        if "type" in rule:
+            thetype = rule["type"]
+            if thetype == "access-rule":
+                filterpolicyrule(rule, show_rulebase_result)
+    print (show_rulebase_result["rulebase"]["rulebase"])
+    for rule in show_rulebase_result["rulebase"]["rulebase"]:
+        filterpolicyrule(rule, show_rulebase_result)
 
 #Method to save policy rule
-def filterpolicyrule():
+def filterpolicyrule(rule, show_rulebase_result):
+    rulebaseexport = open(("exportedrules.csv"), "w+")
     countersrc = 0
     counterdst = 0
     countersrv = 0
