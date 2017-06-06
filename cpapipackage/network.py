@@ -50,6 +50,8 @@ def exportnetworks(usrdef_sship, sid):
     count = 500
     show_networks_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+    logfile = open(("logfile.txt"), "a")
+    logfile.write(str(show_networks_result) + "\n")
     networksexportfile = open(("exportednetworks.csv"), "w+")
     for network in show_networks_result["objects"]:
         if 'nat-settings' in network:
@@ -62,6 +64,8 @@ def exportnetworks(usrdef_sship, sid):
     while show_networks_result["to"] != show_networks_result["total"]:
         show_networks_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+        logfile = open(("logfile.txt"), "a")
+        logfile.write(str(show_networks_result) + "\n")
         for network in show_networks_result["objects"]:
             if 'nat-settings' in network:
                 natsettings = network["nat-settings"]
