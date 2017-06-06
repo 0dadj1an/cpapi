@@ -174,9 +174,9 @@ def filterpolicyrule(rule, show_rulebase_result):
 
 #Method to add nat rules for import nat
 def importaddnat(usrdef_sship, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid):
-    add_rule_data = {'layer':'Network', 'enabled':ena, 'method':met, 'position':num, 'original-source':osc, 'original-destination':ods,
+    add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':num, 'original-source':osc, 'original-destination':ods,
                     'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
-    api_call(usrdef_sship, 443, 'add-access-rule', add_rule_data, sid)
+    api_call(usrdef_sship, 443, 'add-nat-rule', add_rule_data, sid)
 
 #Method to import nat rules from csv
 def importnat(usrdef_sship, filename, sid):
@@ -198,7 +198,7 @@ def importnat(usrdef_sship, filename, sid):
             trg = fullrule[9].split(';')
         except:
             trg = fullrule[9]
-        importaddnat(usrdef_sship, num, name, src, dst, srv, act, trc, trg, sid)
+        importaddnat(usrdef_sship, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid)
 
 #Method to export manual nat rules
 def exportnat(usrdef_sship, package, sid):
