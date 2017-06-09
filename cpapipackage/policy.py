@@ -173,9 +173,14 @@ def filterpolicyrule(rule, show_rulebase_result):
     rulebaseexport.close()
 
 #Method to add nat rules for import nat
-def importaddnat(usrdef_sship, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid):
-    add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':num, 'original-source':osc, 'original-destination':ods,
-                    'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
+def importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid):
+    if aut == "False" and num == "1":
+        add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':'top', 'original-source':osc, 'original-destination':ods,
+                        'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
+        api_call(usrdef_sship, 443, 'add-nat-rule', add_rule_data, sid)
+    elif aut == "False":
+        add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':num, 'original-source':osc, 'original-destination':ods,
+                        'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
     api_call(usrdef_sship, 443, 'add-nat-rule', add_rule_data, sid)
 
 #Method to import nat rules from csv
@@ -185,20 +190,22 @@ def importnat(usrdef_sship, filename, sid):
         if not line:
             continue
         fullrule = line.split(',')
-        ena = fullrule[0]
-        met = fullrule[1]
-        num = fullrule[2]
-        osc = fullrule[3]
-        ods = fullrule[4]
-        osr = fullrule[5]
-        tsc = fullrule[6]
-        tds = fullrule[7]
-        tsr = fullrule[8]
+        aut = fullrule[0]
+        ena = fullrule[1]
+        met = fullrule[2]
+        num = fullrule[3]
+        osc = fullrule[4]
+        ods = fullrule[5]
+        osr = fullrule[6]
+        tsc = fullrule[7]
+        tds = fullrule[8]
+        tsr = fullrule[9]
         try:
-            trg = fullrule[9].split(';')
+            trg = fullrule[10].split(';')
         except:
-            trg = fullrule[9]
-        importaddnat(usrdef_sship, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid)
+            trg = fullrule[10]
+        if aut == "False":
+            importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid)
 
 #Method to export manual nat rules
 def exportnat(usrdef_sship, package, sid):
@@ -220,61 +227,56 @@ def exportnat(usrdef_sship, package, sid):
 def filternatrule(rule, show_natrulebase_result):
     natrulebasefile = open(("exportednatrules.csv"), "a")
     countertrg = 0
-    if 'auto-generated' in rule:
-        auto = rule["auto-generated"]
-        if str(auto) == "False":
-            ena = rule["enabled"]
-            met = rule["method"]
-            num = rule["rule-number"]
-            osc = rule["original-source"]
-            ods = rule["original-destination"]
-            osr = rule["original-service"]
-            tsc = rule["translated-source"]
-            tds = rule["translated-destination"]
-            tsr = rule["translated-service"]
-            trg = rule["install-on"]
+    # if 'auto-generated' in rule:
+    #     auto = rule["auto-generated"]
+    #     if str(auto) == "False":
+    aut = rule["auto-generated"]
+    ena = rule["enabled"]
+    met = rule["method"]
+    num = rule["rule-number"]
+    osc = rule["original-source"]
+    ods = rule["original-destination"]
+    osr = rule["original-service"]
+    tsc = rule["translated-source"]
+    tds = rule["translated-destination"]
+    tsr = rule["translated-service"]
+    trg = rule["install-on"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if num == obj["uid"]:
+            num = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if osc == obj["uid"]:
+            osc = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if ods == obj["uid"]:
+            ods = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if osr == obj["uid"]:
+            osr = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if tsc == obj["uid"]:
+            tsc = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if tds == obj["uid"]:
+            tds = obj["name"]
+    for obj in show_natrulebase_result["objects-dictionary"]:
+        if tsr == obj["uid"]:
+            tsr = obj["name"]
+    if len(trg) == 1:
+        for obj in show_natrulebase_result["objects-dictionary"]:
+            if trg[0] == obj["uid"]:
+                trg = obj["name"]
+    else:
+        for trgobj in trg:
             for obj in show_natrulebase_result["objects-dictionary"]:
-                if ena == obj["uid"]:
-                    ena = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if met == obj["uid"]:
-                    met = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if num == obj["uid"]:
-                    num = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if osc == obj["uid"]:
-                    osc = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if ods == obj["uid"]:
-                    ods = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if osr == obj["uid"]:
-                    osr = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if tsc == obj["uid"]:
-                    tsc = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if tds == obj["uid"]:
-                    tds = obj["name"]
-            for obj in show_natrulebase_result["objects-dictionary"]:
-                if tsr == obj["uid"]:
-                    tsr = obj["name"]
-            if len(trg) == 1:
-                for obj in show_natrulebase_result["objects-dictionary"]:
-                    if trg[0] == obj["uid"]:
-                        trg = obj["name"]
-            else:
-                for trgobj in trg:
-                    for obj in show_natrulebase_result["objects-dictionary"]:
-                        if trgobj == obj["uid"]:
-                            trg[countertrg] = obj["name"]
-                            countertrg = countertrg + 1
-            natrulebasefile.write("{},{},{},{},{},{},{},{},{},".format(ena, met, num, osc, ods, osr, tsc, tds, tsr))
-            if isinstance(trg, str) == True:
-                natrulebasefile.write(trg + '\n')
-            else:
-                for trgele in trg[0:-1]:
-                    natrulebasefile.write(trgele + ';')
-                natrulebasefile.write(trg[-1] + '\n')
-            natrulebasefile.close()
+                if trgobj == obj["uid"]:
+                    trg[countertrg] = obj["name"]
+                    countertrg = countertrg + 1
+    natrulebasefile.write("{},{},{},{},{},{},{},{},{},{},".format(aut, ena, met, num, osc, ods, osr, tsc, tds, tsr))
+    if isinstance(trg, str) == True:
+        natrulebasefile.write(trg + '\n')
+    else:
+        for trgele in trg[0:-1]:
+            natrulebasefile.write(trgele + ';')
+        natrulebasefile.write(trg[-1] + '\n')
+    natrulebasefile.close()
