@@ -34,18 +34,22 @@ No color support.
 
 ### IMPORT RULES ###
 Default Imports to Package-Standard, Layer-Network, Policy
-Supported Fields - Number/Name/Source/Destination/Service/Action/Track/Install-On
-    - No support for alert settings inside of Track
+No support for alert settings inside of Track
 Does not support negated objects.
 Does not support in-line layers such as rules with sub-rules 1.2, 1.3, etc.
 Does not support sections.
 
 ### EXPORT RULES ###
-Supported Fields - Number/Name/Source/Destination/Service/Action/Track/Install-On
-    - No support for alert settings inside of Track
+No support for alert settings inside of Track
 Does not support negated objects.
 Does not support in-line layers such as rules with sub-rules 1.2, 1.3, etc.
 Does not support sections.
+
+### IMPORT NAT RULES ###
+Does not support sections
+
+### EXPORT NAT RULES ###
+Does not support sections
 
 ### EXPORT SERVICES ###
 Supports all available function fields.
