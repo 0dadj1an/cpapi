@@ -176,11 +176,10 @@ def filterpolicyrule(rule, show_rulebase_result):
 def importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid):
     if aut == "False" and num == "1":
         add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':'top', 'original-source':osc, 'original-destination':ods,
-                        'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
-        api_call(usrdef_sship, 443, 'add-nat-rule', add_rule_data, sid)
-    elif aut == "False":
+                        'original-source':osc, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
+    elif aut == "False" and num !="1":
         add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':num, 'original-source':osc, 'original-destination':ods,
-                        'original-source':osr, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
+                        'original-source':osc, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
     api_call(usrdef_sship, 443, 'add-nat-rule', add_rule_data, sid)
 
 #Method to import nat rules from csv
