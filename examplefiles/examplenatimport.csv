@@ -1,0 +1,10 @@
+#### FIELDS #### ###EXCLUDE THESE LINES IN REAL FILE ###
+#### False,True,method,source,destination,service,sourcetrans,desttrans,servtrans,install-on ####
+### field 1 = auto-generated (Boolean) (MUST BE FALSE)
+### field 2 = enabled (Boolean) (True/False)
+### field 3 = method (static/hide)
+
+### field 11 = install-on (if multiple separate with ;)
+
+False,True,static,1,host1,Original,Any,host2,Original,Original,Policy Targets
+False,True,static,6,group3,network4,Any,host3,Original,https,Policy Targets
