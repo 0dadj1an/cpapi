@@ -21,3 +21,6 @@ def api_call(ip_addr, port, command, json_payload, sid):
         messagebox.showinfo("Command Response", "Request Timeout")
     except requests.exceptions.ConnectionError:
         messagebox.showinfo("Command Response", "Connection Error")
+    except:
+        messagebox.showinfo("Command Response", "Uh oh...")
+        
