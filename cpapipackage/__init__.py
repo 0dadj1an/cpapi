@@ -1,1 +1,1 @@
-__all__ = ['session', 'host', 'network', 'group', 'policy', 'misc', 'service']
+__all__ = ['session', 'host', 'network', 'group', 'policy', 'misc', 'service', 'gem']

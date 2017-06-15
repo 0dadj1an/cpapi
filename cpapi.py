@@ -31,7 +31,7 @@ class apiapp(tk.Tk):
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
             ImportRules, ExportRules, ImportServices, ImportTCP, ImportUDP, ExportServices,
-            ExportTCP, ExportUDP, RunCommand, PutFile, ImportNat, ExportNat):
+            ExportTCP, ExportUDP, RunCommand, PutFile, ImportNat, ExportNat, GEMImport, GEMExport):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -180,6 +180,14 @@ class StartPage(tk.Frame):
         #Button to call exportnat
         impnatb = ttk.Button(self, text="Export NAT", command=lambda: controller.show_frame("ExportNat"))
         impnatb.grid(row=10, column=0)
+
+        #Button to GEM Import
+        gemib = ttk.Button(self, text="GEM Import", command=lambda: controller.show_frame("GEMImport"))
+        gemib.grid(row=9, column=2, columnspan=2)
+
+        #Button to GEM Export
+        gemeb = ttk.Button(self, text="GEM Export", command=lambda: controller.show_frame("GEMExport"))
+        gemeb.grid(row=10, column=2, columnspan=2)
 
 class AddHost(tk.Frame):
 
@@ -961,6 +969,46 @@ class ExportNat(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=4, column=0)
+
+class GEMImport(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Good Enough Migrate Import")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=3)
+
+        #Button to import udp services
+        impservb = ttk.Button(self, text="Start", command=lambda: gem.importgem(usrdef_sship, sid))
+        impservb.grid(row=1, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=1)
+
+class GEMExport(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Good Enough Migrate Export")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=3)
+
+        #Button to import udp services
+        impservb = ttk.Button(self, text="Start", command=lambda: gem.exportgem(usrdef_sship, sid))
+        impservb.grid(row=1, column=1)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=1)
 
 if __name__ == "__main__":
     app = apiapp()
