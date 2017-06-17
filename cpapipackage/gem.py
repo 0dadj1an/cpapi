@@ -1,5 +1,4 @@
 #Import
-import os
 from cpapipackage.host import exporthosts
 from cpapipackage.network import exportnetworks
 from cpapipackage.group import exportgroups

@@ -18,6 +18,7 @@ logfile = open(("logfile.txt"), "w+")
 
 class apiapp(tk.Tk):
 
+    #Style Configuration for page
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.wm_title("Check Point API Tool")
@@ -27,6 +28,7 @@ class apiapp(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
+        #All Classs(Page) Names
         self.frames = {}
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
@@ -38,6 +40,7 @@ class apiapp(tk.Tk):
 
             frame.grid(row=0, column=0, sticky="nesw")
 
+        #Auto load starting page
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
