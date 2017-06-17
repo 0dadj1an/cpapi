@@ -72,12 +72,12 @@ def exportnetworks(usrdef_sship, sid):
     networksexportfile = open(("exportednetworks.csv"), "w+")
     #Iterate over json response to export network info
     for network in show_networks_result["objects"]:
+        if 'subnet6' in network:
+            continue
         #Have to check for NAT first
         if 'nat-settings' in network:
-            #Save to variable and remove IPv6 SHIT!!!
+            #Save natsettings to variabl to modify to string later
             natsettings = network["nat-settings"]
-            natsettings.pop('ipv6-address', None)
-            natsettings.pop('subnet6', None)
             #Save as string for write
             natsettings = str(natsettings)
         networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
@@ -90,10 +90,10 @@ def exportnetworks(usrdef_sship, sid):
         logfile = open(("logfile.txt"), "a")
         logfile.write(str(show_networks_result) + "\n")
         for network in show_networks_result["objects"]:
+            if 'subnet6' in network:
+                continue
             if 'nat-settings' in network:
                 natsettings = network["nat-settings"]
-                natsettings.pop('ipv6-address', None)
-                natsettings.pop('subnet6', None)
                 natsettings = str(natsettings)
             networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
             networksexportfile.write(natsettings)

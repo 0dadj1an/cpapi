@@ -70,11 +70,11 @@ def exporthosts(usrdef_sship, sid):
     hostexportfile = open(("exportedhosts.csv"), "w+")
     #Iterate over host and retrieve values to write to file
     for host in show_hosts_result["objects"]:
+        print (host)
         #Must check for NAT settings first
         if 'nat-settings' in host:
-            #Save to variable and remove IPV6 SHIT!
+            #Save natsettings to variable to convert to string later
             natsettings = host["nat-settings"]
-            natsettings.pop('ipv6-address', None)
             #Is dictionary, save as string for write
             natsettings = str(natsettings)
         hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
@@ -89,7 +89,6 @@ def exporthosts(usrdef_sship, sid):
         for host in show_hosts_result["objects"]:
             if 'nat-settings' in host:
                 natsettings = host["nat-settings"]
-                natsettings.pop('ipv6-address', None)
                 natsettings = str(natsettings)
             hostexportfile.write(host["name"] + ";" + host["ipv4-address"] + ";" + host["color"] + ";")
             hostexportfile.write(natsettings)

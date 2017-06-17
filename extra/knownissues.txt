@@ -2,6 +2,7 @@
 
 ### ALL ###
 Feedback given only if issue occurred, otherwise no feedback is a success.
+IPv6 Objects are not supported at this time. 
 
 ### ADD HOST ###
 Only support for Name/Color/IP settings, notably NAT settings not supported currently.
