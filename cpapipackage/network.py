@@ -72,6 +72,7 @@ def exportnetworks(usrdef_sship, sid):
     networksexportfile = open(("exportednetworks.csv"), "w+")
     #Iterate over json response to export network info
     for network in show_networks_result["objects"]:
+        #Check for ipv6 object
         if 'subnet6' in network:
             continue
         #Have to check for NAT first
