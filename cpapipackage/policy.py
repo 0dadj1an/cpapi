@@ -66,9 +66,14 @@ def getalllayers(usrdef_sship, package, sid):
 
 #Method to get export rules
 def exportrules(usrdef_sship, package, layer, sid):
-    #Form API Payload and Call Post
-    show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
-    show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    #Check if run from gem
+    if package == 'package':
+        show_rulebase_data = {'package':'Standard', 'name':'Network', 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    else:
+        #Form API Payload and Call Post
+        show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
     #Write json result to log file
     logfile = open(("logfile.txt"), "a")
     logfile.write(str(show_rulebase_result) + "\n")
@@ -232,9 +237,14 @@ def importnat(usrdef_sship, filename, sid):
 
 #Method to export manual nat rules
 def exportnat(usrdef_sship, package, sid):
-    #Form API Payload and Call Post
-    show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
-    show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    #Check if from gem
+    if package == 'package':
+        show_natrulebase_data = {'package':'Standard', 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    else:
+        #Form API Payload and Call Post
+        show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
     #Write json response to log file
     logfile = open(("logfile.txt"), "a")
     logfile.write(str(show_natrulebase_result) + "\n")
