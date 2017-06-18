@@ -24,7 +24,7 @@ def exporttcpservices(usrdef_sship, sid):
                             str(service["session-timeout"]) + ";" + str(sp) + ";" + str(service["match-for-any"]) + ";" +
                             str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["aggressive-aging"]) + "\n")
         elif service["domain"]["name"] == 'Check Point Data':
-            break
+            continue
         else:
             print ("uh oh")
     tcpexport.close()
@@ -76,7 +76,7 @@ def exportudpservices(usrdef_sship, sid):
                             str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["aggressive-aging"]) + "\n")
         #Break loop if default object
         elif service["domain"]["name"] == 'Check Point Data':
-            break
+            continue
         #You never know.
         else:
             print ("uh oh")

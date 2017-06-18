@@ -25,7 +25,7 @@ hostfile = 'exportedhosts.csv'
 netfile = 'exportednetworks.csv'
 groupfile = 'exportedgroups.csv'
 rulesfile = 'exportedrules.csv'
-natfile = 'exportednatrule.csv'
+natfile = 'exportednatrules.csv'
 tcpfile = 'exportedtcpsrv.csv'
 udpfile = 'exportedudpsrv.csv'
 
@@ -38,7 +38,7 @@ def exportgem(usrdef_sship, sid):
     exporttcpservices(usrdef_sship, sid)
     exportudpservices(usrdef_sship, sid)
 
-def importgem(usrdef_sship, hosts, nets, groups, policy, nat, tcp, udp, sid):
+def importgem(usrdef_sship, sid):
     importhosts(usrdef_sship, hostfile, sid)
     importnetworks(usrdef_sship, netfile, sid)
     importgroups(usrdef_sship, groupfile, sid)
