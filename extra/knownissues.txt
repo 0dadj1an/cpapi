@@ -2,6 +2,7 @@
 
 ### ALL ###
 Feedback given only if issue occurred, otherwise no feedback is a success.
+IPv6 Objects are not supported at this time.
 
 ### ADD HOST ###
 Only support for Name/Color/IP settings, notably NAT settings not supported currently.
@@ -58,5 +59,11 @@ API provides non-standard session-timeout value, but will set to default upon im
 API does not support "Enable for TCP resource" field.
 API does not support custom time for start sync.
 Supports up to 500 objects per tcp/udp.
+
+#### GEM Export ###
+Policy Export only supports package standard layer network
+NAT Rule Export only supports package standard
+
+### Gem Import ###
 
 ### THANK YOU ###

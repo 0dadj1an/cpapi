@@ -8,13 +8,16 @@ def importaddrules(usrdef_sship, num, name, src, dst, srv, act, trc, trg, sid):
 
 #Method to import rulebase from csv
 def importrules(usrdef_sship, filename, sid):
+    #Read csv and split format for add command
     csvrules = open(filename, "r").read().split("\n")
     for line in csvrules:
+        #This shit is everywhere
         if not line:
             continue
         fullrule = line.split(',')
         num = fullrule[0]
         name = fullrule[1]
+        #Some fields can contain multiple objects delimited with ;
         try:
             src = fullrule[2].split(';')
         except:
@@ -37,41 +40,62 @@ def importrules(usrdef_sship, filename, sid):
 
 #Method to get packages
 def getallpackages(usrdef_sship, sid):
+    #Form API Payload and Call Post
     get_packages_data = {'limit':500, 'details-level':'full'}
     get_packages_result = api_call(usrdef_sship, 443, 'show-packages', get_packages_data, sid)
+    #List to append policy packages to
     allpackagelist = []
+    #Iterate over json to export package names
     for package in get_packages_result["packages"]:
         allpackagelist.append(package["name"])
+    #Return list to GUI
     return (allpackagelist)
 
 #Method to get layers
 def getalllayers(usrdef_sship, package, sid):
+    #Form API Payload and Call Post
     get_layers_data = {'name':package}
     get_layers_result = api_call(usrdef_sship, 443, 'show-package', get_layers_data, sid)
+    #List to append layers to
     alllayerslist = []
+    #Iterate over json for layer names
     for layer in get_layers_result["access-layers"]:
         alllayerslist.append(layer["name"])
+    #Return list to GUI
     return (alllayerslist)
 
 #Method to get export rules
 def exportrules(usrdef_sship, package, layer, sid):
-    show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
-    show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    #Check if run from gem
+    if package == 'package':
+        show_rulebase_data = {'package':'Standard', 'name':'Network', 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    else:
+        #Form API Payload and Call Post
+        show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    #Write json result to log file
     logfile = open(("logfile.txt"), "a")
     logfile.write(str(show_rulebase_result) + "\n")
     rulebaseexport = open(("exportedrules.csv"), "w+")
     rulebaseexport.close()
+    #Iterate over json to extract rules
     for rule in show_rulebase_result["rulebase"]:
+        #Have to check for type first
         if "type" in rule:
+            #Save type to varialbe to run check against
             thetype = rule["type"]
+            #Call save method if a rule, as apposed to section
             if thetype == "access-rule":
                 filterpolicyrule(rule, show_rulebase_result)
+        #If sections exist, rulebase will exist in rulebase!!! DUMB CP!
         if "rulebase" in rule:
             for subrule in rule["rulebase"]:
                 filterpolicyrule(subrule, show_rulebase_result)
 
 #Method to save policy rule
 def filterpolicyrule(rule, show_rulebase_result):
+    #HUGE CRAZY MESS I'LL COMMENT ONE DAY!
     rulebaseexport = open(("exportedrules.csv"), "a")
     countersrc = 0
     counterdst = 0
@@ -174,6 +198,7 @@ def filterpolicyrule(rule, show_rulebase_result):
 
 #Method to add nat rules for import nat
 def importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid):
+    #Can't write to auto section, must use position top to avoid if it's the first rule
     if aut == "False" and num == "1":
         add_rule_data = {'package':'Standard', 'enabled':ena, 'method':met, 'position':'top', 'original-source':osc, 'original-destination':ods,
                         'original-source':osc, 'translated-source':tsc, 'translated-destination':tds, 'translated-service':tsr, 'install-on':trg}
@@ -184,8 +209,10 @@ def importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr,
 
 #Method to import nat rules from csv
 def importnat(usrdef_sship, filename, sid):
+    #Read csf and format for add nat rule method
     csvrules = open(filename, "r").read().split("\n")
     for line in csvrules:
+        #Hmmmmm
         if not line:
             continue
         fullrule = line.split(',')
@@ -199,36 +226,49 @@ def importnat(usrdef_sship, filename, sid):
         tsc = fullrule[7]
         tds = fullrule[8]
         tsr = fullrule[9]
+        #Some fields can have more than one object!
         try:
             trg = fullrule[10].split(';')
         except:
             trg = fullrule[10]
+        #Only add rule if not auto generated by objects
         if aut == "False":
             importaddnat(usrdef_sship, aut, ena, met, num, osc, ods, osr, tsc, tds, tsr, trg, sid)
 
 #Method to export manual nat rules
 def exportnat(usrdef_sship, package, sid):
-    show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
-    show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    #Check if from gem
+    if package == 'package':
+        show_natrulebase_data = {'package':'Standard', 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    else:
+        #Form API Payload and Call Post
+        show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
+        show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
+    #Write json response to log file
     logfile = open(("logfile.txt"), "a")
     logfile.write(str(show_natrulebase_result) + "\n")
     natrulebasefile = open(("exportednatrules.csv"), "w+")
     natrulebasefile.close()
+    #Iterate over json for rule info
     for rule in show_natrulebase_result["rulebase"]:
+        #Must check for type first
         if "type" in rule:
+            #Save type to variable to run if against
             thetype = rule["type"]
+            #As apposed to section
             if thetype == "nat-rule":
+                #Call method to save info
                 filternatrule(rule, show_natrulebase_result)
+        #When sections exist, we have rulebase inside of rulebase! Such naming scheme, very wow!
         if "rulebase" in rule:
             for subrule in rule["rulebase"]:
                 filternatrule(subrule, show_natrulebase_result)
 
 def filternatrule(rule, show_natrulebase_result):
+    #ONE DAY, I'll COMMENT THIS MESS!
     natrulebasefile = open(("exportednatrules.csv"), "a")
     countertrg = 0
-    # if 'auto-generated' in rule:
-    #     auto = rule["auto-generated"]
-    #     if str(auto) == "False":
     aut = rule["auto-generated"]
     ena = rule["enabled"]
     met = rule["method"]
