@@ -19,11 +19,16 @@ def exporttcpservices(usrdef_sship, sid):
                 sp = service["source-port"]
             else:
                 sp = 'none'
+            #Check for protocol, no proto if no proto
+            if 'protocol' in service:
+                proto = service["protocol"]
+            else:
+                proto = 'none'
             #Write fields to files
             tcpexport.write(service["name"] + ";" + str(service["port"]) + ";" + str(service["keep-connections-open-after-policy-installation"]) + ";" +
                             str(service["session-timeout"]) + ";" + str(sp) + ";" + str(service["match-for-any"]) + ";" +
                             str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["match-by-protocol-signature"]) + ";" +
-                            str(service["override-default-settings"]) + ";" + str(service["use-default-session-timeout"]) + ";" + service["protocol"] + ";" +
+                            str(service["override-default-settings"]) + ";" + str(service["use-default-session-timeout"]) + ";" + proto + ";" +
                             str(service["aggressive-aging"]) + "\n")
         elif service["domain"]["name"] == 'Check Point Data':
             continue
@@ -35,10 +40,19 @@ def exporttcpservices(usrdef_sship, sid):
 def importaddtcp(usrdef_sship, name, port, kcoapi, st, sp, mfa, sync, srvcol, mbps, ods, udst, proto, aa, sid):
     #AA comes in as string, eval for dictionary
     aa = eval(aa)
-    if sp == 'none':
+    #Payload decision based on sp and proto
+    if sp == 'none' and proto == 'none':
         new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'match-for-any':mfa,
                         'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'aggressive-aging':aa}
+    elif sp == 'none' and proto != 'none':
+        new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st,
+                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
                         'use-default-session-timeout':udst, 'protocol':proto, 'aggressive-aging':aa}
+    elif sp != 'none' and proto == 'none':
+        new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
+                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'aggressive-aging':aa}
     else:
         new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
                         'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
@@ -72,13 +86,18 @@ def exportudpservices(usrdef_sship, sid):
             #Check for source-port, otherwise it doesn't exist
             if 'source-port' in service:
                 sp = service["source-port"]
-            #Write info to file
             else:
                 sp = 'none'
+            #Check for protocol, no proto if no proto
+            if 'protocol' in service:
+                proto = service["protocol"]
+            else:
+                proto = 'none'
+            #Write that data to the file my man
             udpexport.write(service["name"] + ";" + str(service["port"]) + ";" + str(service["accept-replies"]) + ";" +
                             str(service["keep-connections-open-after-policy-installation"]) + ";" +
                             str(service["session-timeout"]) + ";" + str(sp) + ";" + str(service["match-for-any"]) + ";" +
-                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + service["protocol"] + ";" +
+                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + proto + ";" +
                             str(service["override-default-settings"]) + ";" + str(service["use-default-session-timeout"]) + ";" +
                             str(service["match-by-protocol-signature"]) + ";" + str(service["aggressive-aging"]) + "\n")
         #Break loop if default object
@@ -93,11 +112,19 @@ def exportudpservices(usrdef_sship, sid):
 def importaddudp(usrdef_sship, name, port, ar, kcoapi, st, sp, mfa, sync, srvcol, proto, ods, udst, mbps, aa, sid):
     #AA comes in as string, eval for dictionary
     aa = eval(aa)
-    #Check for SP to formulate proper API payload
-    if sp == 'none':
+    #Check for SP and proto to formulate proper API payload
+    if sp == 'none' and proto == 'none':
         new_udp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'match-for-any':mfa,
-                        'sync-connections-on-cluster':sync, 'color':srvcol, 'protocol':proto, 'override-default-settings':ods,
+                        'sync-connections-on-cluster':sync, 'color':srvcol, 'override-default-settings':ods,
                         'use-default-session-timeout':udst, 'match-by-protocol-signature':mbps, 'aggressive-aging':aa}
+    elif sp == 'none' and proto != 'none':
+        new_udp_data = {'name':name, 'port':port, 'accept-replies':ar, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st,
+                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'protocol':proto, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'match-by-protocol-signature':mbps, 'aggressive-aging':aa}
+    elif sp != 'none' and proto == 'none':
+        new_udp_data = {'name':name, 'port':port, 'accept-replies':ar, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
+                'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'override-default-settings':ods,
+                'use-default-session-timeout':udst, 'match-by-protocol-signature':mbps, 'aggressive-aging':aa}
     else:
         new_udp_data = {'name':name, 'port':port, 'accept-replies':ar, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
                         'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'protocol':proto, 'override-default-settings':ods,
