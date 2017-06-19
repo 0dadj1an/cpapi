@@ -22,7 +22,9 @@ def exporttcpservices(usrdef_sship, sid):
             #Write fields to files
             tcpexport.write(service["name"] + ";" + str(service["port"]) + ";" + str(service["keep-connections-open-after-policy-installation"]) + ";" +
                             str(service["session-timeout"]) + ";" + str(sp) + ";" + str(service["match-for-any"]) + ";" +
-                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["aggressive-aging"]) + "\n")
+                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["match-by-protocol-signature"]) + ";" +
+                            str(service["override-default-settings"]) + ";" + str(service["use-default-session-timeout"]) + ";" + service["protocol"] + ";" +
+                            str(service["aggressive-aging"]) + "\n")
         elif service["domain"]["name"] == 'Check Point Data':
             continue
         else:
@@ -30,15 +32,17 @@ def exporttcpservices(usrdef_sship, sid):
     tcpexport.close()
 
 #Method for adding tcp service for importtcpservice
-def importaddtcp(usrdef_sship, name, port, kcoapi, st, sp, mfa, sync, srvcol, aa, sid):
+def importaddtcp(usrdef_sship, name, port, kcoapi, st, sp, mfa, sync, srvcol, mbps, ods, udst, proto, aa, sid):
     #AA comes in as string, eval for dictionary
     aa = eval(aa)
     if sp == 'none':
         new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'match-for-any':mfa,
-                        'sync-connections-on-cluster':sync, 'color':srvcol, 'aggressive-aging':aa}
+                        'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'protocol':proto, 'aggressive-aging':aa}
     else:
         new_tcp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
-                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'aggressive-aging':aa}
+                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'match-by-protocol-signature':mbps, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'protocol':proto, 'aggressive-aging':aa}
     api_call(usrdef_sship, 443, 'add-service-tcp', new_tcp_data, sid)
 
 #Method to import tcp service from csv file
@@ -49,7 +53,8 @@ def importtcpservice(usrdef_sship, filename, sid):
         if not line:
             continue
         apiprep = line.split(';')
-        importaddtcp(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4], apiprep[5], apiprep[6], apiprep[7], apiprep[8], sid)
+        importaddtcp(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4], apiprep[5],
+                     apiprep[6], apiprep[7], apiprep[8], apiprep[9], apiprep[10], apiprep[11], apiprep[12], sid)
 
 #Method to export udp services to csv file
 def exportudpservices(usrdef_sship, sid):
