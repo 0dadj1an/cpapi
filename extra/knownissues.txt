@@ -54,8 +54,8 @@ Does not support sections
 
 ### EXPORT SERVICES ###
 Supports all available function fields.
-API does not support Protocol Inspection Field
-API provides non-standard session-timeout value, but will set to default upon import.
+API does not support Protocol Inspection Field (R80)
+API provides non-standard session-timeout value, but will set to default upon import. (R80)
 API does not support "Enable for TCP resource" field.
 API does not support custom time for start sync.
 Supports up to 500 objects per tcp/udp.

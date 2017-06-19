@@ -78,7 +78,9 @@ def exportudpservices(usrdef_sship, sid):
             udpexport.write(service["name"] + ";" + str(service["port"]) + ";" + str(service["accept-replies"]) + ";" +
                             str(service["keep-connections-open-after-policy-installation"]) + ";" +
                             str(service["session-timeout"]) + ";" + str(sp) + ";" + str(service["match-for-any"]) + ";" +
-                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + str(service["aggressive-aging"]) + "\n")
+                            str(service["sync-connections-on-cluster"]) + ";" + service["color"] + ";" + service["protocol"] + ";" +
+                            str(service["override-default-settings"]) + ";" + str(service["use-default-session-timeout"]) + ";" +
+                            str(service["match-by-protocol-signature"]) + ";" + str(service["aggressive-aging"]) + "\n")
         #Break loop if default object
         elif service["domain"]["name"] == 'Check Point Data':
             continue
@@ -88,16 +90,18 @@ def exportudpservices(usrdef_sship, sid):
     udpexport.close()
 
 #Method for adding udp service for importudpservice
-def importaddudp(usrdef_sship, name, port, ar, kcoapi, st, sp, mfa, sync, srvcol, aa, sid):
+def importaddudp(usrdef_sship, name, port, ar, kcoapi, st, sp, mfa, sync, srvcol, proto, ods, udst, mbps, aa, sid):
     #AA comes in as string, eval for dictionary
     aa = eval(aa)
     #Check for SP to formulate proper API payload
     if sp == 'none':
         new_udp_data = {'name':name, 'port':port, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'match-for-any':mfa,
-                        'sync-connections-on-cluster':sync, 'color':srvcol, 'aggressive-aging':aa}
+                        'sync-connections-on-cluster':sync, 'color':srvcol, 'protocol':proto, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'match-by-protocol-signature':mbps, 'aggressive-aging':aa}
     else:
         new_udp_data = {'name':name, 'port':port, 'accept-replies':ar, 'keep-connections-open-after-policy-installation':kcoapi, 'session-timeout':st, 'source-port':sp,
-                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'aggressive-aging':aa}
+                        'match-for-any':mfa, 'sync-connections-on-cluster':sync, 'color':srvcol, 'protocol':proto, 'override-default-settings':ods,
+                        'use-default-session-timeout':udst, 'match-by-protocol-signature':mbps, 'aggressive-aging':aa}
     api_call(usrdef_sship, 443, 'add-service-udp', new_udp_data, sid)
 
 #Method to import udp service from csv file
@@ -108,4 +112,5 @@ def importudpservice(usrdef_sship, filename, sid):
         if not line:
             continue
         apiprep = line.split(';')
-        importaddudp(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4], apiprep[5], apiprep[6], apiprep[7], apiprep[8], apiprep[9], sid)
+        importaddudp(usrdef_sship, apiprep[0], apiprep[1], apiprep[2], apiprep[3], apiprep[4], apiprep[5], apiprep[6], apiprep[7],
+                     apiprep[8], apiprep[9], apiprep[10], apiprep[11], apiprep[12], apiprep[13], sid)
