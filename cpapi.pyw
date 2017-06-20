@@ -255,7 +255,7 @@ class AddNetwork(tk.Frame):
         netname_e.configure(background="#ffffff")
 
         #Network Address
-        netaddr_l = ttk.Label(self, text = "Network Subnet", background="#494949", foreground="#f44242")
+        netaddr_l = ttk.Label(self, text = "Network Address", background="#494949", foreground="#f44242")
         netaddr_l.grid(row=2, column=0, sticky=E)
         netaddr_e = Entry(self, bd=5)
         netaddr_e.grid(row=2, column=1)
