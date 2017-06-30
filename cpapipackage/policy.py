@@ -97,12 +97,15 @@ def exportrules(usrdef_sship, package, layer, sid):
 def filterpolicyrule(rule, show_rulebase_result):
     #HUGE CRAZY MESS I'LL COMMENT ONE DAY!
     rulebaseexport = open(("exportedrules.csv"), "a")
+    # Counter for fields which require loops over the objects-dictionary
     countersrc = 0
     counterdst = 0
     countersrv = 0
     countertrg = 0
+    # The name field can be absent, check for existence.
     if 'name' in rule:
         name = rule["name"]
+    # Give a place holder name if no name existed
     else:
         name = "ASSIGN NAME"
     num = rule["rule-number"]
@@ -110,22 +113,29 @@ def filterpolicyrule(rule, show_rulebase_result):
     dst = rule["destination"]
     srv = rule["service"]
     act = rule["action"]
+    # R80.10 introduced support for other track fields whicl will present in a dictionary
+    # Only get the standard log field
     if rule["track"]["type"]:
         trc = rule["track"]["type"]
     else:
         trc = rule["track"]
     trg = rule["install-on"]
+    # Consider condensing loops which have no counter into one loop
     for obj in show_rulebase_result["objects-dictionary"]:
         if name == obj["uid"]:
             name = obj["name"]
     for obj in show_rulebase_result["objects-dictionary"]:
         if num == obj["uid"]:
             num = obj["name"]
+    # Check if one object in source field or >1
     if len(src) == 1:
+        # Source export is saved as list, replace index 0 if only 1
         for obj in show_rulebase_result["objects-dictionary"]:
             if src[0] == obj["uid"]:
                 src = obj["name"]
+    # If more than one source object
     else:
+        # Loop over source list and loop over objects-dictionary and modify corresponding UID index
         for srcobj in src:
             for obj in show_rulebase_result["objects-dictionary"]:
                 if srcobj == obj["uid"]:
@@ -167,9 +177,12 @@ def filterpolicyrule(rule, show_rulebase_result):
                 if trgobj == obj["uid"]:
                     trg[countertrg] = obj["name"]
                     countertrg = countertrg + 1
+    # Begin writing rules to export file
     rulebaseexport.write(str(num) + ',' + name + ',')
+    # Verify if only one object or several
     if isinstance(src, str) == True:
         rulebaseexport.write(src + ',')
+    # If more than one, write all fields except last which is white space index
     else:
         for srcele in src[0:-1]:
             rulebaseexport.write(srcele + ';')
