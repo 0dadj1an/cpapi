@@ -50,10 +50,13 @@ class apiapp(tk.Tk):
 class StartPage(tk.Frame):
 
     #Method to establish global variables
-    def setup(self, ip, username, password):
+    def setup(self, ip, username, password, mds=None):
         global usrdef_sship
         usrdef_sship = ip
-        response = session.login(usrdef_sship, username, password)
+        if mds == None:
+            response = session.login(usrdef_sship, username, password)
+        else:
+            response = session.login(usrdef_sship, username, password, mds)
         global sid
         sid = response
 
@@ -88,8 +91,15 @@ class StartPage(tk.Frame):
         pass_e.grid(row=3, column=1)
         pass_e.configure(background="#ffffff")
 
+        #Collect Domain for connection
+        mds_l = ttk.Label(self, text = "MDS Domain",  background="#494949", foreground="#f44242")
+        mds_l.grid(row=4, column=0, sticky=E)
+        mds_e = Entry(self, bd=5)
+        mds_e.grid(row=4, column=1)
+        mds_e.configure(background="#ffffff")
+
         #Button to start session
-        sessionb = ttk.Button(self, text="Connect", command=lambda: self.setup(sship_e.get(), username_e.get(), pass_e.get()))
+        sessionb = ttk.Button(self, text="Connect", command=lambda: self.setup(sship_e.get(), username_e.get(), pass_e.get(), mds_e.get()))
         sessionb.grid(row=1, column=2)
 
         #Button to publish session
@@ -106,55 +116,55 @@ class StartPage(tk.Frame):
 
         #Create Space
         space_label = ttk.Label(self, background="#494949")
-        space_label.grid(row=4)
+        space_label.grid(row=5)
 
         #Button to call add object to group
         addhosttogroup = ttk.Button(self, text="Add To Group", command=lambda: controller.show_frame("ObjectToGroup"))
-        addhosttogroup.grid(row=5, column=3)
+        addhosttogroup.grid(row=6, column=3)
 
         #Button to call add host window
         addhostb = ttk.Button(self, text="Add Host", command=lambda: controller.show_frame("AddHost"))
-        addhostb.grid(row=5)
+        addhostb.grid(row=6, column=0)
 
         #Button to call add network window
         addnetworkb = ttk.Button(self, text="Add Network", command=lambda: controller.show_frame("AddNetwork"))
-        addnetworkb.grid(row=5, column=1)
+        addnetworkb.grid(row=6, column=1)
 
         #Button to call add group window
         addgroupb = ttk.Button(self, text="Add Group", command=lambda: controller.show_frame("AddGroup"))
-        addgroupb.grid(row=5, column=2)
+        addgroupb.grid(row=6, column=2)
 
         #Button to call import hosts window
         imphostb = ttk.Button(self, text="Import Hosts", command=lambda: controller.show_frame("ImportHosts"))
-        imphostb.grid(row=6, column=0)
+        imphostb.grid(row=7, column=0)
 
         #Button to call export hosts window
         exphostsb = ttk.Button(self, text="Export Hosts", command=lambda: controller.show_frame("ExportHosts"))
-        exphostsb.grid(row=7, column=0)
+        exphostsb.grid(row=8, column=0)
 
         #Button to call import networks window
         impnetsb = ttk.Button(self, text="Import Networks", command=lambda: controller.show_frame("ImportNetworks"))
-        impnetsb.grid(row=6, column=1)
+        impnetsb.grid(row=7, column=1)
 
         #Button to call export networks window
         expnetsb = ttk.Button(self, text="Export Networks", command=lambda: controller.show_frame("ExportNetworks"))
-        expnetsb.grid(row=7, column=1)
+        expnetsb.grid(row=8, column=1)
 
         #Button to call import groups window
         impnetsb = ttk.Button(self, text="Import Groups", command=lambda: controller.show_frame("ImportGroups"))
-        impnetsb.grid(row=6, column=2)
+        impnetsb.grid(row=7, column=2)
 
         #Button to call export groups window
         expnetsb = ttk.Button(self, text="Export Groups", command=lambda: controller.show_frame("ExportGroups"))
-        expnetsb.grid(row=7, column=2)
+        expnetsb.grid(row=8, column=2)
 
         #Button to call import rules window
         imprulesb = ttk.Button(self, text="Import Rules", command=lambda: controller.show_frame("ImportRules"))
-        imprulesb.grid(row=6, column=3)
+        imprulesb.grid(row=7, column=3)
 
         #Button to call export rules window
         exprulesb = ttk.Button(self, text="Export Rules", command=lambda: controller.show_frame("ExportRules"))
-        exprulesb.grid(row=7, column=3)
+        exprulesb.grid(row=8, column=3)
 
         #Button to call import services window
         impservsb = ttk.Button(self, text="Import Services", command=lambda: controller.show_frame("ImportServices"))
@@ -163,10 +173,6 @@ class StartPage(tk.Frame):
         #Button to call export services window
         expservsb = ttk.Button(self, text="Export Services", command=lambda: controller.show_frame("ExportServices"))
         expservsb.grid(row=10, column=1)
-
-        #Create More Space
-        more_space_label = ttk.Label(self, background="#494949")
-        more_space_label.grid(row=8)
 
         #Button to call run-command window
         runcommandb = ttk.Button(self, text="Run Command", command=lambda: controller.show_frame("RunCommand"))
