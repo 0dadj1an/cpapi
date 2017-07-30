@@ -33,7 +33,7 @@ class apiapp(tk.Tk):
         for F in (StartPage, AddHost, AddNetwork, AddGroup, ObjectToGroup, ImportHosts,
             ExportHosts, ImportNetworks, ExportNetworks, ImportGroups, ExportGroups,
             ImportRules, ExportRules, ImportServices, ImportTCP, ImportUDP, ExportServices,
-            ExportTCP, ExportUDP, RunCommand, PutFile, ImportNat, ExportNat, GEMImport, GEMExport):
+            ExportTCP, ExportUDP, RunCommand, PutFile, ImportNat, ExportNat, GEMImport, GEMExport, CustomCommand):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -197,6 +197,10 @@ class StartPage(tk.Frame):
         #Button to GEM Export
         gemeb = ttk.Button(self, text="GEM Export", command=lambda: controller.show_frame("GEMExport"))
         gemeb.grid(row=10, column=2, columnspan=2)
+
+        #Button to CustomCommand
+        custb = ttk.Button(self, text="Custom Command", command=lambda: controller.show_frame("CustomCommand"))
+        custb.grid(row=4, column=2, columnspan=2)
 
 class AddHost(tk.Frame):
 
@@ -1018,6 +1022,40 @@ class GEMExport(tk.Frame):
         #Button to return to apiapp
         button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
         button.grid(row=2, column=1)
+
+class CustomCommand(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        #Style Configuration for page
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(background="#494949")
+        addhostlabel = ttk.Label(self, text="Custom Command")
+        addhostlabel.configure(background="#494949", foreground="#f44242")
+        addhostlabel.grid(row=0, column=0, columnspan=3)
+
+        #Command Name
+        command_l = ttk.Label(self, text = "Command Name", background="#494949", foreground="#f44242")
+        command_l.grid(row=1, column=0, sticky=E)
+        command_e = Entry(self, bd=5)
+        command_e.grid(row=1, column=1)
+        command_e.configure(background="#ffffff")
+
+        #Command Payload
+        payload_l = ttk.Label(self, text = "Payload", background="#494949", foreground="#f44242")
+        payload_l.grid(row=2, column=0, sticky=E)
+        payload_e = Entry(self, bd=5)
+        payload_e.grid(row=2, column=1)
+        payload_e.configure(background="#ffffff")
+
+        #Button to run command
+        runapi = ttk.Button(self, text="Run Command", command=lambda: misc.customcommand(usrdef_sship, command, payload, sid))
+        runapi.grid(row=1, column=2)
+
+        #Button to return to apiapp
+        button = ttk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        button.grid(row=2, column=2)
 
 if __name__ == "__main__":
     app = apiapp()
