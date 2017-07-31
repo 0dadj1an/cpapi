@@ -27,9 +27,9 @@ def putfile(usrdef_sship, target, path, name, contents, sid):
     api_call(usrdef_sship, 443, 'put-file', put_file_data , sid)
 
 #Method to run costom command
-def custom(userdef_sship, command, payload, sid):
-    #Fomr API Payload
-    eval(payload)
+def customcommand(userdef_sship, command, payload, sid):
+    #Form API Payload
+    payload = eval(payload)
     custcomm_data = payload
     custcomm_result = api_call(userdef_sship, 443, command, custcomm_data, sid)
     logfile = open(("logfile.txt"), "a")

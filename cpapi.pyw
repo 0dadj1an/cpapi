@@ -1050,7 +1050,7 @@ class CustomCommand(tk.Frame):
         payload_e.configure(background="#ffffff")
 
         #Button to run command
-        runapi = ttk.Button(self, text="Run Command", command=lambda: misc.customcommand(usrdef_sship, command, payload, sid))
+        runapi = ttk.Button(self, text="Run Command", command=lambda: misc.customcommand(usrdef_sship, command_e.get(), payload_e.get(), sid))
         runapi.grid(row=1, column=2)
 
         #Button to return to apiapp
