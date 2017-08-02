@@ -1,6 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
-import threading, time
+import threading, time, json
 
 #Method for adding a network object
 def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):
@@ -67,8 +67,8 @@ def exportnetworks(usrdef_sship, sid):
     show_networks_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
     #Write json response to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_networks_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-networks:\n" + json.dumps(show_networks_result, sort_keys=True, indent=4) + "\n")
     networksexportfile = open(("exportednetworks.csv"), "w+")
     #Iterate over json response to export network info
     for network in show_networks_result["objects"]:
@@ -88,8 +88,8 @@ def exportnetworks(usrdef_sship, sid):
     while show_networks_result["to"] != show_networks_result["total"]:
         show_networks_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
-        logfile = open(("logfile.txt"), "a")
-        logfile.write(str(show_networks_result) + "\n")
+        logfile = open(("logfile.json"), "a")
+        logfile.write("show-networks:\n" + json.dumps(show_networks_result, sort_keys=True, indent=4) + "\n")
         for network in show_networks_result["objects"]:
             if 'subnet6' in network:
                 continue

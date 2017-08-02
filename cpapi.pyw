@@ -14,7 +14,7 @@ allcolors = ['aquamarine', 'black', 'blue', 'crete blue', 'burlywood', 'cyan', '
             'coral', 'sea green', 'sky blue', 'magenta', 'purple', 'slate blue', 'violet red', 'navy blue',
             'olive', 'orange', 'red', 'sienna', 'yellow']
 
-logfile = open(("logfile.txt"), "w+")
+logfile = open(("logfile.json"), "w+")
 
 class apiapp(tk.Tk):
 

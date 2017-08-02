@@ -1,5 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
+import json
 
 #Method to add rule for importrules
 def importaddrules(usrdef_sship, num, name, src, dst, srv, act, trc, trg, sid):
@@ -75,8 +76,8 @@ def exportrules(usrdef_sship, package, layer, sid):
         show_rulebase_data = {'package':package, 'name':layer, 'details-level':'standard', 'use-object-dictionary':'true'}
         show_rulebase_result = api_call(usrdef_sship, 443, 'show-access-rulebase', show_rulebase_data ,sid)
     #Write json result to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_rulebase_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-access-rulebase:\n" + json.dumps(show_rulebase_result, sort_keys=True, indent=4) + "\n")
     rulebaseexport = open(("exportedrules.csv"), "w+")
     rulebaseexport.close()
     #Iterate over json to extract rules
@@ -259,8 +260,8 @@ def exportnat(usrdef_sship, package, sid):
         show_natrulebase_data = {'package':package, 'details-level':'standard', 'use-object-dictionary':'true'}
         show_natrulebase_result = api_call(usrdef_sship, 443, 'show-nat-rulebase', show_natrulebase_data ,sid)
     #Write json response to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_natrulebase_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-nat-rulebase:\n" + json.dumps(show_natrulebase_result, sort_keys=True, indent=4) + "\n")
     natrulebasefile = open(("exportednatrules.csv"), "w+")
     natrulebasefile.close()
     #Iterate over json for rule info

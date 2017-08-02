@@ -1,5 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
+import json
 
 #Method to retrieve gateways-and-servers
 def getalltargets(usrdef_sship, sid):
@@ -33,4 +34,4 @@ def customcommand(userdef_sship, command, payload, sid):
     custcomm_data = payload
     custcomm_result = api_call(userdef_sship, 443, command, custcomm_data, sid)
     logfile = open(("logfile.txt"), "a")
-    logfile.write(str(custcomm_result) + "\n")
+    logfile.write(command + ":\n" + json.dumps(custcomm_result, sort_keys=True, indent=4) + "\n")

@@ -1,6 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
-import threading, time
+import threading, time, json
 
 #Method for adding a group object
 def addgroup(usrdef_sship, groupname, groupcolor, sid):
@@ -67,8 +67,8 @@ def exportgroups(usrdef_sship, sid):
     show_groups_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
     #Print json to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_groups_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-groups:\n" + json.dumps(show_groups_result, sort_keys=True, indent=4) + "\n")
     groupsexportfile = open(("exportedgroups.csv"), "w+")
     #Iterate over response to collect group name and members
     for group in show_groups_result["objects"]:

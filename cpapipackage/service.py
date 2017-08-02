@@ -1,5 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
+import json
 
 #Method to export tcp services to csv file
 def exporttcpservices(usrdef_sship, sid):
@@ -7,8 +8,8 @@ def exporttcpservices(usrdef_sship, sid):
     show_tcp_data = {'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_tcp_result = api_call(usrdef_sship, 443, 'show-services-tcp', show_tcp_data ,sid)
     #Write json output to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_tcp_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-services-tcp:\n" + json.dumps(show_tcp_result, sort_keys=True, indent=4) + "\n")
     tcpexport = open(("exportedtcpsrv.csv"), "w+")
     #Iterate over json response for service info
     for service in show_tcp_result["objects"]:
@@ -76,8 +77,8 @@ def exportudpservices(usrdef_sship, sid):
     show_udp_data = {'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_udp_result = api_call(usrdef_sship, 443, 'show-services-udp', show_udp_data ,sid)
     #Write json result to log file
-    logfile = open(("logfile.txt"), "a")
-    logfile.write(str(show_udp_result) + "\n")
+    logfile = open(("logfile.json"), "a")
+    logfile.write("show-services-udp:\n" + json.dumps(show_udp_result, sort_keys=True, indent=4) + "\n")
     udpexport = open(("exportedudpsrv.csv"), "w+")
     #Iterate over json to extract services
     for service in show_udp_result["objects"]:
