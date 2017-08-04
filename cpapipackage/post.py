@@ -5,7 +5,6 @@ from datetime import datetime
 
 # Check for log file, create if it does not exist
 filename = "logfile.txt"
-onemeg = 1000000
 try:
     with open(filename) as file:
         pass
