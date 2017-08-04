@@ -27,12 +27,13 @@ def getallgroups(usrdef_sship, sid):
     for groups in show_groups_result["objects"]:
         allgrouplist.append(groups["name"])
     #Until retrieved all objects if more than 500
-    while show_groups_result["to"] != show_groups_result["total"]:
-        show_groups_data = {'offset':count, 'limit':500, 'details-level':'standard'}
-        show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
-        for groups in show_groups_result["objects"]:
-            allgrouplist.append(groups["name"])
-        count = count + 500
+    if 'to' in show_groups_result:
+        while show_groups_result["to"] != show_groups_result["total"]:
+            show_groups_data = {'offset':count, 'limit':500, 'details-level':'standard'}
+            show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data, sid)
+            for groups in show_groups_result["objects"]:
+                allgrouplist.append(groups["name"])
+            count = count + 500
     #Return list to display in gui
     return (allgrouplist)
 
@@ -77,14 +78,15 @@ def exportgroups(usrdef_sship, sid):
             groupsexportfile.write(member["name"] + ";")
         groupsexportfile.write("\n")
     #Continue until all objects retrieved
-    while show_groups_result["to"] != show_groups_result["total"]:
-        show_groups_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
-        show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        for group in show_groups_result["objects"]:
-            groupsexportfile.write(group["name"] + ",")
-            listofmembers = group["members"]
-            for member in listofmembers:
-                groupsexportfile.write(member["name"] + ";")
-            groupsexportfile.write("\n")
-        count = count + 500
+    if 'to' in show_groups_result:
+        while show_groups_result["to"] != show_groups_result["total"]:
+            show_groups_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
+            show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
+            for group in show_groups_result["objects"]:
+                groupsexportfile.write(group["name"] + ",")
+                listofmembers = group["members"]
+                for member in listofmembers:
+                    groupsexportfile.write(member["name"] + ";")
+                groupsexportfile.write("\n")
+            count = count + 500
     groupsexportfile.close()

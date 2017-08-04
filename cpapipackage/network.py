@@ -27,12 +27,13 @@ def getallnetworks(usrdef_sship, sid):
     for nets in show_nets_result["objects"]:
         allnetlist.append(nets["name"])
     #Continue until all objects retrieved
-    while show_nets_result["to"] != show_nets_result["total"]:
-        show_nets_data = {'offset':count, 'limit':500, 'details-level':'standard'}
-        show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data ,sid)
-        for nets in show_nets_result["objects"]:
-            allnetlist.append(nets["name"])
-        count = count + 500
+    if 'to' in show_nets_result:
+        while show_nets_result["to"] != show_nets_result["total"]:
+            show_nets_data = {'offset':count, 'limit':500, 'details-level':'standard'}
+            show_nets_result = api_call(usrdef_sship, 443, 'show-networks', show_nets_data ,sid)
+            for nets in show_nets_result["objects"]:
+                allnetlist.append(nets["name"])
+            count = count + 500
     return (allnetlist)
 
 #Method for adding a network object for importnetworks
@@ -83,17 +84,18 @@ def exportnetworks(usrdef_sship, sid):
         networksexportfile.write(natsettings)
         networksexportfile.write("\n")
     #Continue until all objects retrieved
-    while show_networks_result["to"] != show_networks_result["total"]:
-        show_networks_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
-        show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
-        for network in show_networks_result["objects"]:
-            if 'subnet6' in network:
-                continue
-            if 'nat-settings' in network:
-                natsettings = network["nat-settings"]
-                natsettings = str(natsettings)
-            networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
-            networksexportfile.write(natsettings)
-            networksexportfile.write("\n")
-        count = count + 500
+    if 'to' in show_nets_result:
+        while show_networks_result["to"] != show_networks_result["total"]:
+            show_networks_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
+            show_networks_result = api_call(usrdef_sship, 443, 'show-networks', show_networks_data ,sid)
+            for network in show_networks_result["objects"]:
+                if 'subnet6' in network:
+                    continue
+                if 'nat-settings' in network:
+                    natsettings = network["nat-settings"]
+                    natsettings = str(natsettings)
+                networksexportfile.write(network["name"] + ";" + str(network["subnet4"]) + ";" + str(network["mask-length4"]) + ";" + network["color"] + ";")
+                networksexportfile.write(natsettings)
+                networksexportfile.write("\n")
+            count = count + 500
     networksexportfile.close()
