@@ -1,6 +1,27 @@
 #Import
 import json, requests
 from tkinter import messagebox
+from datetime import datetime
+
+# Check for log file, create if it does not exist
+filename = "logfile.txt"
+try:
+    with open(filename) as file:
+        pass
+except IOError:
+    logfile = open((filename), "w+")
+
+# Write to log file
+def logwrite(command, payload):
+    thetime = str(datetime.now())
+    if command == 'login':
+        json_payload['password'] = '*****'
+    logfile = open(("logfile.txt"), "a")
+    logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
+    logfile.write("Payload: {}".format(json_payload) + "\n")
+    logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
+    if command == 'logout':
+        logfile.close()
 
 #Method to carry webapi call
 def api_call(ip_addr, port, command, json_payload, sid):
@@ -18,9 +39,29 @@ def api_call(ip_addr, port, command, json_payload, sid):
         requests.packages.urllib3.disable_warnings()
         r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=(30, 90), verify=False)
         if r.status_code == 200:
+            #logwrite(command, json_payload)
+            thetime = str(datetime.now())
+            if command == 'login':
+                json_payload['password'] = '*****'
+            logfile = open(("logfile.txt"), "a")
+            logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
+            logfile.write("Payload: {}".format(json_payload) + "\n")
+            logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
+            if command == 'logout':
+                logfile.close()
             return (r.json())
         #On API Error message give feedback
         else:
+            #logwrite(command, json_payload)
+            thetime = str(datetime.now())
+            if command == 'login':
+                json_payload['password'] = '*****'
+            logfile = open(("logfile.txt"), "a")
+            logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
+            logfile.write("Payload: {}".format(json_payload) + "\n")
+            logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
+            if command == 'logout':
+                logfile.close()
             messagebox.showinfo("Command Response", r.json())
             return (r.json())
     #Catch some request exceptions

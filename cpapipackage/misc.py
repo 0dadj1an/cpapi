@@ -33,5 +33,3 @@ def customcommand(userdef_sship, command, payload, sid):
     payload = eval(payload)
     custcomm_data = payload
     custcomm_result = api_call(userdef_sship, 443, command, custcomm_data, sid)
-    logfile = open(("logfile.json"), "a")
-    logfile.write(command + ":\n" + json.dumps(custcomm_result, sort_keys=True, indent=4) + "\n")

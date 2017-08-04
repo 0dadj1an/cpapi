@@ -65,8 +65,6 @@ def exporthosts(usrdef_sship, sid):
     show_hosts_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
     #Write json response to log file
-    logfile = open(("logfile.json"), "a")
-    logfile.write("show-hosts:\n" + json.dumps(show_hosts_result, sort_keys=True, indent=4) + "\n")
     hostexportfile = open(("exportedhosts.csv"), "w+")
     #Iterate over host and retrieve values to write to file
     for host in show_hosts_result["objects"]:
@@ -86,8 +84,6 @@ def exporthosts(usrdef_sship, sid):
     while show_hosts_result["to"] != show_hosts_result["total"]:
         show_hosts_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-        logfile = open(("logfile.json"), "a")
-        logfile.write(str(show_hosts_result) + "\n")
         for host in show_hosts_result["objects"]:
             if 'ipv6-address' in host:
                 continue

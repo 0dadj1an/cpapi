@@ -4,6 +4,8 @@ from tkinter import *
 from tkinter import ttk
 #Import cpapicall
 from cpapipackage import *
+#Import
+import sys
 
 #Global Variable
 usrdef_sship = "tbd"
@@ -13,8 +15,6 @@ allcolors = ['aquamarine', 'black', 'blue', 'crete blue', 'burlywood', 'cyan', '
             'brown', 'forest green', 'gold', 'dark gold', 'gray', 'dark gray', 'light green', 'lemon chiffon',
             'coral', 'sea green', 'sky blue', 'magenta', 'purple', 'slate blue', 'violet red', 'navy blue',
             'olive', 'orange', 'red', 'sienna', 'yellow']
-
-logfile = open(("logfile.json"), "w+")
 
 class apiapp(tk.Tk):
 

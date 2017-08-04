@@ -66,9 +66,6 @@ def exportgroups(usrdef_sship, sid):
     #Form API Payload and Call Post
     show_groups_data = {'offset':0, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-    #Print json to log file
-    logfile = open(("logfile.json"), "a")
-    logfile.write("show-groups:\n" + json.dumps(show_groups_result, sort_keys=True, indent=4) + "\n")
     groupsexportfile = open(("exportedgroups.csv"), "w+")
     #Iterate over response to collect group name and members
     for group in show_groups_result["objects"]:
@@ -83,7 +80,6 @@ def exportgroups(usrdef_sship, sid):
     while show_groups_result["to"] != show_groups_result["total"]:
         show_groups_data = {'offset':count, 'limit':500, 'details-level':'full', 'order':[{'ASC':'name'}]}
         show_groups_result = api_call(usrdef_sship, 443, 'show-groups', show_groups_data ,sid)
-        logfile.write(str(show_groups_result) + "\n")
         for group in show_groups_result["objects"]:
             groupsexportfile.write(group["name"] + ",")
             listofmembers = group["members"]
