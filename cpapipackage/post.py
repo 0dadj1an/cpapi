@@ -5,23 +5,12 @@ from datetime import datetime
 
 # Check for log file, create if it does not exist
 filename = "logfile.txt"
+onemeg = 1000000
 try:
     with open(filename) as file:
         pass
 except IOError:
     logfile = open((filename), "w+")
-
-# Write to log file
-def logwrite(command, payload):
-    thetime = str(datetime.now())
-    if command == 'login':
-        json_payload['password'] = '*****'
-    logfile = open(("logfile.txt"), "a")
-    logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
-    logfile.write("Payload: {}".format(json_payload) + "\n")
-    logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
-    if command == 'logout':
-        logfile.close()
 
 #Method to carry webapi call
 def api_call(ip_addr, port, command, json_payload, sid):
@@ -43,10 +32,10 @@ def api_call(ip_addr, port, command, json_payload, sid):
             thetime = str(datetime.now())
             if command == 'login':
                 json_payload['password'] = '*****'
-            logfile = open(("logfile.txt"), "a")
+            logfile = open((filename), "a")
             logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
             logfile.write("Payload: {}".format(json_payload) + "\n")
-            logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
+            logfile.write("Response:\n" + json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
             if command == 'logout':
                 logfile.close()
             return (r.json())
@@ -56,10 +45,10 @@ def api_call(ip_addr, port, command, json_payload, sid):
             thetime = str(datetime.now())
             if command == 'login':
                 json_payload['password'] = '*****'
-            logfile = open(("logfile.txt"), "a")
+            logfile = open((filename), "a")
             logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
             logfile.write("Payload: {}".format(json_payload) + "\n")
-            logfile.write(json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
+            logfile.write("Response:\n" + json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
             if command == 'logout':
                 logfile.close()
             messagebox.showinfo("Command Response", r.json())
