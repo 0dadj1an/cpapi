@@ -35,8 +35,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
             logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
             logfile.write("Payload: {}".format(json_payload) + "\n")
             logfile.write("Response:\n" + json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
-            if command == 'logout':
-                logfile.close()
+            logfile.close()
             return (r.json())
         #On API Error message give feedback
         else:
@@ -48,8 +47,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
             logfile.write("Time: {}\nCommand: {}".format(thetime, command) + "\n")
             logfile.write("Payload: {}".format(json_payload) + "\n")
             logfile.write("Response:\n" + json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
-            if command == 'logout':
-                logfile.close()
+            logfile.close()
             messagebox.showinfo("Command Response", r.json())
             return (r.json())
     #Catch some request exceptions
