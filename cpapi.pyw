@@ -10,6 +10,7 @@ import sys
 #Global Variable
 usrdef_sship = "tbd"
 sid = "tbd"
+apiver = "tbd"
 allcolors = ['aquamarine', 'black', 'blue', 'crete blue', 'burlywood', 'cyan', 'dark green', 'khaki',
             'orchid', 'dark orange', 'dark sea green', 'pink', 'turquoise', 'dark blue', 'firebrick',
             'brown', 'forest green', 'gold', 'dark gold', 'gray', 'dark gray', 'light green', 'lemon chiffon',
@@ -58,7 +59,9 @@ class StartPage(tk.Frame):
         else:
             response = session.login(usrdef_sship, username, password, mds)
         global sid
-        sid = response
+        global apiver
+        sid = response['sid']
+        apiver = response['apiver']
 
     def __init__(self, parent, controller):
 
