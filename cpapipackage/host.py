@@ -29,7 +29,7 @@ def getallhosts(usrdef_sship, sid):
     #Continue until all objects retrieved
     if 'to' in show_hosts_result:
         while show_hosts_result["to"] != show_hosts_result["total"]:
-            show_hosts_data = {'offset':count, 'limit':500, 'details-level':'standard'}
+            show_hosts_data = {'offset':count, 'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
             show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
             for host in show_hosts_result["objects"]:
                 allhostlist.append(hosts["name"])
