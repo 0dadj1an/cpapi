@@ -1,6 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
-import threading, time, json
+import threading, time
 
 #Method for adding a network object
 def addnetwork(usrdef_sship, netname, netsub, netmask, netcolor, sid):

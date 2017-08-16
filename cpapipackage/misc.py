@@ -1,6 +1,5 @@
 #Import Post
 from cpapipackage.post import api_call
-import json
 
 #Method to retrieve gateways-and-servers
 def getalltargets(usrdef_sship, sid):
@@ -32,4 +31,4 @@ def customcommand(userdef_sship, command, payload, sid):
     #Form API Payload
     payload = eval(payload)
     custcomm_data = payload
-    custcomm_result = api_call(userdef_sship, 443, command, custcomm_data, sid)
+    api_call(userdef_sship, 443, command, custcomm_data, sid)

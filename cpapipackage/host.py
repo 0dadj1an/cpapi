@@ -1,6 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
-import threading, time, json
+import threading, time
 
 #Method for adding a host object
 def addhost(usrdef_sship, hostname, hostip, hostcolor, sid):
@@ -31,7 +31,7 @@ def getallhosts(usrdef_sship, sid):
         while show_hosts_result["to"] != show_hosts_result["total"]:
             show_hosts_data = {'offset':count, 'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
             show_hosts_result = api_call(usrdef_sship, 443, 'show-hosts', show_hosts_data ,sid)
-            for host in show_hosts_result["objects"]:
+            for hosts in show_hosts_result["objects"]:
                 allhostlist.append(hosts["name"])
             count = count + 500
     return (allhostlist)

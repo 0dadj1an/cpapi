@@ -1,6 +1,6 @@
 #Import Post
 from cpapipackage.post import api_call
-import threading, time, json
+import threading, time
 
 #Method for adding a group object
 def addgroup(usrdef_sship, groupname, groupcolor, sid):

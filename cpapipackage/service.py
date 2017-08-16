@@ -1,6 +1,5 @@
 #Import Post
 from cpapipackage.post import api_call
-import json
 
 #Method to export tcp services to csv file
 def exporttcpservices(usrdef_sship, sid):
