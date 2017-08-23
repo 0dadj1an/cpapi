@@ -25,7 +25,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
     #when writing to stdin, stout, sterr
     try:
         requests.packages.urllib3.disable_warnings()
-        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=(30, 90), verify=False)
+        r = requests.post(url,data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
         if r.status_code == 200:
             #logwrite(command, json_payload)
             thetime = str(datetime.now())
