@@ -39,10 +39,10 @@ def getallgroups(usrdef_sship, sid):
 
 #Method for adding a group object with members
 def addgroupmembers(usrdef_sship, groupname, members, sid):
-    #Form API Payload and Call Post
-    #Thread to add 2 per second
-    #Had trouble going faster with machines
-    #with lower performance
+    """Form API Payload and Call Post
+    Thread to add 2 per second
+    Had trouble going faster with machines
+    with lower performance"""
     new_group_data = {'name':groupname, 'members':members}
     t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443, 'add-group', new_group_data ,sid))
     t1.start()

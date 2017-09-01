@@ -42,7 +42,10 @@ def importaddhost(usrdef_sship, hostname, hostip, hostcolor, natset, sid):
     natset = eval(natset)
     #Form API Payload and Call Post
     new_host_data = {'name':hostname, 'ipv4-address':hostip, 'color':hostcolor, 'nat-settings':natset}
-    #Thread for adding 2 per second, trouble with higher speeds
+    """Form API Payload and Call Post
+    Thread to add 2 per second
+    Had trouble going faster with machines
+    with lower performance"""
     t1 = threading.Thread(target=api_call, args=(usrdef_sship, 443,'add-host', new_host_data ,sid))
     t1.start()
     time.sleep(0.5)
