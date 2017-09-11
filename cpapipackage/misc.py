@@ -32,3 +32,12 @@ def customcommand(userdef_sship, command, payload, sid):
     payload = eval(payload)
     custcomm_data = payload
     api_call(userdef_sship, 443, command, custcomm_data, sid)
+
+def getallcommands(usrdef_sship, sid):
+    #Form API Payload
+    commandlist = []
+    getcommands_data = {}
+    getcommands_result = api_call(usrdef_sship, 443, 'show-commands', getcommands_data, sid)
+    for obj in getcommands_result["commands"]:
+        commandlist.append(obj["name"])
+    return(commandlist)
