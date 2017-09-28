@@ -40,7 +40,6 @@ def commands():
         command = request.form.get('command')
         payload = request.form.get('payload')
         sendcommand = misc.customcommand(conn1.ipaddress, command, payload, conn1.sid)
-        print(sendcommand)
         return(render_template('commands.html'))
 
     if request.method == 'GET':

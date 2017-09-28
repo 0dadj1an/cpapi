@@ -9,9 +9,10 @@ def login(usrdef_sship, usrdef_username, usrdef_pass, domain=None):
     else:
         payload = {'user':usrdef_username, 'password' : usrdef_pass, 'domain':domain}
         response = api_call(usrdef_sship, 443, 'login', payload, '')
-    sid = response["sid"]
-    apiver = response["api-server-version"]
-    return ({'sid':sid, 'apiver':apiver})
+    if response:
+        sid = response["sid"]
+        apiver = response["api-server-version"]
+        return({'sid':sid, 'apiver':apiver})
 
 #Method to publish api session
 def publish(usrdef_sship, sid):
