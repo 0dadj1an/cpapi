@@ -1,6 +1,5 @@
 #Import
 import json, requests
-from tkinter import messagebox
 from datetime import datetime
 
 # Check for log file, create if it does not exist
@@ -48,12 +47,7 @@ def api_call(ip_addr, port, command, json_payload, sid):
             logfile.write("Payload: {}".format(json_payload) + "\n")
             logfile.write("Response:\n" + json.dumps(r.json(), sort_keys=True, indent=4) + "\n")
             logfile.close()
-            messagebox.showinfo("Command Response", r.json())
             return (r.json())
     #Catch some request exceptions
-    except requests.exceptions.Timeout:
-        messagebox.showinfo("Command Response", "Request Timeout")
-    except requests.exceptions.ConnectionError:
-        messagebox.showinfo("Command Response", "Connection Error")
     except:
-        messagebox.showinfo("Command Response", "Uh oh...")
+        logfile.write("Exception Occured")
