@@ -50,4 +50,6 @@ def api_call(ip_addr, port, command, json_payload, sid):
             return (r.json())
     #Catch some request exceptions
     except:
+        logfile = open((filename), "a")
         logfile.write("Exception Occured")
+        logfile.close()
