@@ -9,6 +9,9 @@ def api_call(ipaddress, port, command, json_payload, sid):
     try:
         requests.packages.urllib3.disable_warnings()
         response = requests.post(url, data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
-        return(response.json())
+        if response.status_code == 200:
+            return(response.json())
+        else:
+            return(response)
     except requests.exceptions.RequestException as e:
         return ('Error: {}'.format(e))
