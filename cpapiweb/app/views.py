@@ -2,6 +2,10 @@ from flask import render_template, redirect, request, session
 from app import app
 from cap import *
 
+@app.route('/')
+def index():
+    return(redirect('/login'))
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
 
@@ -26,7 +30,10 @@ def login():
 def commands():
 
     if request.method == 'GET':
-        return(render_template('commands.html'))
+        if 'sid' in session:
+            return(render_template('commands.html'))
+        else:
+            return(redirect('/login'))
 
     if request.method == 'POST':
         command = request.form.get('command')
@@ -35,4 +42,5 @@ def commands():
         if command != 'logout':
             return(render_template('commands.html', response=response))
         else:
+            session.pop('sid', None)
             return(redirect('/login'))
