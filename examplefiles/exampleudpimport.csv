@@ -1,5 +1,0 @@
-#### FIELDS #### ###EXCLUDE THESE LINES IN REAL FILE ####
-#### name;port;accept-replies;keep-connections-open;session-timeout;source-port;match-for-any;sync-connections;color;match-by-protocol-signature;override-default-settings;use-default-session-timeout;protocol;aggressive-aging ####
-
-udp1;9001;True;True;40;51;True;True;black;False;False;False;none;{'enable': True, 'timeout': 15, 'use-default-timeout': True, 'default-timeout': 0}
-udp2;68;True;True;50;none;True;True;black;True;True;True;DHCP;{'enable': True, 'timeout': 20, 'use-default-timeout': False, 'default-timeout': 0}

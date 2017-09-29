@@ -1,7 +1,0 @@
-#### FIELDS #### ###EXCLUDE THESE LINES IN REAL FILE ###
-#### rulenumber;rulename;source;destination;service;action;track;install-on ####
-
-1,ASSIGN NAME,network2;network3,host2,Any,Drop,Network Log,Policy Targets
-2,Parse This Rule,group4,host3,ntp;https,Accept,Log,gateway
-3,Sweet Rule,network5;network4,group3,http;ssh,Drop,Full Log,gateway2
-4,Cleanup rule,Any,Any,Any,Drop,None,gateway;gateway2
