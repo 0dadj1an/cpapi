@@ -18,7 +18,10 @@
                 Domain: <br>
                 <input type="text" name="domain"><br>
             </p>
-            <p><input type="submit" value="Log In"></p>
+            <p><input type="submit" value="Log In"></p><br>
+            {% if error %}
+            <p> {{ error }} </p>
+            {% endif %}
         </form>
     </body>
 </html>

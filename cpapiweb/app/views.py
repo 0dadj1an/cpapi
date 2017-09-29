@@ -2,7 +2,8 @@ from flask import render_template
 from flask import redirect
 from app import app
 from flask import request
-from cpapipackage import *
+from cap import *
+import json
 
 class Connection:
 
@@ -27,7 +28,9 @@ def login():
         domain = request.form.get('domain', None)
 
         loginapi = session.login(ipaddress, username, password, domain)
-        if loginapi['sid']:
+        if loginapi == 'error':
+            return(render_template('login.html', error='Some error occurred, check connectivity and credentials.'))
+        elif loginapi:
             conn1.update(ipaddress, loginapi['sid'], loginapi['apiver'])
             return(redirect('/commands'))
 
@@ -39,8 +42,8 @@ def commands():
     if request.method == 'POST':
         command = request.form.get('command')
         payload = request.form.get('payload')
-        sendcommand = misc.customcommand(conn1.ipaddress, command, payload, conn1.sid)
-        return(render_template('commands.html'))
+        response = misc.customcommand(conn1.ipaddress, command, payload, conn1.sid)
+        return(render_template('commands.html', response=response))
 
     if request.method == 'GET':
         return(render_template('commands.html'))

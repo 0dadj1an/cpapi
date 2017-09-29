@@ -10,7 +10,14 @@
                 Payload: <br>
                 <input type="text" name="payload"><br>
             </p>
-            <p><input type="submit" value="Submit"></p>
+            <p><input type="submit" value="Submit"></p><br>
         </form>
+        {% if response %}
+        <pre>
+        <code>
+        {{ response }}
+        {% endif %}
+        </code>
+        </pre>
     </body>
 </html>
