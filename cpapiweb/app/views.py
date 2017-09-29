@@ -14,7 +14,7 @@ def login():
 
     if request.method == 'POST':
         session['ipaddress'] = request.form.get('ipaddress')
-        session['username'] = username = request.form.get('username')
+        session['username'] = request.form.get('username')
         session['password'] = request.form.get('password')
         session['domain'] = request.form.get('domain', None)
 
