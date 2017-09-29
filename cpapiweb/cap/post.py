@@ -11,5 +11,5 @@ def api_call(ipaddress, port, command, json_payload, sid):
     try:
         response = requests.post(url, data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
         return(response.json())
-    except:
-        return('error')
+    except requests.exceptions.RequestException as e:
+        return ('Error: {}'.format(e))

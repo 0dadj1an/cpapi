@@ -28,12 +28,12 @@ def login():
         password = request.form.get('password')
         domain = request.form.get('domain', None)
 
-        loginapi = session.login(ipaddress, username, password, domain)
-        if loginapi == 'error':
-            return(render_template('login.html', error='Some error occurred, check connectivity and credentials.'))
-        elif loginapi:
-            conn1.update(ipaddress, loginapi['sid'], loginapi['api-server-version'])
+        response = session.login(ipaddress, username, password, domain)
+        if 'sid' in response:
+            conn1.update(ipaddress, response['sid'], response['api-server-version'])
             return(redirect('/commands'))
+        else:
+            return(render_template('login.html', error=response))
 
 @app.route('/commands', methods=['POST', 'GET'])
 def commands():
@@ -45,4 +45,7 @@ def commands():
         command = request.form.get('command')
         payload = request.form.get('payload')
         response = misc.customcommand(conn1.ipaddress, command, payload, conn1.sid)
-        return(render_template('commands.html', response=response))
+        if command != 'logout':
+            return(render_template('commands.html', response=response))
+        else:
+            return(redirect('/login'))
