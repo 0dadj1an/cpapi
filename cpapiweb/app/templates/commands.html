@@ -1,0 +1,21 @@
+<html>
+    <body>
+        <h1>CPAPI - Send Commands</h1>
+        <form action="" method="post" name="login">
+            <p>
+                Command: <br>
+                <input type="text" name="command"><br>
+            </p>
+            <p>
+                Payload: <br>
+                <input type="text" name="payload" value="{}"><br>
+            </p>
+            <p><input type="submit" value="Submit"></p><br>
+        </form>
+        {% if response %}
+        <p>
+        {{ response }}
+        {% endif %}
+        </p>
+    </body>
+</html>
