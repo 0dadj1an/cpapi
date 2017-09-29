@@ -1,9 +1,6 @@
-from flask import render_template
-from flask import redirect
+from flask import render_template, redirect, request
 from app import app
-from flask import request
 from cap import *
-import json
 
 class Connection:
 
@@ -21,6 +18,10 @@ conn1 = Connection('tbd', 'tbd', 'tbd')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+
+    if request.method == 'GET':
+        return(render_template('login.html'))
+
     if request.method == 'POST':
         ipaddress = request.form.get('ipaddress')
         username = request.form.get('username')
@@ -31,19 +32,17 @@ def login():
         if loginapi == 'error':
             return(render_template('login.html', error='Some error occurred, check connectivity and credentials.'))
         elif loginapi:
-            conn1.update(ipaddress, loginapi['sid'], loginapi['apiver'])
+            conn1.update(ipaddress, loginapi['sid'], loginapi['api-server-version'])
             return(redirect('/commands'))
-
-    if request.method == 'GET':
-        return(render_template('login.html'))
 
 @app.route('/commands', methods=['POST', 'GET'])
 def commands():
+
+    if request.method == 'GET':
+        return(render_template('commands.html'))
+
     if request.method == 'POST':
         command = request.form.get('command')
         payload = request.form.get('payload')
         response = misc.customcommand(conn1.ipaddress, command, payload, conn1.sid)
         return(render_template('commands.html', response=response))
-
-    if request.method == 'GET':
-        return(render_template('commands.html'))

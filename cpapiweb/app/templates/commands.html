@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h1>CPAPI - Commands</h1>
+        <h1>CPAPI - Send Commands</h1>
         <form action="" method="post" name="login">
             <p>
                 Command: <br>
@@ -13,11 +13,9 @@
             <p><input type="submit" value="Submit"></p><br>
         </form>
         {% if response %}
-        <pre>
-        <code>
+        <p>
         {{ response }}
         {% endif %}
-        </code>
-        </pre>
+        </p>
     </body>
 </html>
