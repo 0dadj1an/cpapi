@@ -19,11 +19,13 @@ def login():
         session['domain'] = request.form.get('domain', None)
 
         response = connect.login(session['ipaddress'], session['username'], session['password'], session['domain'])
+
         if 'sid' in response:
             session['sid'] = response['sid']
             session['apiver'] = response['api-server-version']
             return(redirect('/commands'))
         else:
+            response = str(response)
             return(render_template('login.html', error=response))
 
 @app.route('/commands', methods=['POST', 'GET'])
