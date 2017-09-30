@@ -3,15 +3,11 @@
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
     </head>
         <body>
-            <ul>
-                <li><a href="commands">Custom Command</a></li>
-                <li><a href="addhost">Add Host</a></li>
-            </ul>
-            <h1>
-                CPAPI
-            </h1>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
             <p>
-                Send custom commands. See API Reference for details.<br>
+                Send custom commands. See API Reference for details. 
                 <a href="https://sc1.checkpoint.com/documents/latest/APIs/index.html#introduction~v1.1" target="_blank">API Reference</a>
             </p>
             <h2>
