@@ -7,19 +7,23 @@
             {{nav.mynavbar.render()}}
             {% endblock %}
             <p>
-                Add single host. Automatic Publish<br>
+                Add single network. Automatic Publish<br>
             </p>
             <h2>
                 Send Command
             </h2>
             <form action="" method="post" name="login">
                 <p>
-                    Host Name: <br>
-                    <input type="text" name="hostname"><br>
+                    Network Name: <br>
+                    <input type="text" name="netname"><br>
                 </p>
                 <p>
-                    IP Address: <br>
-                    <input type="text" name="ipv4address"><br>
+                    Network: <br>
+                    <input type="text" name="network"><br>
+                </p>
+                <p>
+                    Subnet Mask: <br>
+                    <input type="text" name="mask"><br>
                 </p>
                 <p><input type="submit" value="Submit"></p><br>
             </form>
