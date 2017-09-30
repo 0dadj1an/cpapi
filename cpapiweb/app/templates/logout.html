@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+    </head>
+        <body>
+            <p>
+                You have been logged out. <a href="/login">Return to Login</a>
+            </p>
+            {% if response %}
+            <p>
+                {{ response }}<br>
+            </p>
+            {% endif %}
+        </body>
+</html>

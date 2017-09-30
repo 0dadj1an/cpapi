@@ -13,7 +13,8 @@ def mynavbar():
         'cpapi',
         View('Custom', 'custom'),
         View('Add Host', 'addhost'),
-        View('Add Network', 'addnetwork'))
+        View('Add Network', 'addnetwork'),
+        View('Logout', 'logout'))
 
 @app.route('/')
 def index():
@@ -71,11 +72,9 @@ def addhost():
 
     if request.method == 'POST':
         hostname = request.form.get('hostname')
-        command = 'add-host'
         ipv4address= request.form.get('ipv4address')
-        payload = {'name':hostname, 'ipv4-address':ipv4address}
-        response = misc.customcommand(session['ipaddress'], command, str(payload), session['sid'])
-        misc.customcommand(session['ipaddress'], 'publish', '{}', session['sid'])
+        response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
+        connect.publish(session['ipaddress'], session['sid'])
         return(render_template('addhost.html', response=response))
 
 @app.route('/addnetwork', methods=['POST', 'GET'])
@@ -89,10 +88,18 @@ def addnetwork():
 
     if request.method == 'POST':
         netname = request.form.get('netname')
-        network = request.form.get('network')
+        networkip = request.form.get('network')
         mask = request.form.get('mask')
-        command = 'add-network'
-        payload = {'name':netname, 'subnet':network, 'subnet-mask':mask}
-        response = misc.customcommand(session['ipaddress'], command, str(payload), session['sid'])
-        misc.customcommand(session['ipaddress'], 'publish', '{}', session['sid'])
+        response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
+        connect.publish(session['ipaddress'], session['sid'])
         return(render_template('addnetwork.html', response=response))
+
+@app.route('/logout', methods=['GET'])
+def logout():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            response = connect.logout(session['ipaddress'], session['sid'])
+            return(render_template('logout.html', response=response))
+        else:
+            return(redirect('/login'))
