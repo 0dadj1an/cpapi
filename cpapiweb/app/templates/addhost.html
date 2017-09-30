@@ -2,35 +2,31 @@
     <head>
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
     </head>
-    <body>
-        <ul>
-            <li><a href="commands">Custom Command</a></li>
-            <li><a href="addhost">Add Host</a></li>
-        </ul>
-        <h1>
-            CPAPI
-        </h1>
-        <p>
-            Add single host.<br>
-        </p>
-        <h2>
-            Send Command
-        </h2>
-        <form action="" method="post" name="login">
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
             <p>
-                Host Name: <br>
-                <input type="text" name="hostname"><br>
+                Add single host.<br>
             </p>
+            <h2>
+                Send Command
+            </h2>
+            <form action="" method="post" name="login">
+                <p>
+                    Host Name: <br>
+                    <input type="text" name="hostname"><br>
+                </p>
+                <p>
+                    IP Address: <br>
+                    <input type="text" name="ipv4address"><br>
+                </p>
+                <p><input type="submit" value="Submit"></p><br>
+            </form>
+            {% if response %}
             <p>
-                IP Address: <br>
-                <input type="text" name="ipv4address"><br>
+                {{ response }}<br>
             </p>
-            <p><input type="submit" value="Submit"></p><br>
-        </form>
-        {% if response %}
-        <p>
-            {{ response }}<br>
-        </p>
-        {% endif %}
-    </body>
+            {% endif %}
+        </body>
 </html>

@@ -1,6 +1,18 @@
 from flask import render_template, redirect, request, session
+from flask_nav import Nav
+from flask_nav.elements import Navbar, View
 from app import app
 from cap import *
+
+nav = Nav()
+nav.init_app(app)
+
+@nav.navigation()
+def mynavbar():
+    return Navbar(
+        'cpapi',
+        View('Custom', 'custom'),
+        View('Add Host', 'addhost'))
 
 @app.route('/')
 def index():
@@ -23,17 +35,17 @@ def login():
         if 'sid' in response:
             session['sid'] = response['sid']
             session['apiver'] = response['api-server-version']
-            return(redirect('/commands'))
+            return(redirect('/custom'))
         else:
             response = str(response)
             return(render_template('login.html', error=response))
 
-@app.route('/commands', methods=['POST', 'GET'])
-def commands():
+@app.route('/custom', methods=['POST', 'GET'])
+def custom():
 
     if request.method == 'GET':
         if 'sid' in session:
-            return(render_template('commands.html'))
+            return(render_template('custom.html'))
         else:
             return(redirect('/login'))
 
@@ -42,7 +54,7 @@ def commands():
         payload = request.form.get('payload')
         response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
         if command != 'logout':
-            return(render_template('commands.html', response=response))
+            return(render_template('custom.html', response=response))
         else:
             session.pop('sid', None)
             return(redirect('/login'))
