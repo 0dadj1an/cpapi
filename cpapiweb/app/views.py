@@ -12,7 +12,8 @@ def mynavbar():
     return Navbar(
         'cpapi',
         View('Custom', 'custom'),
-        View('Add Host', 'addhost'))
+        View('Add Host', 'addhost'),
+        View('Add Network', 'addnetwork'))
 
 @app.route('/')
 def index():
@@ -76,3 +77,22 @@ def addhost():
         response = misc.customcommand(session['ipaddress'], command, str(payload), session['sid'])
         misc.customcommand(session['ipaddress'], 'publish', '{}', session['sid'])
         return(render_template('addhost.html', response=response))
+
+@app.route('/addnetwork', methods=['POST', 'GET'])
+def addnetwork():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('addnetwork.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        netname = request.form.get('netname')
+        network = request.form.get('network')
+        mask = request.form.get('mask')
+        command = 'add-network'
+        payload = {'name':netname, 'subnet':network, 'subnet-mask':mask}
+        response = misc.customcommand(session['ipaddress'], command, str(payload), session['sid'])
+        misc.customcommand(session['ipaddress'], 'publish', '{}', session['sid'])
+        return(render_template('addnetwork.html', response=response))
