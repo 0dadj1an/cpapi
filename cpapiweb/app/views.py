@@ -46,3 +46,21 @@ def commands():
         else:
             session.pop('sid', None)
             return(redirect('/login'))
+
+@app.route('/addhost', methods=['POST', 'GET'])
+def addhost():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('addhost.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        hostname = request.form.get('hostname')
+        command = 'add-host'
+        ipv4address= request.form.get('ipv4address')
+        payload = {'name':hostname, 'ipv4-address':ipv4address}
+        response = misc.customcommand(session['ipaddress'], command, str(payload), session['sid'])
+        misc.customcommand(session['ipaddress'], 'publish', '{}', session['sid'])
+        return(render_template('addhost.html', response=response))
