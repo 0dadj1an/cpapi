@@ -14,8 +14,6 @@ def showrulebase(ipaddress, name, sid):
 
     rules = []
 
-    # Some validation here for package error.
-
     for rule in show_rulebase_result['rulebase']:
         if 'type' in rule:
             thetype = rule['type']
