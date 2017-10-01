@@ -5,6 +5,9 @@ def showrulebase(ipaddress, name, sid):
     show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
 
     rules = []
+
+    # Some validation here for package error.
+
     for rule in show_rulebase_result['rulebase']:
         if 'type' in rule:
             thetype = rule['type']
