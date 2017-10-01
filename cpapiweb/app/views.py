@@ -52,13 +52,16 @@ def custom():
             return(redirect('/login'))
 
     if request.method == 'POST':
-        command = request.form.get('command')
-        payload = request.form.get('payload')
-        response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
-        if command != 'logout':
-            return(render_template('custom.html', response=response))
+        if 'sid' in session:
+            command = request.form.get('command')
+            payload = request.form.get('payload')
+            response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
+            if command != 'logout':
+                return(render_template('custom.html', response=response))
+            else:
+                session.pop('sid', None)
+                return(redirect('/login'))
         else:
-            session.pop('sid', None)
             return(redirect('/login'))
 
 @app.route('/addhost', methods=['POST', 'GET'])
@@ -71,11 +74,14 @@ def addhost():
             return(redirect('/login'))
 
     if request.method == 'POST':
-        hostname = request.form.get('hostname')
-        ipv4address= request.form.get('ipv4address')
-        response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
-        connect.publish(session['ipaddress'], session['sid'])
-        return(render_template('addhost.html', response=response))
+        if 'sid' in session:
+            hostname = request.form.get('hostname')
+            ipv4address= request.form.get('ipv4address')
+            response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
+            connect.publish(session['ipaddress'], session['sid'])
+            return(render_template('addhost.html', response=response))
+        else:
+            return(redirect('/login'))
 
 @app.route('/addnetwork', methods=['POST', 'GET'])
 def addnetwork():
@@ -87,19 +93,38 @@ def addnetwork():
             return(redirect('/login'))
 
     if request.method == 'POST':
-        netname = request.form.get('netname')
-        networkip = request.form.get('network')
-        mask = request.form.get('mask')
-        response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
-        connect.publish(session['ipaddress'], session['sid'])
-        return(render_template('addnetwork.html', response=response))
+        if 'sid' in session:
+            netname = request.form.get('netname')
+            networkip = request.form.get('network')
+            mask = request.form.get('mask')
+            response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
+            connect.publish(session['ipaddress'], session['sid'])
+            return(render_template('addnetwork.html', response=response))
+        else:
+            return(redirect('/login'))
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
 
     if request.method == 'GET':
         if 'sid' in session:
-            response = connect.logout(session['ipaddress'], session['sid'])
-            return(render_template('logout.html', response=response))
+            return(render_template('logout.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        if 'sid' in session:
+            if 'Discard' in request.form:
+                connect.discard(session['ipaddress'], session['sid'])
+                connect.logout(session['ipaddress'], session['sid'])
+                session.pop('sid', None)
+                return(redirect('/login'))
+            elif 'Publish' in request.form:
+                connect.publish(session['ipaddress'], session['sid'])
+                # Discard still required here...because API.
+                connect.discard(session['ipaddress'], session['sid'])
+                connect.logout(session['ipaddress'], session['sid'])
+                session.pop('sid', None)
+                return(redirect('/login'))
         else:
             return(redirect('/login'))
