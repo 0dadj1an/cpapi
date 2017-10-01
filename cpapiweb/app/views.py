@@ -14,6 +14,7 @@ def mynavbar():
         View('Custom', 'custom'),
         View('Add Host', 'addhost'),
         View('Add Network', 'addnetwork'),
+        View('Show Rules', 'showrules'),
         View('Logout', 'logout'))
 
 @app.route('/')
@@ -100,6 +101,22 @@ def addnetwork():
             response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
             connect.publish(session['ipaddress'], session['sid'])
             return(render_template('addnetwork.html', response=response))
+        else:
+            return(redirect('/login'))
+
+@app.route('/showrules', methods=['POST', 'GET'])
+def showrules():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('showrules.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        if 'sid' in session:
+            response = policy.showrulebase(session['ipaddress'], request.form.get('rulebase'), session['sid'])
+            return(render_template('showrules.html', response=response))
         else:
             return(redirect('/login'))
 

@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <h1>
+                Show Rulebase
+            </h1>
+            <p>
+                Display policy.
+            </p>
+            <form action="" method="post" name="showrules">
+                <p>
+                    Rulebase:
+                    <input type="text" name="rulebase">
+                    <input type="submit" value="Submit"><br>
+                </p>
+            </form>
+            {% if response %}
+                <table style="width:100%">
+                    <tr>
+                        <th>Number</th>
+                        <th>Name</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Service</th>
+                        <th>Action</th>
+                        <th>Track</th>
+                        <th>Target</th>
+                    </tr>
+                {% for rule in response %}
+                    <tr>
+                        <td>{{ rule['number'] }}</td>
+                        <td>{{ rule['name'] }}</td>
+                        <td>{{ rule['source'] }}</td>
+                        <td>{{ rule['destination'] }}</td>
+                        <td>{{ rule['service'] }}</td>
+                        <td>{{ rule['action'] }}</td>
+                        <td>{{ rule['track'] }}</td>
+                        <td>{{ rule['target'] }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </body>
+</html>
