@@ -89,6 +89,3 @@ ENV/
 .ropeproject
 
 # Custom
-exported*.csv
-batch*.csv
-logfile.txt
