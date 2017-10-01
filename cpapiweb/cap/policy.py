@@ -1,5 +1,13 @@
 from cap.post import api_call
 
+def getalllayers(ipaddress, sid):
+    get_layers_data = {}
+    get_layers_result = api_call(ipaddress, 443, 'show-access-layers', get_layers_data, sid)
+    alllayerslist = []
+    for layer in get_layers_result['access-layers']:
+        alllayerslist.append(layer['name'])
+    return (alllayerslist)
+
 def showrulebase(ipaddress, name, sid):
     show_rulebase_data = {'name':name, 'details-level':'standard', 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
