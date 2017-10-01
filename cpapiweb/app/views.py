@@ -58,6 +58,7 @@ def custom():
             payload = request.form.get('payload')
             response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
             if command != 'logout':
+                response = str(response)
                 return(render_template('custom.html', response=response))
             else:
                 session.pop('sid', None)
