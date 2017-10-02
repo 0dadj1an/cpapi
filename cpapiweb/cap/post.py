@@ -9,7 +9,7 @@ def api_call(ipaddress, port, command, json_payload, sid):
     try:
         requests.packages.urllib3.disable_warnings()
         response = requests.post(url, data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
-        if response.status_code == 403:
+        if response.status_code == 403 or response.status_code == 404:
             return(response)
         else:
             return(response.json())

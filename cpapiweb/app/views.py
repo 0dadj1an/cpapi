@@ -58,6 +58,7 @@ def custom():
             payload = request.form.get('payload')
             response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
             if command != 'logout':
+                response = str(response)
                 return(render_template('custom.html', response=response))
             else:
                 session.pop('sid', None)
@@ -109,14 +110,16 @@ def showrules():
 
     if request.method == 'GET':
         if 'sid' in session:
-            return(render_template('showrules.html'))
+            alllayers = policy.getalllayers(session['ipaddress'], session['sid'])
+            return(render_template('showrules.html', alllayers=alllayers))
         else:
             return(redirect('/login'))
 
     if request.method == 'POST':
         if 'sid' in session:
-            response = policy.showrulebase(session['ipaddress'], request.form.get('rulebase'), session['sid'])
-            return(render_template('showrules.html', response=response))
+            alllayers = policy.getalllayers(session['ipaddress'], session['sid'])
+            response = policy.showrulebase(session['ipaddress'], request.form.get('layer'), session['sid'])
+            return(render_template('showrules.html', alllayers=alllayers, response=response))
         else:
             return(redirect('/login'))
 
