@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     # Application name:
@@ -22,7 +22,7 @@ setup(
     license='LICENSE.txt',
     description='Web interface for interacting with Check Point Software Management API.',
 
-    # Dependent packages (distributions)
+    # Dependent packages
     install_requires=[
         'flask',
         'flask_nav',
