@@ -25,7 +25,7 @@ setup(
     # Dependent packages (distributions)
     install_requires=[
         'flask',
-        'flask_nav'
+        'flask_nav',
         'requests',
     ],
 )
