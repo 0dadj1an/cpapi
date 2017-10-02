@@ -9,7 +9,7 @@ def getalllayers(ipaddress, sid):
     return (alllayerslist)
 
 def showrulebase(ipaddress, name, sid):
-    show_rulebase_data = {'name':name, 'details-level':'standard', 'use-object-dictionary':'true'}
+    show_rulebase_data = {'name':name, 'details-level':'standard', 'limit':500, 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
 
     rules = []
