@@ -1,0 +1,7 @@
+# Initial Release
+Features:
+    Custom Command
+    Add Host
+    Add Network
+    Show Rules
+    Logout
