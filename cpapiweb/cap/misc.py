@@ -1,5 +1,5 @@
 from cap.post import api_call
-import ast
+import ast, json
 
 def customcommand(ipaddress, command, payload, sid):
     try:
@@ -12,4 +12,8 @@ def customcommand(ipaddress, command, payload, sid):
         return(exc)
     custcomm_data = payload
     response = api_call(ipaddress, 443, command, custcomm_data, sid)
-    return(response)
+    try:
+        response = json.dumps(response, sort_keys=True, indent=4)
+        return(response)
+    except TypeError:
+        return(response)
