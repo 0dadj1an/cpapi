@@ -16,6 +16,7 @@ setup(
 
     # Details
     url='https://github.com/themadhatterz/cpapi',
+    download_url = 'https://github.com/themadhatterz/cpapi/archive/0.1.0.tar.gz',
 
     # License
     license='LICENSE.txt',
