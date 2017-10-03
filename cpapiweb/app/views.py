@@ -12,8 +12,7 @@ def mynavbar():
     return Navbar(
         'cpapi',
         View('Custom', 'custom'),
-        View('Add Host', 'addhost'),
-        View('Add Network', 'addnetwork'),
+        View('Add Object', 'addobject'),
         View('Show Rules', 'showrules'),
         View('Logout', 'logout'))
 
@@ -39,9 +38,13 @@ def login():
             if 'sid' in response.json():
                 session['sid'] = response.json()['sid']
                 session['apiver'] = response.json()['api-server-version']
+                app.logger.info('Successful login from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
                 return(redirect('/custom'))
         except (ValueError, AttributeError) as e:
-            print(e) # Getting logger soon.
+            app.logger.info('Caught expected exception on login: {}'.format(e))
+            return(render_template('login.html', error=str(response)))
+        except Exception as e:
+            app.logger.error('Unexpected exception on login: {}'.format(e))
             return(render_template('login.html', error=str(response)))
 
 @app.route('/custom', methods=['POST', 'GET'])
@@ -64,53 +67,42 @@ def custom():
                 else:
                     return(render_template('custom.html', response=response.text))
             else:
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
             return(redirect('/login'))
 
-@app.route('/addhost', methods=['POST', 'GET'])
-def addhost():
+@app.route('/addobject', methods=['POST', 'GET'])
+def addobject():
 
     if request.method == 'GET':
         if 'sid' in session:
-            return(render_template('addhost.html'))
+            return(render_template('addobject.html'))
         else:
             return(redirect('/login'))
 
     if request.method == 'POST':
         if 'sid' in session:
-            hostname = request.form.get('hostname')
-            ipv4address= request.form.get('ipv4address')
-            response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
-            connect.publish(session['ipaddress'], session['sid'])
-            try:
-                return(render_template('addhost.html', response=response.text))
-            except (ValueError, AttributeError) as e:
-                return(render_template('addhost.html', response=str(response)))
-        else:
-            return(redirect('/login'))
-
-@app.route('/addnetwork', methods=['POST', 'GET'])
-def addnetwork():
-
-    if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('addnetwork.html'))
-        else:
-            return(redirect('/login'))
-
-    if request.method == 'POST':
-        if 'sid' in session:
-            netname = request.form.get('netname')
-            networkip = request.form.get('network')
-            mask = request.form.get('mask')
-            response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
-            connect.publish(session['ipaddress'], session['sid'])
-            try:
-                return(render_template('addnetwork.html', response=response.text))
-            except (ValueError, AttributeError) as e:
-                return(render_template('addnetwork.html', response=str(response)))
+            if 'host' in request.form.keys():
+                hostname = request.form.get('hostname')
+                ipv4address= request.form.get('ipv4address')
+                hostresponse = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
+                connect.publish(session['ipaddress'], session['sid'])
+                try:
+                    return(render_template('addobject.html', hostresponse=hostresponse.text))
+                except (ValueError, AttributeError) as e:
+                    return(render_template('addobject.html', hostresponse=str(hostresponse)))
+            elif 'network' in request.form.keys():
+                netname = request.form.get('netname')
+                networkip = request.form.get('network')
+                mask = request.form.get('mask')
+                netresponse = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
+                connect.publish(session['ipaddress'], session['sid'])
+                try:
+                    return(render_template('addobject.html', netresponse=netresponse.text))
+                except (ValueError, AttributeError) as e:
+                    return(render_template('addobject.html', netresponse=str(netresponse)))
         else:
             return(redirect('/login'))
 
@@ -146,6 +138,7 @@ def logout():
             if 'Discard' in request.form:
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
             elif 'Publish' in request.form:
@@ -153,6 +146,7 @@ def logout():
                 # Discard still required here...because API.
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
