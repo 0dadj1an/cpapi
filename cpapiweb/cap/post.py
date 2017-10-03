@@ -1,4 +1,5 @@
 import json, requests
+from app import app
 
 requests.packages.urllib3.disable_warnings()
 
@@ -12,4 +13,5 @@ def api_call(ipaddress, port, command, json_payload, sid):
         response = requests.post(url, data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
         return(response)
     except requests.exceptions.RequestException as e:
+        app.logger.error('From POST :: {}'.format(e))
         return ('Error: {}'.format(e))

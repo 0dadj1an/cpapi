@@ -4,8 +4,8 @@ setup(
     # Application name:
     name='CPAPI',
 
-    # Version number (initial):
-    version='0.1.1',
+    # Version number:
+    version='0.1.4',
 
     # Application author details:
     author='Joshua Hatter',
@@ -16,7 +16,7 @@ setup(
 
     # Details
     url='https://github.com/themadhatterz/cpapi',
-    download_url = 'https://github.com/themadhatterz/cpapi/archive/v0.1.0.tar.gz',
+    download_url = 'https://github.com/themadhatterz/cpapi/archive/v0.1.4.tar.gz',
 
     # License
     license='LICENSE.txt',
@@ -26,6 +26,7 @@ setup(
     install_requires=[
         'flask',
         'flask_nav',
-        'requests',
+        'requests>=2.18.4',
+        'urllib3>=1.22'
     ],
 )

@@ -40,12 +40,28 @@
                     <tr>
                         <td>{{ rule['number'] }}</td>
                         <td>{{ rule['name'] }}</td>
-                        <td>{{ rule['source'] }}</td>
-                        <td>{{ rule['destination'] }}</td>
-                        <td>{{ rule['service'] }}</td>
+                        <td>
+                        {% for source in rule['source'] %}
+                            {{ source }}<br>
+                        {% endfor %}
+                        </td>
+                        <td>
+                        {% for destination in rule['destination'] %}
+                            {{ destination }}<br>
+                        {% endfor %}
+                        </td>
+                        <td>
+                        {% for service in rule['service'] %}
+                            {{ service }}<br>
+                        {% endfor %}
+                        </td>
                         <td>{{ rule['action'] }}</td>
                         <td>{{ rule['track'] }}</td>
-                        <td>{{ rule['target'] }}</td>
+                        <td>
+                        {% for target in rule['target'] %}
+                            {{ target }}<br>
+                        {% endfor %}
+                        </td>
                     </tr>
                 {% endfor %}
             {% endif %}

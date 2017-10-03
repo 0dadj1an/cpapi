@@ -37,7 +37,9 @@ def login():
             if 'sid' in response.json():
                 session['sid'] = response.json()['sid']
                 session['apiver'] = response.json()['api-server-version']
-                app.logger.info('Successful login from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
+                app.logger.info('Login from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
                 return(redirect('/custom'))
         elif response.status_code == 400:
             return(render_template('login.html', error=response.json()))
@@ -64,7 +66,9 @@ def custom():
                 else:
                     return(render_template('custom.html', response=response.text))
             else:
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
+                                                                                     session['username'],
+                                                                                     session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
@@ -90,6 +94,9 @@ def addobject():
                     return(render_template('addobject.html', response=response.text))
                 except (ValueError, AttributeError) as e:
                     return(render_template('addobject.html', response=str(response)))
+                except Exception as e:
+                    app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+                    return(render_template('addobject.html', response='oops'))
             elif 'network' in request.form.keys():
                 netname = request.form.get('netname')
                 networkip = request.form.get('network')
@@ -100,6 +107,9 @@ def addobject():
                     return(render_template('addobject.html', response=response.text))
                 except (ValueError, AttributeError) as e:
                     return(render_template('addobject.html', response=str(response)))
+                except Exception as e:
+                    app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+                    return(render_template('addobject.html', response='oops'))
         else:
             return(redirect('/login'))
 
@@ -135,7 +145,9 @@ def logout():
             if 'Discard' in request.form:
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
+                                                                                     session['username'],
+                                                                                     session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
             elif 'Publish' in request.form:
@@ -143,7 +155,9 @@ def logout():
                 # Discard still required here...because API.
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
+                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
+                                                                                     session['username'],
+                                                                                     session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
