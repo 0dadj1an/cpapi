@@ -41,6 +41,7 @@ def login():
                 session['apiver'] = response.json()['api-server-version']
                 return(redirect('/custom'))
         except (ValueError, AttributeError) as e:
+            print(e) # Getting logger soon.
             return(render_template('login.html', error=str(response)))
 
 @app.route('/custom', methods=['POST', 'GET'])
