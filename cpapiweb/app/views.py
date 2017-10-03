@@ -14,6 +14,7 @@ def mynavbar():
         View('Custom', 'custom'),
         View('Add Object', 'addobject'),
         View('Show Rules', 'showrules'),
+        View('Import Objects', 'importobj'),
         View('Logout', 'logout'))
 
 @app.route('/')
@@ -160,5 +161,14 @@ def logout():
                                                                                      session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
+        else:
+            return(redirect('/login'))
+
+@app.route('/importobj', methods=['POST', 'GET'])
+def importobj():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('importobj.html'))
         else:
             return(redirect('/login'))

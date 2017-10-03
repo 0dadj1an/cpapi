@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <h1>
+                Import Objects
+            </h1>
+            <p>
+                Import Objects from pre-formatted CSV.
+            </p>
+            <form action="" method="post" name="login">
+                <p>
+                    Host File :
+                    <input type="text" name="host" placeholder="/path/file.csv"><br>
+                </p>
+                <p><input type="submit" value="Submit"></p><br>
+            </form>
+            <!-- {% if response %}
+            <pre id="json">
+                {{ response }}<br>
+            </pre>
+            {% endif %} -->
+        </body>
+</html>
