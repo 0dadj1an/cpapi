@@ -9,7 +9,8 @@ def getalllayers(ipaddress, sid):
     return (alllayerslist)
 
 def showrulebase(ipaddress, name, sid):
-    show_rulebase_data = {'name':name, 'details-level':'standard', 'limit':500, 'use-object-dictionary':'true'}
+    count = 500
+    show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':0, 'limit':500, 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
 
     rules = []
@@ -24,6 +25,22 @@ def showrulebase(ipaddress, name, sid):
             for subrule in rule['rulebase']:
                 filteredrule = filterpolicyrule(subrule, show_rulebase_result.json())
                 rules.append(filteredrule)
+    if 'to' in show_rulebase_result.json():
+        while show_rulebase_result.json()["to"] != show_rulebase_result.json()["total"]:
+            show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':count, 'limit':500, 'use-object-dictionary':'true'}
+            show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+            for rule in show_rulebase_result.json()['rulebase']:
+                if 'type' in rule:
+                    thetype = rule['type']
+                    if thetype == 'access-rule':
+                        filteredrule = filterpolicyrule(rule, show_rulebase_result.json())
+                        rules.append(filteredrule)
+                if 'rulebase' in rule:
+                    for subrule in rule['rulebase']:
+                        filteredrule = filterpolicyrule(subrule, show_rulebase_result.json())
+                        rules.append(filteredrule)
+            count += 500
+
     return(rules)
 
 def filterpolicyrule(rule, show_rulebase_result):

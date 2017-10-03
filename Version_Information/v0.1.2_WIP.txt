@@ -1,0 +1,8 @@
+Maintenance:
+    Flow of response modified.
+    CSS Show Rules modifications.
+
+Enhancement:
+    Response print formatted when appropriate.
+    Show rules now show unlimited amout of rules.
+    Favicon.
