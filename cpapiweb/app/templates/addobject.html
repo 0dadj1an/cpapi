@@ -4,56 +4,59 @@
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     </head>
         <body>
+            <div>
             {% block navbar %}
             {{nav.mynavbar.render()}}
             {% endblock %}
-            <h1>
-                Add Host
-            </h1>
-            <p>
-                Add single host. Automatic Publish<br>
-            </p>
-            <form action="" method="post" name="host">
+            </div>
+            <div style="width: 100%" >
+                <div style="float:left; width: 70%">
+                <h1>
+                    Add Host
+                </h1>
                 <p>
-                    Host Name: <br>
-                    <input type="text" name="hostname"><br>
+                    Add single host. Automatic Publish<br>
                 </p>
+                <form action="" method="post" name="host">
+                    <p>
+                        Host Name: <br>
+                        <input type="text" name="hostname"><br>
+                    </p>
+                    <p>
+                        IP Address: <br>
+                        <input type="text" name="ipv4address"><br>
+                    </p>
+                    <p><input name="host" type="submit" value="Submit"></p><br>
+                </form>
+                <h1>
+                    Add Network
+                </h1>
                 <p>
-                    IP Address: <br>
-                    <input type="text" name="ipv4address"><br>
+                    Add single network. Automatic Publish<br>
                 </p>
-                <p><input name="host" type="submit" value="Submit"></p><br>
-            </form>
-            {% if hostresponse %}
-            <pre id="json">
-                {{ hostresponse }}<br>
-            </pre>
-            {% endif %}
-            <h1>
-                Add Network
-            </h1>
-            <p>
-                Add single network. Automatic Publish<br>
-            </p>
-            <form action="" method="post" name="network">
-                <p>
-                    Network Name: <br>
-                    <input type="text" name="netname"><br>
-                </p>
-                <p>
-                    Network: <br>
-                    <input type="text" name="network"><br>
-                </p>
-                <p>
-                    Subnet Mask: <br>
-                    <input type="text" name="mask"><br>
-                </p>
-                <p><input name="network" type="submit" value="Submit"></p><br>
-            </form>
-            {% if netresponse %}
-            <pre id="json">
-                {{ netresponse }}<br>
-            </pre>
-            {% endif %}
+                <form action="" method="post" name="network">
+                    <p>
+                        Network Name: <br>
+                        <input type="text" name="netname"><br>
+                    </p>
+                    <p>
+                        Network: <br>
+                        <input type="text" name="network"><br>
+                    </p>
+                    <p>
+                        Subnet Mask: <br>
+                        <input type="text" name="mask"><br>
+                    </p>
+                    <p><input name="network" type="submit" value="Submit"></p><br>
+                </form>
+                </div>
+                <div style="float:right">
+                    {% if response %}
+                    <pre id="json">
+                        {{ response }}<br>
+                    </pre>
+                    {% endif %}
+                <div>
+            </div>
         </body>
 </html>

@@ -87,22 +87,22 @@ def addobject():
             if 'host' in request.form.keys():
                 hostname = request.form.get('hostname')
                 ipv4address= request.form.get('ipv4address')
-                hostresponse = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
+                response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
                 connect.publish(session['ipaddress'], session['sid'])
                 try:
-                    return(render_template('addobject.html', hostresponse=hostresponse.text))
+                    return(render_template('addobject.html', response=response.text))
                 except (ValueError, AttributeError) as e:
-                    return(render_template('addobject.html', hostresponse=str(hostresponse)))
+                    return(render_template('addobject.html', response=str(response)))
             elif 'network' in request.form.keys():
                 netname = request.form.get('netname')
                 networkip = request.form.get('network')
                 mask = request.form.get('mask')
-                netresponse = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
+                response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
                 connect.publish(session['ipaddress'], session['sid'])
                 try:
-                    return(render_template('addobject.html', netresponse=netresponse.text))
+                    return(render_template('addobject.html', response=response.text))
                 except (ValueError, AttributeError) as e:
-                    return(render_template('addobject.html', netresponse=str(netresponse)))
+                    return(render_template('addobject.html', response=str(response)))
         else:
             return(redirect('/login'))
 
