@@ -33,25 +33,15 @@ def login():
         session['domain'] = request.form.get('domain', None)
 
         response = connect.login(session['ipaddress'], session['username'], session['password'], session['domain'])
-        print(response)
-        print(response.text)
-        print(response.json())
-        try:
-            if response.status_code == 200:
-                if 'sid' in response.json():
-                    session['sid'] = response.json()['sid']
-                    session['apiver'] = response.json()['api-server-version']
-                    app.logger.info('Successful login from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
-                    return(redirect('/custom'))
-            elif response.status_code == 400:
-                return(render_template('login.html', error=response.json()))
-        except (ValueError, AttributeError) as e:
-            print('fell here')
-            app.logger.info('Caught expected exception on login: {}'.format(e))
-            return(render_template('login.html', error=str(response)))
-        except Exception as e:
-            print('fell there')
-            app.logger.error('Unexpected exception on login: {}'.format(e))
+        if response.status_code == 200:
+            if 'sid' in response.json():
+                session['sid'] = response.json()['sid']
+                session['apiver'] = response.json()['api-server-version']
+                app.logger.info('Successful login from user: {} to mgmt: {}'.format(session['username'], session['ipaddress']))
+                return(redirect('/custom'))
+        elif response.status_code == 400:
+            return(render_template('login.html', error=response.json()))
+        else:
             return(render_template('login.html', error=str(response)))
 
 @app.route('/custom', methods=['POST', 'GET'])
