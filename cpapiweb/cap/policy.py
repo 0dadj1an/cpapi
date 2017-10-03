@@ -4,7 +4,7 @@ def getalllayers(ipaddress, sid):
     get_layers_data = {}
     get_layers_result = api_call(ipaddress, 443, 'show-access-layers', get_layers_data, sid)
     alllayerslist = []
-    for layer in get_layers_result['access-layers']:
+    for layer in get_layers_result.json()['access-layers']:
         alllayerslist.append(layer['name'])
     return (alllayerslist)
 
@@ -14,15 +14,15 @@ def showrulebase(ipaddress, name, sid):
 
     rules = []
 
-    for rule in show_rulebase_result['rulebase']:
+    for rule in show_rulebase_result.json()['rulebase']:
         if 'type' in rule:
             thetype = rule['type']
             if thetype == 'access-rule':
-                filteredrule = filterpolicyrule(rule, show_rulebase_result)
+                filteredrule = filterpolicyrule(rule, show_rulebase_result.json())
                 rules.append(filteredrule)
         if 'rulebase' in rule:
             for subrule in rule['rulebase']:
-                filteredrule = filterpolicyrule(subrule, show_rulebase_result)
+                filteredrule = filterpolicyrule(subrule, show_rulebase_result.json())
                 rules.append(filteredrule)
     return(rules)
 

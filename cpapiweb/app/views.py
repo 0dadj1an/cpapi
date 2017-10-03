@@ -35,13 +35,14 @@ def login():
 
         response = connect.login(session['ipaddress'], session['username'], session['password'], session['domain'])
 
-        if 'sid' in response:
-            session['sid'] = response['sid']
-            session['apiver'] = response['api-server-version']
-            return(redirect('/custom'))
-        else:
-            response = str(response)
-            return(render_template('login.html', error=response))
+        try:
+            if 'sid' in response.json():
+                session['sid'] = response.json()['sid']
+                session['apiver'] = response.json()['api-server-version']
+                return(redirect('/custom'))
+        except (ValueError, AttributeError) as e:
+            print(e) # Getting logger soon.
+            return(render_template('login.html', error=str(response)))
 
 @app.route('/custom', methods=['POST', 'GET'])
 def custom():
@@ -58,8 +59,10 @@ def custom():
             payload = request.form.get('payload')
             response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
             if command != 'logout':
-                response = str(response)
-                return(render_template('custom.html', response=response))
+                if response.status_code == 403 or response.status_code == 404:
+                    return(render_template('custom.html', response=str(response)))
+                else:
+                    return(render_template('custom.html', response=response.text))
             else:
                 session.pop('sid', None)
                 return(redirect('/login'))
@@ -81,7 +84,10 @@ def addhost():
             ipv4address= request.form.get('ipv4address')
             response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
             connect.publish(session['ipaddress'], session['sid'])
-            return(render_template('addhost.html', response=response))
+            try:
+                return(render_template('addhost.html', response=response.text))
+            except (ValueError, AttributeError) as e:
+                return(render_template('addhost.html', response=str(response)))
         else:
             return(redirect('/login'))
 
@@ -101,7 +107,10 @@ def addnetwork():
             mask = request.form.get('mask')
             response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
             connect.publish(session['ipaddress'], session['sid'])
-            return(render_template('addnetwork.html', response=response))
+            try:
+                return(render_template('addnetwork.html', response=response.text))
+            except (ValueError, AttributeError) as e:
+                return(render_template('addnetwork.html', response=str(response)))
         else:
             return(redirect('/login'))
 
