@@ -1,4 +1,5 @@
 Bug Fix:
+    Failed login could cause crash on response 400.
 
 Maintenance:
     Reduced 'Add Host|Add Network' into Add Object.
