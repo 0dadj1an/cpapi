@@ -177,27 +177,22 @@ def importobj():
 
     if request.method == 'POST':
         if 'sid' in session:
-            if request.files['hosts']:
+            if 'hosts' not in request.files and 'networks' not in request.files:
+                error = 'No File Provided.'
+                return (render_template('importobj.html', error=error))
+            if 'hosts' in request.files:
                 file = request.files['hosts']
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                hostimportfile = open('{}{}'.format(app.config['UPLOAD_FOLDER'], filename), 'r').read().split('\n')
-                for line in hostimportfile:
-                    if not line:
-                        continue
-                    apiprep = line.split(';')
-                    host.addhost(session['ipaddress'], apiprep[0], apiprep[1], session['sid'])
+                hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+                host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
                 return (render_template('importobj.html'))
-            elif request.files['networks']:
+            if 'networks' in request.files:
                 file = request.files['networks']
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                netimportfile = open('{}{}'.format(app.config['UPLOAD_FOLDER'], filename), 'r').read().split('\n')
-                for line in netimportfile:
-                    if not line:
-                        continue
-                    apiprep = line.split(';')
-                    network.addnetwork(session['ipaddress'], apiprep[0], apiprep[1], apiprep[2], session['sid'])
+                netimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+                network.importnetworks(session['ipaddress'], netimportfile, session['sid'])
                 return (render_template('importobj.html'))
         else:
             return(redirect('/login'))

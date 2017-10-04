@@ -12,6 +12,7 @@
             </h1>
             <p>
                 Import Objects from pre-formatted CSV.
+                <a href="https://github.com/themadhatterz/cpapi/tree/master/examplefiles" target="_blank">Example Files</a>.<br><br>
             </p>
             <h2>
                 Import Hosts
@@ -33,10 +34,10 @@
                 </p>
                 <p><input type="submit" value="Upload"></p><br>
             </form>
-            <!-- {% if response %}
-            <pre id="json">
-                {{ response }}<br>
-            </pre>
+            {% if error %}
+            <p>
+                {{ error }}
+            </p>
             {% endif %}
         </body>
 </html>
