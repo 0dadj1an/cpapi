@@ -12,13 +12,13 @@
             </h1>
             <p>
                 Import Objects from pre-formatted CSV.
-                <a href="https://github.com/themadhatterz/cpapi/tree/master/examplefiles" target="_blank">Example Files</a>.<br><br>
             </p>
             <h2>
                 Import Hosts
             </h2>
             <form action="" method="post" name="host" enctype="multipart/form-data">
                 <p>
+                    <a href="{{ url_for('static',filename='examplefiles/hosts.csv') }}">Example File</a>.<br>
                     Hosts File :
                     <input type="file" name="hosts"><br>
                 </p>
@@ -29,6 +29,7 @@
             </h2>
             <form action="" method="post" name="network" enctype="multipart/form-data">
                 <p>
+                    <a href="{{ url_for('static',filename='examplefiles/networks.csv') }}">Example File</a>.<br>
                     Networks File :
                     <input type="file" name="networks"><br>
                 </p>
