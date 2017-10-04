@@ -13,12 +13,25 @@
             <p>
                 Import Objects from pre-formatted CSV.
             </p>
-            <form action="" method="post" name="login">
+            <h2>
+                Import Hosts
+            </h2>
+            <form action="" method="post" name="host">
                 <p>
-                    Host File :
-                    <input type="text" name="host" placeholder="/path/file.csv"><br>
+                    Hosts File :
+                    <input type="file" name="hosts" placeholder="/path/hosts.csv"><br>
                 </p>
-                <p><input type="submit" value="Submit"></p><br>
+                <p><input type="submit" value="Upload"></p><br>
+            </form>
+            <h2>
+                Import Networks
+            </h2>
+            <form action="" method="post" name="network">
+                <p>
+                    Networks File :
+                    <input type="file" name="networks" placeholder="/path/networks.csv"><br>
+                </p>
+                <p><input type="submit" value="Upload"></p><br>
             </form>
             <!-- {% if response %}
             <pre id="json">

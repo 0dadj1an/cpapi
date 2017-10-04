@@ -4,6 +4,10 @@ from flask_nav.elements import Navbar, View
 from app import app
 from cap import *
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 nav = Nav()
 nav.init_app(app)
 
@@ -170,5 +174,22 @@ def importobj():
     if request.method == 'GET':
         if 'sid' in session:
             return(render_template('importobj.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        if 'sid' in session:
+            if 'file' not in request.files:
+                error = 'ERROR'
+                return(render_template('importobj.html', error=error))
+            file = request.files['file']
+            if file.filename == '':
+                error = 'ERROR'
+                return(render_template('importobj.html', error=error))
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('uploaded_file',
+                                        filename=filename))
         else:
             return(redirect('/login'))
