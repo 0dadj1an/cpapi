@@ -1,12 +1,10 @@
 from flask import render_template, redirect, request, session
+from werkzeug import secure_filename
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from app import app
 from cap import *
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+import os
 
 nav = Nav()
 nav.init_app(app)
@@ -179,17 +177,27 @@ def importobj():
 
     if request.method == 'POST':
         if 'sid' in session:
-            if 'file' not in request.files:
-                error = 'ERROR'
-                return(render_template('importobj.html', error=error))
-            file = request.files['file']
-            if file.filename == '':
-                error = 'ERROR'
-                return(render_template('importobj.html', error=error))
-            if file and allowed_file(file.filename):
+            if request.files['hosts']:
+                file = request.files['hosts']
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('uploaded_file',
-                                        filename=filename))
+                hostimportfile = open('{}{}'.format(app.config['UPLOAD_FOLDER'], filename), 'r').read().split('\n')
+                for line in hostimportfile:
+                    if not line:
+                        continue
+                    apiprep = line.split(';')
+                    host.addhost(session['ipaddress'], apiprep[0], apiprep[1], session['sid'])
+                return (render_template('importobj.html'))
+            elif request.files['networks']:
+                file = request.files['networks']
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                netimportfile = open('{}{}'.format(app.config['UPLOAD_FOLDER'], filename), 'r').read().split('\n')
+                for line in netimportfile:
+                    if not line:
+                        continue
+                    apiprep = line.split(';')
+                    network.addnetwork(session['ipaddress'], apiprep[0], apiprep[1], apiprep[2], session['sid'])
+                return (render_template('importobj.html'))
         else:
             return(redirect('/login'))
