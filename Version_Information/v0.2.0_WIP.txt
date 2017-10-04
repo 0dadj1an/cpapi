@@ -7,3 +7,4 @@ Enhancement:
     Show rules presentation improved.
 
 Feature:
+    Import Objects including hosts and networks.
