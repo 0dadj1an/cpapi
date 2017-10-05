@@ -6,6 +6,12 @@ from app import app
 from cap import *
 import os
 
+ALLOWED_EXTENSIONS = set(['csv'])
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 nav = Nav()
 nav.init_app(app)
 
@@ -15,8 +21,8 @@ def mynavbar():
         'cpapi',
         View('Custom', 'custom'),
         View('Add Object', 'addobject'),
-        View('Show Rules', 'showrules'),
         View('Import Objects', 'importobj'),
+        View('Show Rules', 'showrules'),
         View('Logout', 'logout'))
 
 @app.route('/')
@@ -178,21 +184,35 @@ def importobj():
     if request.method == 'POST':
         if 'sid' in session:
             if 'hosts' not in request.files and 'networks' not in request.files:
-                error = 'No File Provided.'
+                error = 'No file provided.'
                 return (render_template('importobj.html', error=error))
             if 'hosts' in request.files:
                 file = request.files['hosts']
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-                host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
-                return (render_template('importobj.html'))
+                if filename == '':
+                    error = 'No file provided.'
+                    return (render_template('importobj.html', error=error))
+                if allowed_file(file.filename):
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+                    report = host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
+                    return (render_template('importobj.html', report=report))
+                else:
+                    error = 'Wrong file extension.'
+                    return (render_template('importobj.html', error=error))
             if 'networks' in request.files:
                 file = request.files['networks']
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                netimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-                network.importnetworks(session['ipaddress'], netimportfile, session['sid'])
-                return (render_template('importobj.html'))
+                if filename == '':
+                    error = 'No file provided.'
+                    return (render_template('importobj.html', error=error))
+                if allowed_file(file.filename):
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    netimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+                    report = network.importnetworks(session['ipaddress'], netimportfile, session['sid'])
+                    return (render_template('importobj.html', report=report))
+                else:
+                    error = 'Wrong file extension.'
+                    return (render_template('importobj.html', error=error))
         else:
             return(redirect('/login'))
