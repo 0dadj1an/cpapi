@@ -16,7 +16,7 @@
             <form action="" method="post" name="runcommand">
                 <p>
                     Targets:
-                    <select name="target">
+                    <select multiple name="target">
                         {% for target in alltargets %}
                             <option value="{{ target }}">{{ target }}</option>
                         {% endfor %}
@@ -28,5 +28,12 @@
                 </p>
                 <p><input type="submit" value="Submit"><br></p>
             </form>
+            {% if response %}
+                <p>
+                    {% for task in response %}
+                        {{ task['target'] }} &#8208;&#8208; {{ task['status'] }}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}
         </body>
 </html>

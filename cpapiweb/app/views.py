@@ -5,7 +5,6 @@ from flask_nav.elements import Navbar, View
 import os
 
 from app import app
-from app import utility
 from cap import *
 
 nav = Nav()
@@ -89,20 +88,22 @@ def custom():
 
     if request.method == 'GET':
         if 'sid' in session:
-            return(render_template('custom.html'))
+            allcommands = misc.getallcommands(session['ipaddress'], session['sid'])
+            return(render_template('custom.html', allcommands=allcommands))
         else:
             return(redirect('/login'))
 
     if request.method == 'POST':
         if 'sid' in session:
+            allcommands = misc.getallcommands(session['ipaddress'], session['sid'])
             command = request.form.get('command')
             payload = request.form.get('payload')
             response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
             if command != 'logout':
                 if response.status_code == 403 or response.status_code == 404:
-                    return(render_template('custom.html', response=str(response)))
+                    return(render_template('custom.html', allcommands=allcommands, response=str(response)))
                 else:
-                    return(render_template('custom.html', response=response.text))
+                    return(render_template('custom.html', allcommands=allcommands, response=response.text))
             else:
                 app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
                                                                                   session['username'],
@@ -200,7 +201,7 @@ def runcommand():
     if request.method == 'POST':
         if 'sid' in session:
             alltargets = misc.getalltargets(session['ipaddress'], session['sid'])
-            response = misc.runcommand(session['ipaddress'], request.form.get('target'), request.form.get('command'), session['sid'])
+            response = misc.runcommand(session['ipaddress'], request.form.getlist('target'), request.form.get('command'), session['sid'])
             return(render_template('runcommand.html', alltargets=alltargets, response=response))
         else:
             return(redirect('/login'))

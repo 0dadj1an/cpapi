@@ -2,7 +2,8 @@ import os
 from werkzeug import secure_filename
 
 from app import app
-from cap import *
+from cap import host
+from cap import network
 
 ALLOWED_EXTENSIONS = set(['csv'])
 
@@ -39,3 +40,6 @@ def import_check(files, session):
         else:
             error = 'Wrong file extension.'
             return({'status':False, 'report':error})
+
+# def base64_ascii(stuff, morestuff):
+#     pass

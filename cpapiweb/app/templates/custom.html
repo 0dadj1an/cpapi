@@ -17,7 +17,11 @@
             <form action="" method="post" name="login">
                 <p>
                     Command: <br>
-                    <input type="text" name="command"><br>
+                    <select name="command">
+                        {% for command in allcommands %}
+                            <option value="{{ command }}">{{ command }}</option>
+                        {% endfor %}
+                    </select>
                 </p>
                 <p>
                     Payload: <br>
