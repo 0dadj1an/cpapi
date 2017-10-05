@@ -2,15 +2,11 @@ from flask import render_template, redirect, request, session
 from werkzeug import secure_filename
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-from app import app
-from cap import *
 import os
 
-ALLOWED_EXTENSIONS = set(['csv'])
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+from app import app
+from app import utility
+from cap import *
 
 nav = Nav()
 nav.init_app(app)
@@ -23,6 +19,7 @@ def mynavbar():
         View('Add Object', 'addobject'),
         View('Import Objects', 'importobj'),
         View('Show Rules', 'showrules'),
+        View('Run Command', 'runcommand'),
         View('Logout', 'logout'))
 
 @app.route('/')
@@ -54,6 +51,38 @@ def login():
             return(render_template('login.html', error=response.json()))
         else:
             return(render_template('login.html', error=str(response)))
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('logout.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        if 'sid' in session:
+            if 'Discard' in request.form:
+                connect.discard(session['ipaddress'], session['sid'])
+                connect.logout(session['ipaddress'], session['sid'])
+                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
+                session.pop('sid', None)
+                return(redirect('/login'))
+            elif 'Publish' in request.form:
+                connect.publish(session['ipaddress'], session['sid'])
+                # Discard still required here...because API.
+                connect.discard(session['ipaddress'], session['sid'])
+                connect.logout(session['ipaddress'], session['sid'])
+                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
+                session.pop('sid', None)
+                return(redirect('/login'))
+        else:
+            return(redirect('/login'))
 
 @app.route('/custom', methods=['POST', 'GET'])
 def custom():
@@ -122,6 +151,25 @@ def addobject():
         else:
             return(redirect('/login'))
 
+@app.route('/importobj', methods=['POST', 'GET'])
+def importobj():
+
+    if request.method == 'GET':
+        if 'sid' in session:
+            return(render_template('importobj.html'))
+        else:
+            return(redirect('/login'))
+
+    if request.method == 'POST':
+        if 'sid' in session:
+            checker = utility.import_check(request.files, session)
+            if checker['status'] == True:
+                return(render_template('importobj.html', report=checker['report']))
+            elif checker['status'] == False:
+                return (render_template('importobj.html', error=checker['report']))
+        else:
+            return(redirect('/login'))
+
 @app.route('/showrules', methods=['POST', 'GET'])
 def showrules():
 
@@ -140,79 +188,19 @@ def showrules():
         else:
             return(redirect('/login'))
 
-@app.route('/logout', methods=['POST', 'GET'])
-def logout():
-
+@app.route('/runcommand', methods=['POST', 'GET'])
+def runcommand():
     if request.method == 'GET':
         if 'sid' in session:
-            return(render_template('logout.html'))
+            alltargets = misc.getalltargets(session['ipaddress'], session['sid'])
+            return(render_template('runcommand.html', alltargets=alltargets))
         else:
             return(redirect('/login'))
 
     if request.method == 'POST':
         if 'sid' in session:
-            if 'Discard' in request.form:
-                connect.discard(session['ipaddress'], session['sid'])
-                connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                session.pop('sid', None)
-                return(redirect('/login'))
-            elif 'Publish' in request.form:
-                connect.publish(session['ipaddress'], session['sid'])
-                # Discard still required here...because API.
-                connect.discard(session['ipaddress'], session['sid'])
-                connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                session.pop('sid', None)
-                return(redirect('/login'))
-        else:
-            return(redirect('/login'))
-
-@app.route('/importobj', methods=['POST', 'GET'])
-def importobj():
-
-    if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('importobj.html'))
-        else:
-            return(redirect('/login'))
-
-    if request.method == 'POST':
-        if 'sid' in session:
-            if 'hosts' not in request.files and 'networks' not in request.files:
-                error = 'No file provided.'
-                return (render_template('importobj.html', error=error))
-            if 'hosts' in request.files:
-                file = request.files['hosts']
-                filename = secure_filename(file.filename)
-                if filename == '':
-                    error = 'No file provided.'
-                    return (render_template('importobj.html', error=error))
-                if allowed_file(file.filename):
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-                    report = host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
-                    return (render_template('importobj.html', report=report))
-                else:
-                    error = 'Wrong file extension.'
-                    return (render_template('importobj.html', error=error))
-            if 'networks' in request.files:
-                file = request.files['networks']
-                filename = secure_filename(file.filename)
-                if filename == '':
-                    error = 'No file provided.'
-                    return (render_template('importobj.html', error=error))
-                if allowed_file(file.filename):
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    netimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-                    report = network.importnetworks(session['ipaddress'], netimportfile, session['sid'])
-                    return (render_template('importobj.html', report=report))
-                else:
-                    error = 'Wrong file extension.'
-                    return (render_template('importobj.html', error=error))
+            alltargets = misc.getalltargets(session['ipaddress'], session['sid'])
+            response = misc.runcommand(session['ipaddress'], request.form.get('target'), request.form.get('command'), session['sid'])
+            return(render_template('runcommand.html', alltargets=alltargets, response=response))
         else:
             return(redirect('/login'))

@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <h1>
+                Run Command
+            </h1>
+            <p>
+                Issue commands on Check Point devices.
+            </p>
+            <form action="" method="post" name="runcommand">
+                <p>
+                    Targets:
+                    <select name="target">
+                        {% for target in alltargets %}
+                            <option value="{{ target }}">{{ target }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
+                    Command/Script: <br>
+                    <textarea type="text" name="command" rows="10"></textarea><br>
+                </p>
+                <p><input type="submit" value="Submit"><br></p>
+            </form>
+        </body>
+</html>

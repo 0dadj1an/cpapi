@@ -12,3 +12,15 @@ def customcommand(ipaddress, command, payload, sid):
         return(exc)
     response = api_call(ipaddress, 443, command, payload, sid)
     return(response)
+
+def getalltargets(ipaddress, sid):
+    get_targets_data = {'limit':500}
+    get_targets_result = api_call(ipaddress, 443, 'show-gateways-and-servers', get_targets_data ,sid)
+    alltargets = []
+    for obj in get_targets_result.json()["objects"]:
+        alltargets.append(obj["name"])
+    return(alltargets)
+
+def runcommand(ipaddress, target, scriptcontent, sid):
+    run_script_data = {'script-name':'cpapi', 'script':scriptcontent, 'targets':target}
+    response = api_call(ipaddress, 443, 'run-script', run_script_data , sid)

@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 from app import app
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-handler = RotatingFileHandler('cpapi.log', maxBytes=10000, backupCount=2)
+handler = RotatingFileHandler(app.config['LOG_FOLDER'], maxBytes=10000, backupCount=2)
 handler.setLevel(logging.DEBUG)
 handler.setFormatter(formatter)
 app.logger.addHandler(handler)
