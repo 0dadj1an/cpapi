@@ -75,9 +75,9 @@ def custom():
                 else:
                     return(render_template('custom.html', response=response.text))
             else:
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
-                                                                                     session['username'],
-                                                                                     session['ipaddress']))
+                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
@@ -154,9 +154,9 @@ def logout():
             if 'Discard' in request.form:
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
-                                                                                     session['username'],
-                                                                                     session['ipaddress']))
+                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
             elif 'Publish' in request.form:
@@ -164,9 +164,9 @@ def logout():
                 # Discard still required here...because API.
                 connect.discard(session['ipaddress'], session['sid'])
                 connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Successful logout from user: {} to mgmt: {}'.format(request.remote_addr,
-                                                                                     session['username'],
-                                                                                     session['ipaddress']))
+                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                  session['username'],
+                                                                                  session['ipaddress']))
                 session.pop('sid', None)
                 return(redirect('/login'))
         else:
