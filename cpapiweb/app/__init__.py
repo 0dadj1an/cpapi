@@ -8,8 +8,6 @@ if ostype == 'Windows':
 elif ostype == 'Linux':
     UPLOAD_FOLDER = '/var/tmp/'
 
-ALLOWED_EXTENSIONS = set(['csv'])
-
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 

@@ -4,9 +4,13 @@
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     </head>
         <body>
+            <div>
             {% block navbar %}
             {{nav.mynavbar.render()}}
             {% endblock %}
+            </div>
+            <div style="width: 100%" >
+                <div style="float:left; width: 70%">
             <h1>
                 Import Objects
             </h1>
@@ -40,5 +44,16 @@
                 {{ error }}
             </p>
             {% endif %}
-        </body>
+            </div>
+            <div style="float:right">
+                {% if report %}
+                <p>
+                    {% for item in report %}
+                        {{ item }}<br>
+                    {% endfor %}
+                </p>
+                {% endif %}
+            <div>
+        </div>
+    </body>
 </html>
