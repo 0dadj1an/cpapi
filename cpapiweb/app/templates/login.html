@@ -8,8 +8,6 @@
                 CPAPI - Check Point Web API Tool
             </h1>
             <p>
-                Written and maintained by Joshua Hatter. Submit any issues at
-                <a href="https://github.com/themadhatterz/cpapi/issues" target="_blank">Github</a>.<br><br>
                 Be sure your Manager API is enabled and accepting connections from external addresses.<br>
             </p>
             <h2>
@@ -33,11 +31,15 @@
                     <input type="text" name="domain"><br>
                 </p>
                 <p><input type="submit" value="Log In"></p><br>
-                {% if error %}
-                <p>
-                    {{ error }}
-                </p>
-                {% endif %}
             </form>
+            {% if error %}
+            <p>
+                {{ error }}
+            </p>
+            {% endif %}
+            <footer>
+                Submit any feedback and report issues at:
+                <a href="https://github.com/themadhatterz/cpapi/issues" target="_blank">Github</a>.
+            </footer>
         </body>
 </html>
