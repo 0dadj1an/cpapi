@@ -38,17 +38,20 @@ def login():
         session['domain'] = request.form.get('domain', None)
 
         response = connect.login(session['ipaddress'], session['username'], session['password'], session['domain'])
-        if response.status_code == 200:
-            if 'sid' in response.json():
-                session['sid'] = response.json()['sid']
-                session['apiver'] = response.json()['api-server-version']
-                app.logger.info('Login from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                return(redirect('/custom'))
-        elif response.status_code == 400:
-            return(render_template('login.html', error=response.json()))
-        else:
+        try:
+            if response.status_code == 200:
+                if 'sid' in response.json():
+                    session['sid'] = response.json()['sid']
+                    session['apiver'] = response.json()['api-server-version']
+                    app.logger.info('Login from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                                      session['username'],
+                                                                                      session['ipaddress']))
+                    return(redirect('/custom'))
+            elif response.status_code == 400:
+                return(render_template('login.html', error=response.json()))
+            else:
+                return(render_template('login.html', error=str(response)))
+        except:
             return(render_template('login.html', error=str(response)))
 
 @app.route('/logout', methods=['POST', 'GET'])
