@@ -9,7 +9,7 @@ General tool for interacting with Check Point Software MGMT Web API.
 		* python(3) ~/cpapi/cpapiweb/run.py
 	* Flask Web Server Deployments
 		* http://flask.pocoo.org/docs/0.12/deploying/
-* Configure Log Directories under /cpapiweb/app/\__init__.py
+* Configure Log Directories under /cpapiweb/app/\_\_init\_\_.py
 
 #### Features
 * Send custom commands based on reference guide.
