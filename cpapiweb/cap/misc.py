@@ -1,4 +1,5 @@
 from cap.post import api_call
+from cap.utility import base64_ascii
 import ast, json, time
 
 def customcommand(ipaddress, command, payload, sid):
@@ -35,7 +36,13 @@ def runcommand(ipaddress, target, scriptcontent, sid):
                     taskresponse = gettask(ipaddress, taskid, sid)
                     taskperc = taskresponse.json()['tasks'][0]['progress-percentage']
                     if taskperc == 100:
-                        taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status']})
+                        if taskresponse.json()['tasks'][0]['task-details'][0]['responseMessage']:
+                            base64resp = taskresponse.json()['tasks'][0]['task-details'][0]['responseMessage']
+                            asciiresp = base64_ascii(base64resp)
+                            taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status'],
+                                               'response':asciiresp})
+                        taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status'],
+                                           'response':'Not Available'})
                     time.sleep(1)
             return(taskreturn)
     elif response.status_code == 404:

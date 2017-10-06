@@ -32,6 +32,8 @@
                 <p>
                     {% for task in response %}
                         {{ task['target'] }} &#8208;&#8208; {{ task['status'] }}<br>
+                        Response:
+                        {{ task['response'] }}<br><br>
                     {% endfor %}
                 </p>
             {% endif %}

@@ -1,4 +1,4 @@
-import os
+import os, base64
 from werkzeug import secure_filename
 
 from app import app
@@ -41,5 +41,6 @@ def import_check(files, session):
             error = 'Wrong file extension.'
             return({'status':False, 'report':error})
 
-# def base64_ascii(stuff, morestuff):
-#     pass
+def base64_ascii(base64resp):
+    asciiresp = base64.b64decode(base64resp).decode('utf-8')
+    return(asciiresp)
