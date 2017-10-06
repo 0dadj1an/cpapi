@@ -29,13 +29,13 @@
                 <p><input type="submit" value="Submit"><br></p>
             </form>
             {% if response %}
-                <p>
-                    {% for task in response %}
-                        {{ task['target'] }} &#8208;&#8208; {{ task['status'] }}<br>
-                        Response:
-                        {{ task['response'] }}<br><br>
-                    {% endfor %}
-                </p>
+<pre>
+{% for task in response %}
+{{ task['target'] }} &#8208;&#8208; {{ task['status'] }}<br>
+Response:
+{{ task['response'] }}<br><br>
+{% endfor %}
+</pre>
             {% endif %}
         </body>
 </html>

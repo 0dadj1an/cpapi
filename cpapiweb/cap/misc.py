@@ -41,8 +41,9 @@ def runcommand(ipaddress, target, scriptcontent, sid):
                             asciiresp = base64_ascii(base64resp)
                             taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status'],
                                                'response':asciiresp})
-                        taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status'],
-                                           'response':'Not Available'})
+                        else:
+                            taskreturn.append({'target':tasktrg, 'status':taskresponse.json()['tasks'][0]['status'],
+                                               'response':'Not Available'})
                     time.sleep(1)
             return(taskreturn)
     elif response.status_code == 404:

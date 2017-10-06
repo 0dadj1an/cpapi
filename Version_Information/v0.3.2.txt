@@ -6,5 +6,6 @@ Maintenance:
 
 Enhancement:
     Run commands/scripts, addition feedback provided.
+    Print formatting of responses on several pages.
 
 Feature:
