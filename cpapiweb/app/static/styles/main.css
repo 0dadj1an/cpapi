@@ -59,6 +59,10 @@ td {
     background-color: #F8F8F8
 }
 
+select {
+    width:300px;
+}
+
 footer {
     left: 50%;
     position: fixed;

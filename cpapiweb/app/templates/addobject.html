@@ -10,53 +10,100 @@
             {% endblock %}
             </div>
             <div style="width: 100%" >
-                <div style="float:left; width: 70%">
                 <h1>
-                    Add Objects
+                    Add Object
                 </h1>
-                <p>
-                    Add objects one at a time.
-                </p>
-                <h2>
-                    Add Host
-                </h2>
-                <p>
-                    Add single host. Automatic Publish<br>
-                </p>
-                <form action="" method="post" name="host">
+                <div style="float:left; width: 20%">
+                    <h2>
+                        Add Host
+                    </h2>
                     <p>
-                        Host Name: <br>
-                        <input type="text" name="hostname"><br>
+                        Add single host.<br>
                     </p>
+                    <form action="" method="post" name="host">
+                        <p>
+                            Host Name: <br>
+                            <input type="text" name="hostname"><br>
+                        </p>
+                        <p>
+                            IP Address: <br>
+                            <input type="text" name="ipv4address"><br>
+                        </p>
+                        <p><input name="host" type="submit" value="Submit"></p><br>
+                    </form>
+                    <h2>
+                        Add Network
+                    </h2>
                     <p>
-                        IP Address: <br>
-                        <input type="text" name="ipv4address"><br>
+                        Add single network.<br>
                     </p>
-                    <p><input name="host" type="submit" value="Submit"></p><br>
-                </form>
-                <h2>
-                    Add Network
-                </h2>
-                <p>
-                    Add single network. Automatic Publish<br>
-                </p>
-                <form action="" method="post" name="network">
+                    <form action="" method="post" name="network">
+                        <p>
+                            Network Name: <br>
+                            <input type="text" name="netname"><br>
+                        </p>
+                        <p>
+                            Network: <br>
+                            <input type="text" name="network"><br>
+                        </p>
+                        <p>
+                            Subnet Mask: <br>
+                            <input type="text" name="mask"><br>
+                        </p>
+                        <p><input name="network" type="submit" value="Submit"></p><br>
+                    </form>
+                    <h2>
+                        Add Group
+                    </h2>
                     <p>
-                        Network Name: <br>
-                        <input type="text" name="netname"><br>
+                        Add single group.<br>
                     </p>
-                    <p>
-                        Network: <br>
-                        <input type="text" name="network"><br>
-                    </p>
-                    <p>
-                        Subnet Mask: <br>
-                        <input type="text" name="mask"><br>
-                    </p>
-                    <p><input name="network" type="submit" value="Submit"></p><br>
-                </form>
+                    <form action="" method="post" name="group">
+                        <p>
+                            Group Name: <br>
+                            <input type="text" name="groupname"><br>
+                        </p>
+                        <p><input name="group" type="submit" value="Submit"></p><br>
+                    </form>
                 </div>
-                <div style="float:right">
+                <div style="float:left; width: 40%">
+                    <h2>
+                        Add Object to group
+                    </h2>
+                    <form action="" method="post" name="addgroup">
+                        <p>
+                            Hosts:
+                            <select multiple name="hosts"; style="float:right">
+                                {% for host in allhostlist %}
+                                    <option value="{{ host }}">{{ host }}</option>
+                                {% endfor %}
+                            </select>
+                            <br><br><br><br>
+                            Networks:
+                            <select multiple name="networks"; style="float:right">
+                                {% for network in allnetlist %}
+                                    <option value="{{ network }}">{{ network }}</option>
+                                {% endfor %}
+                            </select>
+                            <br><br><br><br>
+                            Groups:
+                            <select multiple name="groups"; style="float:right">
+                                {% for group in allgrouplist %}
+                                    <option value="{{ group }}">{{ group }}</option>
+                                {% endfor %}
+                            </select>
+                            <br><br><br><br>
+                            Target Group:
+                            <select name="trggroup"; style="float:right">
+                                {% for group in allgrouplist %}
+                                    <option value="{{ group }}">{{ group }}</option>
+                                {% endfor %}
+                            </select>
+                        </p>
+                        <p><input name="addgroup" type="submit" value="Submit"></p><br>
+                    <form action="" method="post" name="addgroup">
+                </div>
+                <div style="float:right; width: 30%">
 {% if response %}
 <pre id="json">
 {{ response }}<br>

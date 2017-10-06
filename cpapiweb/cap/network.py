@@ -18,3 +18,19 @@ def importnetworks(ipaddress, filename, sid):
         else:
             report.append('Host:{} - FAILURE'.format(apiprep[0]))
     return(report)
+
+def getallnetworks(ipaddress, sid):
+    count = 500
+    show_nets_data = {'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
+    show_nets_result = api_call(ipaddress, 443, 'show-networks', show_nets_data, sid)
+    allnetlist = []
+    for nets in show_nets_result.json()["objects"]:
+        allnetlist.append(nets["name"])
+    if 'to' in show_nets_result:
+        while show_nets_result.json()["to"] != show_nets_result.json()["total"]:
+            show_nets_data = {'offset':count, 'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
+            show_nets_result = api_call(ipaddress, 443, 'show-networks', show_nets_data ,sid)
+            for nets in show_nets_result.json()["objects"]:
+                allnetlist.append(nets["name"])
+            count = count + 500
+    return (allnetlist)

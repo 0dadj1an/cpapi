@@ -5,5 +5,8 @@ Maintenance:
     Page layout update with link Github for issues.
 
 Enhancement:
+    Auto publish removed from Add Object.
 
 Feature:
+    Add group.
+    Add objects to groups.
