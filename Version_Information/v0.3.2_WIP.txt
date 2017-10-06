@@ -1,0 +1,9 @@
+Bug Fix:
+
+Maintenance:
+    Debug mode off.
+    Readme updated.
+
+Enhancement:
+
+Feature:
