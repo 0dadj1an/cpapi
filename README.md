@@ -13,7 +13,7 @@ General tool for interacting with Check Point Software MGMT Web API.
 
 #### Features
 * Send custom commands based on reference guide.
-* Add objects
-* Import objects from csv
-* Display policy in HTML
-* Run commands/scripts against devices
+* Add objects.
+* Import objects from csv.
+* Display policy in HTML.
+* Run commands/scripts against devices.

@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <h1 align="center">
+                You aren't supposed to be here...
+            </h1>
+            <p align="center">
+                Yet, here you are.<br>
+                If the issue persists please report details at:
+                <a href="https://github.com/themadhatterz/cpapi/issues" target="_blank">Github</a>.<br><br>
+            </p>
+        </body>
+</html>

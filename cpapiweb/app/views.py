@@ -21,6 +21,10 @@ def mynavbar():
         View('Run Command', 'runcommand'),
         View('Logout', 'logout'))
 
+@app.errorhandler(500)
+def internal_error(e):
+    return(render_template('500.html'), 500)
+
 @app.route('/')
 def index():
     return(redirect('/login'))
@@ -103,10 +107,15 @@ def custom():
             payload = request.form.get('payload')
             response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
             if command != 'logout':
-                if response.status_code == 403 or response.status_code == 404:
-                    return(render_template('custom.html', allcommands=allcommands, response=str(response)))
-                else:
-                    return(render_template('custom.html', allcommands=allcommands, response=response.text))
+                try:
+                    if response.status_code == 403 or response.status_code == 404:
+                        return(render_template('custom.html', allcommands=allcommands, response=str(response)))
+                    else:
+                        return(render_template('custom.html', allcommands=allcommands, response=response.text))
+                except Exception as e:
+                    app.logger.error('From VIEWS :: {}'.format(e))
+                    response = 'Incorrect payload format.'
+                    return(render_template('custom.html', allcommands=allcommands, response=response))
             else:
                 app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
                                                                                   session['username'],
@@ -204,6 +213,10 @@ def runcommand():
     if request.method == 'POST':
         if 'sid' in session:
             alltargets = misc.getalltargets(session['ipaddress'], session['sid'])
+            print(request.form.getlist('target'))
+            if request.form.getlist('target') == [] or request.form.get('command') == '':
+                error = 'No target and/or command provided.'
+                return(render_template('runcommand.html', alltargets=alltargets, error=error))
             response = misc.runcommand(session['ipaddress'], request.form.getlist('target'), request.form.get('command'), session['sid'])
             return(render_template('runcommand.html', alltargets=alltargets, response=response))
         else:
