@@ -14,7 +14,7 @@ if ostype == 'Windows':
     UPLOAD_FOLDER = config['windows_upload']
     LOG_FOLDER = config['windows_log']
 elif ostype == 'Linux':
-    UPLOAD_FOLDER = config['linux_uploa']
+    UPLOAD_FOLDER = config['linux_upload']
     LOG_FOLDER = config['linux_log']
 
 app = Flask(__name__)
