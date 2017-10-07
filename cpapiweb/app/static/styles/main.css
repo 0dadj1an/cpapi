@@ -59,11 +59,8 @@ td {
     background-color: #F8F8F8
 }
 
-footer {
-    left: 50%;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+select {
+    width:300px;
 }
 
 .page {
