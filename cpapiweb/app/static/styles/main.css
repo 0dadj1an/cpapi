@@ -63,13 +63,6 @@ select {
     width:300px;
 }
 
-footer {
-    left: 50%;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
 .page {
     margin: 2em auto;
     width: 35em;
