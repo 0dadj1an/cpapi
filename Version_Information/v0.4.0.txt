@@ -10,3 +10,4 @@ Enhancement:
 Feature:
     Add group.
     Add objects to groups.
+    Import groups.
