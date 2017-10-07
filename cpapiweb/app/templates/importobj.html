@@ -39,6 +39,17 @@
                 </p>
                 <p><input type="submit" value="Upload"></p><br>
             </form>
+            <h2>
+                Import Groups
+            </h2>
+            <form action="" method="post" name="group" enctype="multipart/form-data">
+                <p>
+                    <a href="{{ url_for('static',filename='examplefiles/groups.csv') }}">Example File</a>.<br>
+                    Groups File :
+                    <input type="file" name="groups"><br>
+                </p>
+                <p><input type="submit" value="Upload"></p><br>
+            </form>
             {% if error %}
             <p>
                 {{ error }}

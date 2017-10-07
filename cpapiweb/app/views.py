@@ -47,11 +47,7 @@ def login():
                 if 'sid' in response.json():
                     session['sid'] = response.json()['sid']
                     session['apiver'] = response.json()['api-server-version']
-                    # Retrieve relevant data for tools
                     session['allcommands'] = misc.getallcommands(session['ipaddress'], session['sid'])
-                    session['allhostlist'] = allhostlist = host.getallhosts(session['ipaddress'], session['sid'])
-                    session['allnetlist'] = network.getallnetworks(session['ipaddress'], session['sid'])
-                    session['allgrouplist'] = group.getallgroups(session['ipaddress'], session['sid'])
                     session['alllayers'] = policy.getalllayers(session['ipaddress'], session['sid'])
                     session['alltargets'] = misc.getalltargets(session['ipaddress'], session['sid'])
                     app.logger.info('Login from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
@@ -92,7 +88,7 @@ def logout():
                 app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
                                                                                   session['username'],
                                                                                   session['ipaddress']))
-                session.pop('sid', None)
+                utility.clear_session(session)
                 return(redirect('/login'))
         else:
             return(redirect('/login'))
@@ -135,6 +131,9 @@ def addobject():
 
     if request.method == 'GET':
         if 'sid' in session:
+            session['allhostlist'] = host.getallhosts(session['ipaddress'], session['sid'])
+            session['allnetlist'] = network.getallnetworks(session['ipaddress'], session['sid'])
+            session['allgrouplist'] = group.getallgroups(session['ipaddress'], session['sid'])
             return(render_template('addobject.html', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
         else:
             return(redirect('/login'))
@@ -178,15 +177,30 @@ def addobject():
                 hostselection = request.form.getlist('hosts')
                 netsselection = request.form.getlist('networks')
                 grpsselection = request.form.getlist('groups')
-                members = []
-                for host, net, grp in itertools.zip_longest(hostselection, netsselection, grpsselection):
-                    members.append(host)
-                    members.append(net)
-                    members.append(grp)
-                members.remove(None)
-                trggselection = request.form.get('trggroup')
-                response = group.setgroup(session['ipaddress'], trggselection, members, session['sid'])
-                return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
+                if hostselection or netsselection or grpsselection:
+                    members = []
+                    for hst, net, grp in itertools.zip_longest(hostselection, netsselection, grpsselection):
+                        members.append(hst)
+                        members.append(net)
+                        members.append(grp)
+                    # I
+                    for item in members:
+                        if item == None:
+                            members.remove(item)
+                    # DONT
+                    for item in members:
+                        if item == None:
+                            members.remove(item)
+                    # KNOW
+                    for item in members:
+                        if item == None:
+                            members.remove(item)
+                    trggselection = request.form.get('trggroup')
+                    response = group.setgroup(session['ipaddress'], trggselection, members, session['sid'])
+                    return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
+                else:
+                    error = 'Please select some group members.'
+                    return(render_template('addobject.html', error=error, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
         else:
             return(redirect('/login'))
 
