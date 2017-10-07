@@ -5,7 +5,7 @@ setup(
     name='CPAPI',
 
     # Version number:
-    version='0.4.0',
+    version='0.4.1',
 
     # Application author details:
     author='Joshua Hatter',
@@ -16,7 +16,7 @@ setup(
 
     # Details
     url='https://github.com/themadhatterz/cpapi',
-    download_url = 'https://github.com/themadhatterz/cpapi/archive/v0.4.0.tar.gz',
+    download_url = 'https://github.com/themadhatterz/cpapi/archive/v0.4.1.tar.gz',
 
     # License
     license='LICENSE.txt',
