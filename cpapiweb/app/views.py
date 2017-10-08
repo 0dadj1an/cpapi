@@ -156,7 +156,7 @@ def importobj():
 
     if request.method == 'POST':
         if 'sid' in session:
-            checker = utility.import_object(request.files, session)
+            checker = utility.import_check(request.files, session)
             if checker['status'] == True:
                 return(render_template('importobj.html', report=checker['report']))
             elif checker['status'] == False:
