@@ -1,8 +1,6 @@
 from flask import render_template, redirect, request, session
-from werkzeug import secure_filename
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-import os
 
 from app import app
 from cap import *
@@ -58,7 +56,8 @@ def login():
                 return(render_template('login.html', error=response.text))
             else:
                 return(render_template('login.html', error=str(response)))
-        except:
+        except Exception as e:
+            app.logger.warn('From VIEWS :: {}'.format(e))
             return(render_template('login.html', error=str(response)))
 
 @app.route('/logout', methods=['POST', 'GET'])

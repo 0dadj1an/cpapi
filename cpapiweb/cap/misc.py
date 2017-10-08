@@ -1,6 +1,6 @@
 from cap.post import api_call
 from cap.utility import base64_ascii
-import ast, json, time
+import ast, time
 
 def customcommand(ipaddress, command, payload, sid):
     try:
