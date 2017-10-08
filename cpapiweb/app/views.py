@@ -1,8 +1,6 @@
 from flask import render_template, redirect, request, session
-from werkzeug import secure_filename
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-import os
 
 from app import app
 from cap import *
@@ -58,7 +56,8 @@ def login():
                 return(render_template('login.html', error=response.text))
             else:
                 return(render_template('login.html', error=str(response)))
-        except:
+        except Exception as e:
+            app.logger.warn('From VIEWS :: {}'.format(e))
             return(render_template('login.html', error=str(response)))
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -143,8 +142,6 @@ def addobject():
             if 'host' in request.form.keys() or 'network' in request.form.keys() or 'group' in request.form.keys() or 'addgroup' in request.form.keys():
                 response = utility.add_object(session, request)
                 return(render_template('addobject.html', response=response, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-            else:
-                print('nope')
         else:
             return(redirect('/login'))
 
@@ -193,7 +190,6 @@ def runcommand():
 
     if request.method == 'POST':
         if 'sid' in session:
-            print(request.form.getlist('target'))
             if request.form.getlist('target') == [] or request.form.get('command') == '':
                 error = 'No target and/or command provided.'
                 return(render_template('runcommand.html', alltargets=session['alltargets'], error=error))
