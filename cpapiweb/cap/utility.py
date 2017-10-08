@@ -1,4 +1,4 @@
-import os, base64
+import os, base64, itertools
 from werkzeug import secure_filename
 
 from app import app
@@ -69,3 +69,66 @@ def clear_session(session):
     session.pop('allgrouplist', None)
     session.pop('alllayers', None)
     session.pop('alltargets', None)
+
+def add_object(session, request):
+    if 'host' in request.form.keys():
+        hostname = request.form.get('hostname')
+        ipv4address= request.form.get('ipv4address')
+        response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
+        try:
+            return(response.text)
+        except (ValueError, AttributeError) as e:
+            return(str(response))
+        except Exception as e:
+            app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+            return('oops')
+    elif 'network' in request.form.keys():
+        netname = request.form.get('netname')
+        networkip = request.form.get('network')
+        mask = request.form.get('mask')
+        response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
+        try:
+            return(response.text)
+        except (ValueError, AttributeError) as e:
+            return(str(response))
+        except Exception as e:
+            app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+            return('oops')
+    elif 'group' in request.form.keys():
+        groupname = request.form.get('groupname')
+        response = group.addgroup(session['ipaddress'], groupname, session['sid'])
+        try:
+            return(response.text)
+        except (ValueError, AttributeError) as e:
+            return(str(response))
+        except Exception as e:
+            app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+            return('oops')
+    elif 'addgroup' in request.form.keys():
+        hostselection = request.form.getlist('hosts')
+        netsselection = request.form.getlist('networks')
+        grpsselection = request.form.getlist('groups')
+        if hostselection or netsselection or grpsselection:
+            members = []
+            for hst, net, grp in itertools.zip_longest(hostselection, netsselection, grpsselection):
+                members.append(hst)
+                members.append(net)
+                members.append(grp)
+            # I
+            for item in members:
+                if item == None:
+                    members.remove(item)
+            # DONT
+            for item in members:
+                if item == None:
+                    members.remove(item)
+            # KNOW
+            for item in members:
+                if item == None:
+                    members.remove(item)
+            trggselection = request.form.get('trggroup')
+            response = group.setgroup(session['ipaddress'], trggselection, members, session['sid'])
+            return(response.text)
+        else:
+            error = 'Please select some group members.'
+            return(error)

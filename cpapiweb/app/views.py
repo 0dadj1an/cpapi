@@ -1,8 +1,6 @@
 from flask import render_template, redirect, request, session
-from werkzeug import secure_filename
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-import os, itertools
 
 from app import app
 from cap import *
@@ -55,10 +53,11 @@ def login():
                                                                                       session['ipaddress']))
                     return(redirect('/custom'))
             elif response.status_code == 400:
-                return(render_template('login.html', error=response.json()))
+                return(render_template('login.html', error=response.text))
             else:
                 return(render_template('login.html', error=str(response)))
-        except:
+        except Exception as e:
+            app.logger.warn('From VIEWS :: {}'.format(e))
             return(render_template('login.html', error=str(response)))
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -140,67 +139,9 @@ def addobject():
 
     if request.method == 'POST':
         if 'sid' in session:
-            if 'host' in request.form.keys():
-                hostname = request.form.get('hostname')
-                ipv4address= request.form.get('ipv4address')
-                response = host.addhost(session['ipaddress'], hostname, ipv4address, session['sid'])
-                try:
-                    return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except (ValueError, AttributeError) as e:
-                    return(render_template('addobject.html', response=str(response), allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except Exception as e:
-                    app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
-                    return(render_template('addobject.html', response='oops', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-            elif 'network' in request.form.keys():
-                netname = request.form.get('netname')
-                networkip = request.form.get('network')
-                mask = request.form.get('mask')
-                response = network.addnetwork(session['ipaddress'], netname, networkip, mask, session['sid'])
-                try:
-                    return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except (ValueError, AttributeError) as e:
-                    return(render_template('addobject.html', response=str(response), allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except Exception as e:
-                    app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
-                    return(render_template('addobject.html', response='oops', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-            elif 'group' in request.form.keys():
-                groupname = request.form.get('groupname')
-                response = group.addgroup(session['ipaddress'], groupname, session['sid'])
-                try:
-                    return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except (ValueError, AttributeError) as e:
-                    return(render_template('addobject.html', response=str(response), allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                except Exception as e:
-                    app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
-                    return(render_template('addobject.html', response='oops', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-            elif 'addgroup' in request.form.keys():
-                hostselection = request.form.getlist('hosts')
-                netsselection = request.form.getlist('networks')
-                grpsselection = request.form.getlist('groups')
-                if hostselection or netsselection or grpsselection:
-                    members = []
-                    for hst, net, grp in itertools.zip_longest(hostselection, netsselection, grpsselection):
-                        members.append(hst)
-                        members.append(net)
-                        members.append(grp)
-                    # I
-                    for item in members:
-                        if item == None:
-                            members.remove(item)
-                    # DONT
-                    for item in members:
-                        if item == None:
-                            members.remove(item)
-                    # KNOW
-                    for item in members:
-                        if item == None:
-                            members.remove(item)
-                    trggselection = request.form.get('trggroup')
-                    response = group.setgroup(session['ipaddress'], trggselection, members, session['sid'])
-                    return(render_template('addobject.html', response=response.text, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-                else:
-                    error = 'Please select some group members.'
-                    return(render_template('addobject.html', error=error, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
+            if 'host' in request.form.keys() or 'network' in request.form.keys() or 'group' in request.form.keys() or 'addgroup' in request.form.keys():
+                response = utility.add_object(session, request)
+                return(render_template('addobject.html', response=response, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
         else:
             return(redirect('/login'))
 
@@ -249,7 +190,6 @@ def runcommand():
 
     if request.method == 'POST':
         if 'sid' in session:
-            print(request.form.getlist('target'))
             if request.form.getlist('target') == [] or request.form.get('command') == '':
                 error = 'No target and/or command provided.'
                 return(render_template('runcommand.html', alltargets=session['alltargets'], error=error))
