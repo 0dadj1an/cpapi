@@ -142,8 +142,6 @@ def addobject():
             if 'host' in request.form.keys() or 'network' in request.form.keys() or 'group' in request.form.keys() or 'addgroup' in request.form.keys():
                 response = utility.add_object(session, request)
                 return(render_template('addobject.html', response=response, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-            else:
-                print('nope')
         else:
             return(redirect('/login'))
 
@@ -192,7 +190,6 @@ def runcommand():
 
     if request.method == 'POST':
         if 'sid' in session:
-            print(request.form.getlist('target'))
             if request.form.getlist('target') == [] or request.form.get('command') == '':
                 error = 'No target and/or command provided.'
                 return(render_template('runcommand.html', alltargets=session['alltargets'], error=error))
