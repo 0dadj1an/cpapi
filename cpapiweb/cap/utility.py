@@ -12,7 +12,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def test_func(filetype, files):
+def verify_file(filetype, files):
     file = files['{}'.format(filetype)]
     filename = secure_filename(file.filename)
     if filename == '':
@@ -28,53 +28,26 @@ def test_func(filetype, files):
 
 def import_check(files, session):
     if 'hosts' in files:
-        importfile = test_func('hosts', files)
-        if importfile is dict:
+        importfile = verify_file('hosts', files)
+        if type(importfile) is dict:
             return(importfile)
         else:
             report = host.importhosts(session['ipaddress'], importfile, session['sid'])
             return({'status':True, 'report':report})
-        # file = files['hosts']
-        # filename = secure_filename(file.filename)
-        # if filename == '':
-        #     error = 'No file provided.'
-        #     return({'status':False, 'report':error})
-        # if allowed_file(file.filename):
-        #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        #     hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-        #     report = host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
-        #     return({'status':True, 'report':report})
-        # else:
-        #     error = 'Wrong file extension.'
-        #     return({'status':False, 'report':error})
     elif 'networks' in files:
-        file = files['networks']
-        filename = secure_filename(file.filename)
-        if filename == '':
-            error = 'No file provided.'
-            return({'status':False, 'report':error})
-        if allowed_file(file.filename):
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            netimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-            report = network.importnetworks(session['ipaddress'], netimportfile, session['sid'])
-            return({'status':True, 'report':report})
+        importfile = verify_file('networks', files)
+        if type(importfile) is dict:
+            return(importfile)
         else:
-            error = 'Wrong file extension.'
-            return({'status':False, 'report':error})
+            report = network.importnetworks(session['ipaddress'], importfile, session['sid'])
+            return({'status':True, 'report':report})
     elif 'groups' in files:
-        file = files['groups']
-        filename = secure_filename(file.filename)
-        if filename == '':
-            error = 'No file provided.'
-            return({'status':False, 'report':error})
-        if allowed_file(file.filename):
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            grpimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-            report = group.importgroups(session['ipaddress'], grpimportfile, session['sid'])
-            return({'status':True, 'report':report})
+        importfile = verify_file('groups', files)
+        if type(importfile) is dict:
+            return(importfile)
         else:
-            error = 'Wrong file extension.'
-            return({'status':False, 'report':error})
+            report = group.importgroups(session['ipaddress'], importfile, session['sid'])
+            return({'status':True, 'report':report})
 
 def base64_ascii(base64resp):
     asciiresp = base64.b64decode(base64resp).decode('utf-8')
