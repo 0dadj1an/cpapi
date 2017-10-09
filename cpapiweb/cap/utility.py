@@ -29,21 +29,21 @@ def verify_file(filetype, files):
 def import_check(files, session):
     if 'hosts' in files:
         importfile = verify_file('hosts', files)
-        if type(importfile) is dict:
+        if isinstance(importfile, dict):
             return(importfile)
         else:
             report = host.importhosts(session['ipaddress'], importfile, session['sid'])
             return({'status':True, 'report':report})
     elif 'networks' in files:
         importfile = verify_file('networks', files)
-        if type(importfile) is dict:
+        if isinstance(importfile, dict):
             return(importfile)
         else:
             report = network.importnetworks(session['ipaddress'], importfile, session['sid'])
             return({'status':True, 'report':report})
     elif 'groups' in files:
         importfile = verify_file('groups', files)
-        if type(importfile) is dict:
+        if isinstance(importfile, dict):
             return(importfile)
         else:
             report = group.importgroups(session['ipaddress'], importfile, session['sid'])
