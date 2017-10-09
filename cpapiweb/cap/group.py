@@ -20,9 +20,9 @@ def importgroups(ipaddress, filename, sid):
         memberlist = groupname[1].split(',')
         response = importaddgroup(ipaddress, groupname[0], memberlist[0:-1], sid)
         if response.status_code == 200:
-            report.append('Host:{} - SUCCESS'.format(groupname[0]))
+            report.append('Group:{} - SUCCESS'.format(groupname[0]))
         else:
-            report.append('Host:{} - FAILURE'.format(groupname[0]))
+            report.append('Group:{} - FAILURE'.format(groupname[0]))
     return(report)
 
 def importaddgroup(ipaddress, groupname, members, sid):

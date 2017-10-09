@@ -14,9 +14,9 @@ def importnetworks(ipaddress, filename, sid):
         apiprep = line.split(';')
         response = addnetwork(ipaddress, apiprep[0], apiprep[1], apiprep[2], sid)
         if response.status_code == 200:
-            report.append('Host:{} - SUCCESS'.format(apiprep[0]))
+            report.append('Network:{} - SUCCESS'.format(apiprep[0]))
         else:
-            report.append('Host:{} - FAILURE'.format(apiprep[0]))
+            report.append('Network:{} - FAILURE'.format(apiprep[0]))
     return(report)
 
 def getallnetworks(ipaddress, sid):
