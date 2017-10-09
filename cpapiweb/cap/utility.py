@@ -12,21 +12,41 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def test_func(filetype, files):
+    file = files['{}'.format(filetype)]
+    filename = secure_filename(file.filename)
+    if filename == '':
+        error = 'No file provided.'
+        return({'status':False, 'report':error})
+    if allowed_file(file.filename):
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        importfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+        return(importfile)
+    else:
+        error = 'Wrong file extension.'
+        return({'status':False, 'report':error})
+
 def import_check(files, session):
     if 'hosts' in files:
-        file = files['hosts']
-        filename = secure_filename(file.filename)
-        if filename == '':
-            error = 'No file provided.'
-            return({'status':False, 'report':error})
-        if allowed_file(file.filename):
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
-            report = host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
-            return({'status':True, 'report':report})
+        importfile = test_func('hosts', files)
+        if importfile is dict:
+            return(importfile)
         else:
-            error = 'Wrong file extension.'
-            return({'status':False, 'report':error})
+            report = host.importhosts(session['ipaddress'], importfile, session['sid'])
+            return({'status':True, 'report':report})
+        # file = files['hosts']
+        # filename = secure_filename(file.filename)
+        # if filename == '':
+        #     error = 'No file provided.'
+        #     return({'status':False, 'report':error})
+        # if allowed_file(file.filename):
+        #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        #     hostimportfile = '{}{}'.format(app.config['UPLOAD_FOLDER'], filename)
+        #     report = host.importhosts(session['ipaddress'], hostimportfile, session['sid'])
+        #     return({'status':True, 'report':report})
+        # else:
+        #     error = 'Wrong file extension.'
+        #     return({'status':False, 'report':error})
     elif 'networks' in files:
         file = files['networks']
         filename = secure_filename(file.filename)
