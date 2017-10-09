@@ -74,22 +74,11 @@ def logout():
     if request.method == 'POST':
         sid_check()
         if 'Discard' in request.form:
-            connect.discard(session['ipaddress'], session['sid'])
-            connect.logout(session['ipaddress'], session['sid'])
-            app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                              session['username'],
-                                                                              session['ipaddress']))
-            session.pop('sid', None)
+            utility.logout_session(session, request)
             return(redirect('/login'))
         elif 'Publish' in request.form:
             connect.publish(session['ipaddress'], session['sid'])
-            # Discard still required here...because API.
-            connect.discard(session['ipaddress'], session['sid'])
-            connect.logout(session['ipaddress'], session['sid'])
-            app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                              session['username'],
-                                                                              session['ipaddress']))
-            utility.clear_session(session)
+            utility.logout_session(session, request)
             return(redirect('/login'))
 
 @app.route('/custom', methods=['POST', 'GET'])
