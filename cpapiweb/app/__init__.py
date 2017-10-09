@@ -1,5 +1,6 @@
+import os, platform, json, logging
 from flask import Flask
-import os, platform, json
+from logging.handlers import RotatingFileHandler
 
 ostype = platform.system()
 
@@ -20,5 +21,12 @@ elif ostype == 'Linux':
 app = Flask(__name__)
 app.config['LOG_FOLDER'] = LOG_FOLDER
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+handler = RotatingFileHandler(app.config['LOG_FOLDER'], maxBytes=10000, backupCount=2)
+handler.setLevel(logging.DEBUG)
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+app.secret_key = 'you-will-never-get-this'
 
 from app import views
