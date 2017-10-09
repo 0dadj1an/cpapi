@@ -8,6 +8,10 @@ from cap import *
 nav = Nav()
 nav.init_app(app)
 
+def sid_check():
+    if 'sid' not in session:
+        return(redirect('/login'))
+
 @nav.navigation()
 def mynavbar():
     return Navbar(
@@ -64,136 +68,101 @@ def login():
 def logout():
 
     if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('logout.html'))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        return(render_template('logout.html'))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            if 'Discard' in request.form:
-                connect.discard(session['ipaddress'], session['sid'])
-                connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                session.pop('sid', None)
-                return(redirect('/login'))
-            elif 'Publish' in request.form:
-                connect.publish(session['ipaddress'], session['sid'])
-                # Discard still required here...because API.
-                connect.discard(session['ipaddress'], session['sid'])
-                connect.logout(session['ipaddress'], session['sid'])
-                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                utility.clear_session(session)
-                return(redirect('/login'))
-        else:
+        sid_check()
+        if 'Discard' in request.form:
+            utility.logout_session(session, request)
+            return(redirect('/login'))
+        elif 'Publish' in request.form:
+            connect.publish(session['ipaddress'], session['sid'])
+            utility.logout_session(session, request)
             return(redirect('/login'))
 
 @app.route('/custom', methods=['POST', 'GET'])
 def custom():
 
     if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('custom.html', allcommands=session['allcommands']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        return(render_template('custom.html', allcommands=session['allcommands']))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            command = request.form.get('command')
-            payload = request.form.get('payload')
-            response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
-            if command != 'logout':
-                try:
-                    if response.status_code == 403 or response.status_code == 404:
-                        return(render_template('custom.html', allcommands=session['allcommands'], response=str(response)))
-                    else:
-                        return(render_template('custom.html', allcommands=session['allcommands'], response=response.text))
-                except Exception as e:
-                    app.logger.error('From VIEWS :: {}'.format(e))
-                    response = 'Incorrect payload format.'
-                    return(render_template('custom.html', allcommands=session['allcommands'], response=response))
-            else:
-                app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
-                                                                                  session['username'],
-                                                                                  session['ipaddress']))
-                session.pop('sid', None)
-                return(redirect('/login'))
+        sid_check()
+        command = request.form.get('command')
+        payload = request.form.get('payload')
+        response = misc.customcommand(session['ipaddress'], command, payload, session['sid'])
+        if command != 'logout':
+            try:
+                if response.status_code == 403 or response.status_code == 404:
+                    return(render_template('custom.html', allcommands=session['allcommands'], response=str(response)))
+                else:
+                    return(render_template('custom.html', allcommands=session['allcommands'], response=response.text))
+            except Exception as e:
+                app.logger.error('From VIEWS :: {}'.format(e))
+                response = 'Incorrect payload format.'
+                return(render_template('custom.html', allcommands=session['allcommands'], response=response))
         else:
+            app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
+                                                                              session['username'],
+                                                                              session['ipaddress']))
+            session.pop('sid', None)
             return(redirect('/login'))
 
 @app.route('/addobject', methods=['POST', 'GET'])
 def addobject():
 
     if request.method == 'GET':
-        if 'sid' in session:
-            session['allhostlist'] = host.getallhosts(session['ipaddress'], session['sid'])
-            session['allnetlist'] = network.getallnetworks(session['ipaddress'], session['sid'])
-            session['allgrouplist'] = group.getallgroups(session['ipaddress'], session['sid'])
-            return(render_template('addobject.html', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        session['allhostlist'] = host.getallhosts(session['ipaddress'], session['sid'])
+        session['allnetlist'] = network.getallnetworks(session['ipaddress'], session['sid'])
+        session['allgrouplist'] = group.getallgroups(session['ipaddress'], session['sid'])
+        return(render_template('addobject.html', allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            if 'host' in request.form.keys() or 'network' in request.form.keys() or 'group' in request.form.keys() or 'addgroup' in request.form.keys():
-                response = utility.add_object(session, request)
-                return(render_template('addobject.html', response=response, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        if 'host' in request.form.keys() or 'network' in request.form.keys() or 'group' in request.form.keys() or 'addgroup' in request.form.keys():
+            response = utility.add_object(session, request)
+            return(render_template('addobject.html', response=response, allhostlist=session['allhostlist'], allnetlist=session['allnetlist'], allgrouplist=session['allgrouplist']))
 
 @app.route('/importobj', methods=['POST', 'GET'])
 def importobj():
 
     if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('importobj.html'))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        return(render_template('importobj.html'))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            checker = utility.import_check(request.files, session)
-            if checker['status'] == True:
-                return(render_template('importobj.html', report=checker['report']))
-            elif checker['status'] == False:
-                return (render_template('importobj.html', error=checker['report']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        checker = utility.import_check(request.files, session)
+        if checker['status'] == True:
+            return(render_template('importobj.html', report=checker['report']))
+        elif checker['status'] == False:
+            return (render_template('importobj.html', error=checker['report']))
 
 @app.route('/showrules', methods=['POST', 'GET'])
 def showrules():
 
     if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('showrules.html', alllayers=session['alllayers']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        return(render_template('showrules.html', alllayers=session['alllayers']))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            response = policy.showrulebase(session['ipaddress'], request.form.get('layer'), session['sid'])
-            return(render_template('showrules.html', alllayers=session['alllayers'], response=response))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        response = policy.showrulebase(session['ipaddress'], request.form.get('layer'), session['sid'])
+        return(render_template('showrules.html', alllayers=session['alllayers'], response=response))
 
 @app.route('/runcommand', methods=['POST', 'GET'])
 def runcommand():
     if request.method == 'GET':
-        if 'sid' in session:
-            return(render_template('runcommand.html', alltargets=session['alltargets']))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        return(render_template('runcommand.html', alltargets=session['alltargets']))
 
     if request.method == 'POST':
-        if 'sid' in session:
-            if request.form.getlist('target') == [] or request.form.get('command') == '':
-                error = 'No target and/or command provided.'
-                return(render_template('runcommand.html', alltargets=session['alltargets'], error=error))
-            response = misc.runcommand(session['ipaddress'], request.form.getlist('target'), request.form.get('command'), session['sid'])
-            return(render_template('runcommand.html', alltargets=session['alltargets'], response=response))
-        else:
-            return(redirect('/login'))
+        sid_check()
+        if request.form.getlist('target') == [] or request.form.get('command') == '':
+            error = 'No target and/or command provided.'
+            return(render_template('runcommand.html', alltargets=session['alltargets'], error=error))
+        response = misc.runcommand(session['ipaddress'], request.form.getlist('target'), request.form.get('command'), session['sid'])
+        return(render_template('runcommand.html', alltargets=session['alltargets'], response=response))
