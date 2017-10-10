@@ -61,7 +61,7 @@ def login():
             else:
                 return(render_template('login.html', error=str(response)))
         except Exception as e:
-            app.logger.warn('From VIEWS :: {}'.format(e))
+            app.logger.error('Unknown exception : {}'.format(e))
             return(render_template('login.html', error=str(response)))
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -100,14 +100,13 @@ def custom():
                 else:
                     return(render_template('custom.html', allcommands=session['allcommands'], response=response.text))
             except Exception as e:
-                app.logger.error('From VIEWS :: {}'.format(e))
                 response = 'Incorrect payload format.'
                 return(render_template('custom.html', allcommands=session['allcommands'], response=response))
         else:
             app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
                                                                               session['username'],
                                                                               session['ipaddress']))
-            session.pop('sid', None)
+            utilit.clear_session(session)
             return(redirect('/login'))
 
 @app.route('/addobject', methods=['POST', 'GET'])
