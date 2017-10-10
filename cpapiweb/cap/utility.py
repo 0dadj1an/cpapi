@@ -1,4 +1,4 @@
-import os, base64, itertools
+import os, base64
 from werkzeug import secure_filename
 
 from app import app
@@ -98,22 +98,12 @@ def add_object(session, request):
         grpsselection = request.form.getlist('groups')
         if hostselection or netsselection or grpsselection:
             members = []
-            for hst, net, grp in itertools.zip_longest(hostselection, netsselection, grpsselection):
+            for hst in hostselection:
                 members.append(hst)
+            for net in netsselection:
                 members.append(net)
+            for grp in grpsselection:
                 members.append(grp)
-            # I
-            for item in members:
-                if item == None:
-                    members.remove(item)
-            # DONT
-            for item in members:
-                if item == None:
-                    members.remove(item)
-            # KNOW
-            for item in members:
-                if item == None:
-                    members.remove(item)
             trggselection = request.form.get('trggroup')
             response = group.setgroup(session['ipaddress'], trggselection, members, session['sid'])
             return(response.text)
