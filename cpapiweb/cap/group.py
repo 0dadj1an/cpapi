@@ -1,16 +1,13 @@
 from cap.post import api_call
 
 def addgroup(ipaddress, groupname, sid):
+    '''Add individual group, no members.'''
     new_group_data = {'name':groupname}
     response = api_call(ipaddress, 443, 'add-group', new_group_data ,sid)
     return(response)
 
-def setgroup(ipaddress, groupname, members, sid):
-    set_group_data = {'name':groupname, 'members':{'add':members}}
-    response = api_call(ipaddress, 443, 'set-group', set_group_data, sid)
-    return(response)
-
 def importgroups(ipaddress, filename, sid):
+    '''Filter CSV import file and submit hosts indivually to importaddgroup.'''
     report = []
     csvgroups = open(filename, 'r').read().split('\n')
     for line in csvgroups:
@@ -26,11 +23,13 @@ def importgroups(ipaddress, filename, sid):
     return(report)
 
 def importaddgroup(ipaddress, groupname, members, sid):
+    '''Add group for import to support members.'''
     import_group_data = {'name':groupname, 'members':members}
     response = api_call(ipaddress, 443, 'add-group', import_group_data, sid)
     return(response)
 
 def getallgroups(ipaddress, sid):
+    '''Retrieve all groups by name from Check Point.'''
     count = 500
     show_groups_data = {'offset':0, 'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_groups_result = api_call(ipaddress, 443, 'show-groups', show_groups_data, sid)

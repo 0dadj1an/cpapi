@@ -4,6 +4,7 @@ from app import app
 requests.packages.urllib3.disable_warnings()
 
 def api_call(ipaddress, port, command, json_payload, sid):
+    '''The backbone of all calls issued to Check Point API.'''
     url = 'https://' + str(ipaddress) + ':' + str(port) + '/web_api/' + command
     if sid == None:
         request_headers = {'Content-Type' : 'application/json', 'User-Agent': 'CPAPI v0.4.3'}

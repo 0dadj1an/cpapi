@@ -1,11 +1,13 @@
 from cap.post import api_call
 
 def addhost(ipaddress, hostname, hostip, sid):
+    '''Add individual host.'''
     new_host_data = {'name':hostname, 'ipv4-address':hostip}
     response = api_call(ipaddress, 443,'add-host', new_host_data ,sid)
     return(response)
 
 def importhosts(ipaddress, filename, sid):
+    '''Filter CSV import file and submit hosts indivually to addhost.'''
     report = []
     csvhosts = open(filename, 'r').read().split('\n')
     for line in csvhosts:
@@ -20,6 +22,7 @@ def importhosts(ipaddress, filename, sid):
     return(report)
 
 def getallhosts(ipaddress, sid):
+    '''Retrieve all hosts by name from Check Point.'''
     count = 500
     show_hosts_data = {'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_hosts_result = api_call(ipaddress, 443, 'show-hosts', show_hosts_data ,sid)

@@ -3,6 +3,7 @@ from cap.utility import base64_ascii
 import ast, time
 
 def customcommand(ipaddress, command, payload, sid):
+    '''Validate and send custom command.'''
     try:
         payload = ast.literal_eval(payload)
     except ValueError:
@@ -15,6 +16,7 @@ def customcommand(ipaddress, command, payload, sid):
     return(response)
 
 def getalltargets(ipaddress, sid):
+    '''Get all gateways and servers from Check Point.'''
     get_targets_data = {'limit':500}
     get_targets_result = api_call(ipaddress, 443, 'show-gateways-and-servers', get_targets_data ,sid)
     alltargets = []
@@ -23,6 +25,8 @@ def getalltargets(ipaddress, sid):
     return(alltargets)
 
 def runcommand(ipaddress, target, scriptcontent, sid):
+    ''' Issue command against Check Point targets, verify task is complete on each gateways
+    and return response for each target.'''
     taskreturn = []
     run_script_data = {'script-name':'cpapi', 'script':scriptcontent, 'targets':target}
     response = api_call(ipaddress, 443, 'run-script', run_script_data , sid)
@@ -52,11 +56,13 @@ def runcommand(ipaddress, target, scriptcontent, sid):
         return(response)
 
 def gettask(ipaddress, task, sid):
+    '''Function for runcommand to get task status.'''
     get_task_data = {'task-id':task, 'details-level':'full'}
     response = api_call(ipaddress, 443, 'show-task', get_task_data, sid)
     return(response)
 
 def getallcommands(ipaddress, sid):
+    '''Get all relevant commands for custom command page.'''
     commandlist = []
     getcommands_data = {}
     getcommands_result = api_call(ipaddress, 443, 'show-commands', getcommands_data, sid)

@@ -1,11 +1,13 @@
 from cap.post import api_call
 
 def addnetwork(ipaddress, netname, netsub, netmask, sid):
+    '''Add individual network object.'''
     new_network_data = {'name':netname, 'subnet':netsub, 'subnet-mask':netmask}
     response = api_call(ipaddress, 443,'add-network', new_network_data ,sid)
     return(response)
 
 def importnetworks(ipaddress, filename, sid):
+    '''Filter CSV import file and submit networks indivually to addnetwork.'''
     report = []
     csvnets = open(filename, 'r').read().split('\n')
     for line in csvnets:
@@ -20,6 +22,7 @@ def importnetworks(ipaddress, filename, sid):
     return(report)
 
 def getallnetworks(ipaddress, sid):
+    '''Retrieve all networks by name from Check Point.'''
     count = 500
     show_nets_data = {'limit':500, 'details-level':'standard', 'order':[{'ASC':'name'}]}
     show_nets_result = api_call(ipaddress, 443, 'show-networks', show_nets_data, sid)

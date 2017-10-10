@@ -10,10 +10,12 @@ from cap import connect
 ALLOWED_EXTENSIONS = set(['csv'])
 
 def allowed_file(filename):
+    '''Verifies proper file extension.'''
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def verify_file(filetype, files):
+    '''Verifies that the filename is not blank and prepares the path against relevant OS.'''
     file = files['{}'.format(filetype)]
     filename = secure_filename(file.filename)
     if filename == '':
@@ -28,6 +30,7 @@ def verify_file(filetype, files):
         return({'status':False, 'report':error})
 
 def import_check(files, session):
+    '''Accepts file input from form and after checks, submits to API.'''
     if 'hosts' in files:
         importfile = verify_file('hosts', files)
         if isinstance(importfile, dict):
@@ -51,10 +54,12 @@ def import_check(files, session):
             return({'status':True, 'report':report})
 
 def base64_ascii(base64resp):
+    '''Converts base64 to ascii for run command/showtask.'''
     asciiresp = base64.b64decode(base64resp).decode('utf-8')
     return(asciiresp)
 
 def clear_session(session):
+    '''After any logout, clears session information.'''
     session.pop('sid', None)
     session.pop('apiver', None)
     session.pop('allcommands', None)
@@ -65,15 +70,17 @@ def clear_session(session):
     session.pop('alltargets', None)
 
 def add_object_return(response):
-        try:
-            return(response.text)
-        except (ValueError, AttributeError) as e:
-            return(str(response))
-        except Exception as e:
-            app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
-            return('oops')
+    '''Return preperation for add_object to reduce duplication.'''
+    try:
+        return(response.text)
+    except (ValueError, AttributeError) as e:
+        return(str(response))
+    except Exception as e:
+        app.logger.error('FROM VIEWS - Unknown exception - {}'.format(e))
+        return('oops')
 
 def add_object(session, request):
+    '''Collects form data from add object page.'''
     if 'host' in request.form.keys():
         hostname = request.form.get('hostname')
         ipv4address= request.form.get('ipv4address')
@@ -112,6 +119,7 @@ def add_object(session, request):
             return(error)
 
 def logout_session(session, request):
+    '''Sends commands to API to discard and logout sessions.'''
     connect.discard(session['ipaddress'], session['sid'])
     connect.logout(session['ipaddress'], session['sid'])
     app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr, session['username'], session['ipaddress']))

@@ -1,6 +1,7 @@
 from cap.post import api_call
 
 def getalllayers(ipaddress, sid):
+    '''Retrieve all rule base layers from management server.'''
     get_layers_data = {}
     get_layers_result = api_call(ipaddress, 443, 'show-access-layers', get_layers_data, sid)
     alllayerslist = []
@@ -9,6 +10,7 @@ def getalllayers(ipaddress, sid):
     return (alllayerslist)
 
 def dorulebase(rules, rulebase):
+    '''Recieves json respone of showrulebase and sends rule dictionaries int filterpolicyrule.'''
     for rule in rulebase.json()['rulebase']:
         if 'type' in rule:
             thetype = rule['type']
@@ -22,6 +24,7 @@ def dorulebase(rules, rulebase):
     return(rules)
 
 def showrulebase(ipaddress, name, sid):
+    '''Issues API call to manager and holds response of rules until all filtering is complete.'''
     count = 500
     show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':0, 'limit':500, 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
@@ -39,6 +42,7 @@ def showrulebase(ipaddress, name, sid):
     return(rules)
 
 def filterpolicyrule(rule, show_rulebase_result):
+    '''The actually filtering of a rule.'''
     filteredrule = {}
     countersrc = 0
     counterdst = 0
