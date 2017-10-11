@@ -62,7 +62,7 @@ def login():
                 return(render_template('login.html', error=str(response)))
         except AttributeError:
             app.logger.info('Failed login from {}'.format(request.remote_addr))
-            return(render_template('login.html', error=str(response))
+            return(render_template('login.html', error=str(response)))
         except Exception as e:
             app.logger.error('Unknown exception : {}'.format(e))
             return(render_template('login.html', error=str(response)))
