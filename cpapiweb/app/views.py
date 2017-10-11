@@ -40,10 +40,10 @@ def login():
     if request.method == 'POST':
         session['ipaddress'] = request.form.get('ipaddress')
         session['username'] = request.form.get('username')
-        session['password'] = request.form.get('password')
-        session['domain'] = request.form.get('domain', None)
+        password = request.form.get('password')
+        domain = request.form.get('domain', None)
 
-        response = connect.login(session['ipaddress'], session['username'], session['password'], session['domain'])
+        response = connect.login(session['ipaddress'], session['username'], password, domain)
         try:
             if response.status_code == 200:
                 if 'sid' in response.json():
@@ -109,7 +109,7 @@ def custom():
             app.logger.info('Logout from - ip:{} // user:{} // mgmt:{}'.format(request.remote_addr,
                                                                               session['username'],
                                                                               session['ipaddress']))
-            utilit.clear_session(session)
+            utility.clear_session(session)
             return(redirect('/login'))
 
 @app.route('/addobject', methods=['POST', 'GET'])
