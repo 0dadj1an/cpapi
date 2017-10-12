@@ -8,7 +8,7 @@ config = {
     'windows_upload':'C:\\',
     'windows_log':'C:\\cpapi\\cpapi.log',
     'linux_upload':'/var/tmp/',
-    'linux_log':'/var/tpm/cpapi.log'
+    'linux_log':'/var/tmp/cpapi.log'
 }
 
 if ostype == 'Windows':
