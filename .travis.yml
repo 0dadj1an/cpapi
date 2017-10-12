@@ -7,6 +7,6 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-    test.py
+    cpapiweb/run.py
 after_success:
     coveralls
