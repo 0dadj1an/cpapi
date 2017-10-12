@@ -3,8 +3,8 @@ language:
 python:
     "3.6"
 before_install:
-    sudo mkdir /var/log/cpapi/
-    sudo chown www-data /var/log/cpapi/
+    - sudo mkdir /var/log/cpapi/
+    - sudo chown www-data /var/log/cpapi/
 install:
     pip install -r requirements.txt
 script:
