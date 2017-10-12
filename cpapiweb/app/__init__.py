@@ -2,6 +2,11 @@ import os, platform, json, logging
 from flask import Flask
 from logging.handlers import RotatingFileHandler
 
+config = {
+    'linux_upload':'~/',
+    'linux_log':'~/cpapi.log'
+}
+
 ostype = platform.system()
 
 if ostype == 'Windows':
@@ -11,11 +16,6 @@ if ostype == 'Windows':
 elif ostype == 'Linux':
     UPLOAD_FOLDER = config['linux_upload']
     LOG_FOLDER = config['linux_log']
-
-config = {
-    'linux_upload':'~/',
-    'linux_log':'~/cpapi.log'
-}
 
 app = Flask(__name__)
 app.config['LOG_FOLDER'] = LOG_FOLDER
