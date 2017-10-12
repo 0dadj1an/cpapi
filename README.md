@@ -3,7 +3,7 @@ General tool for interacting with Check Point Software MGMT Web API.
 
 #### Configuration
 * git clone https://github.com/themadhatterz/cpapi
-* python(3) setup.py install
+* pip install -r requirements.txt
 * Run via:
 	* Local development server:
 		* python(3) ~/cpapi/cpapiweb/run.py
