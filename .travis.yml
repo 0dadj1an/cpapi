@@ -2,9 +2,6 @@ language:
     python
 python:
     "3.6"
-before_install:
-    - sudo mkdir /var/log/cpapi/
-    - sudo chown -R 0777 /var/log/cpapi/
 install:
     pip install -r requirements.txt
 script:
