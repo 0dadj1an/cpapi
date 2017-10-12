@@ -4,19 +4,18 @@ from logging.handlers import RotatingFileHandler
 
 ostype = platform.system()
 
-config = {
-    'windows_upload':'C:\\',
-    'windows_log':'C:\\cpapi\\cpapi.log',
-    'linux_upload':'/var/tmp/',
-    'linux_log':'/var/tmp/cpapi.log'
-}
-
 if ostype == 'Windows':
-    UPLOAD_FOLDER = config['windows_upload']
-    LOG_FOLDER = config['windows_log']
+    winhome = os.environ['USERPROFILE']
+    UPLOAD_FOLDER = winhome
+    LOG_FOLDER = winhome + '\\cpapi.log'
 elif ostype == 'Linux':
     UPLOAD_FOLDER = config['linux_upload']
     LOG_FOLDER = config['linux_log']
+
+config = {
+    'linux_upload':'~/',
+    'linux_log':'~/cpapi.log'
+}
 
 app = Flask(__name__)
 app.config['LOG_FOLDER'] = LOG_FOLDER
