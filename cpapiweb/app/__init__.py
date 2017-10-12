@@ -2,17 +2,18 @@ import os, platform, json, logging
 from flask import Flask
 from logging.handlers import RotatingFileHandler
 
-config = {
-    'linux_upload':'~/',
-    'linux_log':'~/cpapi.log'
-}
-
 ostype = platform.system()
 
+config = {
+    'windows_upload':'C:\\',
+    'windows_log':'C:\\cpapi\\cpapi.log',
+    'linux_upload':'/var/tmp/',
+    'linux_log':'/var/log/cpapi/cpapi.log'
+}
+
 if ostype == 'Windows':
-    winhome = os.environ['USERPROFILE']
-    UPLOAD_FOLDER = winhome
-    LOG_FOLDER = winhome + '\\cpapi.log'
+    UPLOAD_FOLDER = config['windows_upload']
+    LOG_FOLDER = config['windows_log']
 elif ostype == 'Linux':
     UPLOAD_FOLDER = config['linux_upload']
     LOG_FOLDER = config['linux_log']
