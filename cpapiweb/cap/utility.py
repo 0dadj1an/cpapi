@@ -61,6 +61,7 @@ def base64_ascii(base64resp):
 def clear_session(session):
     '''After any logout, clears session information.'''
     session.pop('sid', None)
+    session.pop('ipaddress', None)
     session.pop('apiver', None)
     session.pop('allcommands', None)
     session.pop('allhostlist', None)
