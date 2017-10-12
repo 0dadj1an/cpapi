@@ -5,7 +5,7 @@ language:
 python:
   - "3.6"
 before_install:
-    mkdir /var/log/cpapi/
+    sudo mkdir /var/log/cpapi/
 install:
   - pip install -r requirements.txt
 script:
