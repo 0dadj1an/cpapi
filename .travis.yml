@@ -1,4 +1,5 @@
-language: python
+language:
+    python
 python:
   - "3.6"
 install:
@@ -6,4 +7,4 @@ install:
 script:
     coverage run --source=moscowdjango,meetup manage.py test
 after_success:
-coveralls
+    coveralls
