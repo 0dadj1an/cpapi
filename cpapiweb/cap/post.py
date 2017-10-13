@@ -7,9 +7,9 @@ def api_call(ipaddress, port, command, json_payload, sid):
     '''The backbone of all calls issued to Check Point API.'''
     url = 'https://' + str(ipaddress) + ':' + str(port) + '/web_api/' + command
     if sid == None:
-        request_headers = {'Content-Type' : 'application/json', 'User-Agent': 'CPAPI v0.4.4'}
+        request_headers = {'Content-Type' : 'application/json', 'User-Agent': 'CPAPI v0.4.5'}
     else:
-        request_headers = {'Content-Type' : 'application/json', 'User-Agent': 'CPAPI v0.4.4', 'X-chkp-sid' : sid}
+        request_headers = {'Content-Type' : 'application/json', 'User-Agent': 'CPAPI v0.4.5', 'X-chkp-sid' : sid}
     try:
         response = requests.post(url, data=json.dumps(json_payload), headers=request_headers, timeout=(30, 300), verify=False)
         return(response)
