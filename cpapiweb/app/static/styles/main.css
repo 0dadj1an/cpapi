@@ -19,6 +19,7 @@ h1 {
 h2 {
     font-size: 1.2em;
 }
+
 ul {
     list-style-type: none;
     margin: 0;
@@ -42,6 +43,7 @@ li a {
 li a:hover {
     background-color: #111;
 }
+
 table, th, td {
     border: 1px solid black;
 }
@@ -115,4 +117,40 @@ select {
 
 .active {
     background-color: #c53a68;
+}
+
+#center_align {
+    text-align: center;
+}
+
+#div_100  {
+    width: 100%;
+}
+
+#div_left_20 {
+    float:left; width: 20%;
+}
+
+#div_left_40 {
+    float:left; width: 40%;
+}
+
+#div_right_30 {
+    float:right; width: 30%;
+}
+
+#div_left_70 {
+    float:left; width: 70%;
+}
+
+#div_right {
+    float:right;
+}
+
+#select_float_right {
+    float:right;
+}
+
+#width_100 {
+    width:100%;
 }

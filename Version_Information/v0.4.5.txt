@@ -2,6 +2,7 @@ Bug Fix:
 
 Maintenance:
     Code Maintenance.
+    CSS No Inline
 
 Enhancement:
 
