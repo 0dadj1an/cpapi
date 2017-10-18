@@ -9,11 +9,11 @@
             {{nav.mynavbar.render()}}
             {% endblock %}
             </div>
-            <div style="width: 100%" >
+            <div id="div_100">
                 <h1>
                     Add Object
                 </h1>
-                <div style="float:left; width: 20%">
+                <div id="div_left_20">
                     <h2>
                         Add Host
                     </h2>
@@ -66,35 +66,35 @@
                         <p><input name="group" type="submit" value="Submit"></p><br>
                     </form>
                 </div>
-                <div style="float:left; width: 40%">
+                <div id="div_left_40">
                     <h2>
                         Add Object to group
                     </h2>
                     <form action="" method="post" name="addgroup">
                         <p>
                             Hosts:
-                            <select multiple name="hosts"; style="float:right">
+                            <select id="select_float_right" multiple name="hosts">
                                 {% for host in allhostlist %}
                                     <option value="{{ host }}">{{ host }}</option>
                                 {% endfor %}
                             </select>
                             <br><br><br><br>
                             Networks:
-                            <select multiple name="networks"; style="float:right">
+                            <select id="select_float_right" multiple name="networks">
                                 {% for network in allnetlist %}
                                     <option value="{{ network }}">{{ network }}</option>
                                 {% endfor %}
                             </select>
                             <br><br><br><br>
                             Groups:
-                            <select multiple name="groups"; style="float:right">
+                            <select id="select_float_right" multiple name="groups">
                                 {% for group in allgrouplist %}
                                     <option value="{{ group }}">{{ group }}</option>
                                 {% endfor %}
                             </select>
                             <br><br><br><br>
                             Target Group:
-                            <select name="trggroup"; style="float:right">
+                            <select id="select_float_right" name="trggroup">
                                 {% for group in allgrouplist %}
                                     <option value="{{ group }}">{{ group }}</option>
                                 {% endfor %}
@@ -106,7 +106,7 @@
                         {% endif %}
                     </form>
                 </div>
-                <div style="float:right; width: 30%">
+                <div id="div_right_30">
 {% if response %}
 <pre id="json">
 {{ response }}<br>
