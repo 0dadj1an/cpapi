@@ -1,13 +1,9 @@
 from cap.post import api_call
 
-def getalllayers(ipaddress, sid):
+def get_all_layers(apisession):
     '''Retrieve all rule base layers from management server.'''
-    get_layers_data = {}
-    get_layers_result = api_call(ipaddress, 443, 'show-access-layers', get_layers_data, sid)
-    alllayerslist = []
-    for layer in get_layers_result.json()['access-layers']:
-        alllayerslist.append(layer['name'])
-    return (alllayerslist)
+    get_layers_result = api_call(apisession.ipaddress, 443, 'show-access-layers', {}, apisession.sid)
+    return [layer['name'] for layer in get_layers_result.json()['access-layers']]
 
 def dorulebase(rules, rulebase):
     '''Recieves json respone of showrulebase and sends rule dictionaries int filterpolicyrule.'''
@@ -21,13 +17,13 @@ def dorulebase(rules, rulebase):
             for subrule in rule['rulebase']:
                 filteredrule = filterpolicyrule(subrule, rulebase.json())
                 rules.append(filteredrule)
-    return(rules)
+    return rules
 
-def showrulebase(ipaddress, name, sid):
+def showrulebase(apisession, name):
     '''Issues API call to manager and holds response of rules until all filtering is complete.'''
     count = 500
     show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':0, 'limit':500, 'use-object-dictionary':'true'}
-    show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+    show_rulebase_result = api_call(apisession.ipaddress, 443, 'show-access-rulebase', show_rulebase_data, apisession.sid)
 
     rules = []
 
@@ -35,11 +31,11 @@ def showrulebase(ipaddress, name, sid):
     if 'to' in show_rulebase_result.json():
         while show_rulebase_result.json()["to"] != show_rulebase_result.json()["total"]:
             show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':count, 'limit':500, 'use-object-dictionary':'true'}
-            show_rulebase_result = api_call(ipaddress, 443, 'show-access-rulebase', show_rulebase_data ,sid)
+            show_rulebase_result = api_call(apisession.ipaddress, 443, 'show-access-rulebase', show_rulebase_data, apisession.sid)
             dorulebase(rules, show_rulebase_result)
             count += 500
 
-    return(rules)
+    return rules
 
 def filterpolicyrule(rule, show_rulebase_result):
     '''The actually filtering of a rule.'''
@@ -97,4 +93,4 @@ def filterpolicyrule(rule, show_rulebase_result):
     filteredrule.update({'number':num, 'name':name, 'source':src,
                         'destination':dst, 'service':srv, 'action':act,
                         'track':trc, 'target':trg})
-    return(filteredrule)
+    return filteredrule

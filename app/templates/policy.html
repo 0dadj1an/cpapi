@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <div class="content">
+                <div class="header">
+                    <h1>Show Rulebase</h1>
+                </div>
+                <div class="policyform">
+                    <form action="" method="post" name="showrules">
+                        <label><b>Rulebase</b></label>
+                        <select name="layer">
+                            {% for layer in alllayers %}
+                                <option value="{{ layer }}">{{ layer }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Submit"><br>
+                    </form>
+                </div>
+                {% if rulebase %}
+                    <div class="ruletable">
+                        <table>
+                            <tr>
+                                <th>Number</th>
+                                <th>Name</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>Service</th>
+                                <th>Action</th>
+                                <th>Track</th>
+                                <th>Target</th>
+                            </tr>
+                            {% for rule in rulebase %}
+                                <tr>
+                                    <td>{{ rule['number'] }}</td>
+                                    <td>{{ rule['name'] }}</td>
+                                    <td>
+                                    {% for source in rule['source'] %}
+                                        {{ source }}<br>
+                                    {% endfor %}
+                                    </td>
+                                    <td>
+                                    {% for destination in rule['destination'] %}
+                                        {{ destination }}<br>
+                                    {% endfor %}
+                                    </td>
+                                    <td>
+                                    {% for service in rule['service'] %}
+                                        {{ service }}<br>
+                                    {% endfor %}
+                                    </td>
+                                    <td>{{ rule['action'] }}</td>
+                                    <td>{{ rule['track'] }}</td>
+                                    <td>
+                                    {% for target in rule['target'] %}
+                                        {{ target }}<br>
+                                    {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </body>
+</html>

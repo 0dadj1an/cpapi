@@ -45,6 +45,7 @@ def mynavbar():
     return Navbar('cpapi',
                   View('Login', 'login'),
                   View('Custom', 'custom'),
+                  View('Policy', 'policy'),
                   View('Logout', 'logout'))
 
 
@@ -91,24 +92,37 @@ def logout():
 def custom():
 
     if request.method == 'GET':
-        allcommands = misc.getallcommands(apisession.ipaddress, apisession.sid)
-        return render_template('custom.html', allcommands=allcommands)
+        all_commands = misc.getallcommands(apisession)
+        return render_template('custom.html', allcommands=all_commands)
 
     if request.method == 'POST':
-        allcommands = misc.getallcommands(apisession.ipaddress, apisession.sid)
+        all_commands = misc.getallcommands(apisession)
         command = request.form.get('command')
         payload = request.form.get('payload')
 
-        response = misc.customcommand(apisession.ipaddress, command, payload, apisession.sid)
+        response = misc.customcommand(apisession, command, payload)
         if command != 'logout':
             try:
                 if response.status_code == 403 or response.status_code == 404:
-                    return(render_template('custom.html', allcommands=allcommands, response=str(response)))
+                    return(render_template('custom.html', allcommands=all_commands, response=str(response)))
                 else:
-                    return(render_template('custom.html', allcommands=allcommands, response=response.text))
+                    return(render_template('custom.html', allcommands=all_commands, response=response.text))
             except Exception as e:
                 response = 'Incorrect payload format.'
-                return(render_template('custom.html', allcommands=allcommands, response=response))
+                return(render_template('custom.html', allcommands=all_commands, response=response))
         else:
-            utility.clear_session(session)
             return redirect('/login')
+
+
+@app.route('/policy', methods=['GET', 'POST'])
+@login_required
+def policy():
+
+    if request.method == 'GET':
+        all_layers = rules.get_all_layers(apisession)
+        return render_template('policy.html', alllayers=all_layers)
+
+    if request.method == 'POST':
+        all_layers = rules.get_all_layers(apisession)
+        response = rules.showrulebase(apisession, request.form.get('layer'))
+        return render_template('policy.html', alllayers=all_layers, rulebase=response)
