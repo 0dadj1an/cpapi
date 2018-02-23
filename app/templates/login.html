@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <div class="content">
+                <div class="header">
+                    <h1>CPAPI - Check Point Web API Tool</h1>
+                </div>
+                <div class="loginform">
+                    <form action="" method="post" name="login">
+                        <label><b>IP Address</b></label>
+                        <input type="text" name="ipaddress">
+                        <label><b>Username</b></label>
+                        <input type="text" name="username">
+                        <label><b>Password</b></label>
+                        <input type="password" name="password">
+                        <label><b>Domain</b></label>
+                        <input type="text" name="domain">
+                        <input type="submit" value="Log In">
+                    </form>
+                </div>
+                {% if error %}
+                    <span>{{ error }}</span>
+                {% endif %}
+            </div>
+        </body>
+</html>

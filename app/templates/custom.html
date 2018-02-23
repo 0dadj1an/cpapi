@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <div class="content">
+                <div class="header">
+                    <h1>Custom Command</h1>
+                </div>
+                <div class="customform">
+                    <form action="" method="post" name="command">
+                        <label><b>Command</b></label>
+                        <select name="command">
+                            {% for command in allcommands %}
+                                <option value="{{ command }}">{{ command }}</option>
+                            {% endfor %}
+                        </select>
+                        <label><b>Payload</b></label>
+                        <input type="text" name="payload" value="{}">
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+                {% if response %}
+                <div class="customresponse">
+                    <pre id="json">{{ response }}</pre>
+                </div>
+                {% endif %}
+            </div>
+        </body>
+</html>

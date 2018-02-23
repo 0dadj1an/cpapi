@@ -1,5 +1,0 @@
-Bug Fix:
-    RCE in cap/misc.py
-
-Enhancement:
-    Show Rules, previously limited to 50 rules, now can display up to 500.

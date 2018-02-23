@@ -15,4 +15,4 @@ def api_call(ipaddress, port, command, json_payload, sid):
         return(response)
     except requests.exceptions.RequestException as e:
         app.logger.error('{}'.format(e))
-        return ('Error: {}'.format(e))
+        return 'Error: {}'.format(e)

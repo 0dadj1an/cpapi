@@ -1,0 +1,136 @@
+body {
+    background-color: white;
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+.active {
+    background-color: #E65785;
+}
+
+.content {
+    margin: 20px;
+}
+
+.header {
+    width: 100%;
+    height:50px;
+    display:flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.loginform {
+    width: 50%;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+}
+
+.loginform label {
+    text-align: left;
+    left: 100%;
+}
+
+.loginform span {
+    color: red;
+}
+
+.loginform input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;.
+}
+
+.loginform input[type=submit] {
+    padding:5px 15px;
+    background:#E65785;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.customform {
+    width: 50%;
+    position: relative;
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.customform label {
+    text-align: left;
+    left: 100%;
+}
+
+.customform select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;.
+}
+
+.customform input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;.
+}
+
+.customform input[type=submit] {
+    padding:5px 15px;
+    background:#E65785;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.customresponse {
+    width: 50%;
+    position: relative;
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}

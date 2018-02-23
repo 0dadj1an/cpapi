@@ -1,9 +1,0 @@
-Bug Fix:
-    Fixed login bug.
-
-Maintenance:
-    Created configuration dictionary for log/upload file configuration.
-
-Enhancement:
-
-Feature:
