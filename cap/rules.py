@@ -3,7 +3,7 @@ from cap.post import api_call
 def get_all_layers(apisession):
     '''Retrieve all rule base layers from management server.'''
     get_layers_result = api_call(apisession.ipaddress, 443, 'show-access-layers', {}, apisession.sid)
-    return [layer['name'] for layer in get_layers_result.json()['access-layers']]
+    return [(layer['name'], layer['uid']) for layer in get_layers_result.json()['access-layers']]
 
 def dorulebase(rules, rulebase):
     '''Recieves json respone of showrulebase and sends rule dictionaries int filterpolicyrule.'''
@@ -19,10 +19,10 @@ def dorulebase(rules, rulebase):
                 rules.append(filteredrule)
     return rules
 
-def showrulebase(apisession, name):
+def showrulebase(apisession, layer_uid):
     '''Issues API call to manager and holds response of rules until all filtering is complete.'''
     count = 500
-    show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':0, 'limit':500, 'use-object-dictionary':'true'}
+    show_rulebase_data = {'uid':layer_uid, 'details-level':'standard', 'offset':0, 'limit':500, 'use-object-dictionary':'true'}
     show_rulebase_result = api_call(apisession.ipaddress, 443, 'show-access-rulebase', show_rulebase_data, apisession.sid)
 
     rules = []
@@ -30,7 +30,7 @@ def showrulebase(apisession, name):
     dorulebase(rules, show_rulebase_result)
     if 'to' in show_rulebase_result.json():
         while show_rulebase_result.json()["to"] != show_rulebase_result.json()["total"]:
-            show_rulebase_data = {'name':name, 'details-level':'standard', 'offset':count, 'limit':500, 'use-object-dictionary':'true'}
+            show_rulebase_data = {'uid':layer_uid, 'details-level':'standard', 'offset':count, 'limit':500, 'use-object-dictionary':'true'}
             show_rulebase_result = api_call(apisession.ipaddress, 443, 'show-access-rulebase', show_rulebase_data, apisession.sid)
             dorulebase(rules, show_rulebase_result)
             count += 500

@@ -1,4 +1,5 @@
-import json, requests
+import json
+import requests
 from app import app
 
 requests.packages.urllib3.disable_warnings()

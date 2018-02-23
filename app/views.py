@@ -45,6 +45,7 @@ def mynavbar():
     return Navbar('cpapi',
                   View('Login', 'login'),
                   View('Custom', 'custom'),
+                  View('Add Object', 'addobject'),
                   View('Policy', 'policy'),
                   View('Logout', 'logout'))
 
@@ -112,6 +113,26 @@ def custom():
                 return(render_template('custom.html', allcommands=all_commands, response=response))
         else:
             return redirect('/login')
+
+
+@app.route('/addobject', methods=['GET', 'POST'])
+@login_required
+def addobject():
+
+    if request.method == 'GET':
+        return render_template('addobject.html')
+    if request.method == 'POST':
+        if 'hostname' in request.form.keys():
+            hostname = request.form.get('hostname')
+            hostipaddress = request.form.get('ipaddress')
+            response = objects.add_host(apisession, hostname, hostipaddress)
+            return render_template('addobject.html', response=response.text)
+        if 'netname' in request.form.keys():
+            netname = request.form.get('netname')
+            network = request.form.get('network')
+            netmask = request.form.get('netmask')
+            response = objects.add_network(apisession, netname, network, netmask)
+            return render_template('addobject.html', response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])

@@ -1,5 +1,5 @@
 body {
-    background-color: white;
+    background-color: #FAFAFF;
     margin: 0;
 }
 
@@ -54,11 +54,13 @@ li a:hover {
     border-radius: 25px;
     border: 2px solid #E65785;
     padding: 20px;
+    background-color: #576372;
 }
 
 .loginform label {
     text-align: left;
     left: 100%;
+    color: white;
 }
 
 .loginform span {
@@ -81,6 +83,7 @@ li a:hover {
     cursor:pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    color: white;
 }
 
 .customform {
@@ -91,11 +94,13 @@ li a:hover {
     padding: 20px;
     margin-left: auto;
     margin-right: auto;
+    background-color: #576372;
 }
 
 .customform label {
     text-align: left;
     left: 100%;
+    color: white;
 }
 
 .customform select {
@@ -123,6 +128,7 @@ li a:hover {
     cursor:pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    color: white;
 }
 
 .customresponse {
@@ -141,11 +147,15 @@ li a:hover {
     border-radius: 15px;
     border: 2px solid #E65785;
     padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #576372;
 }
 
 .policyform label {
     text-align: left;
     left: 100%;
+    color: white;
 }
 
 .policyform select {
@@ -163,7 +173,7 @@ li a:hover {
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
-    box-sizing: border-box;.
+    box-sizing: border-box;
 }
 
 .policyform input[type=submit] {
@@ -173,6 +183,7 @@ li a:hover {
     cursor:pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    color: white;
 }
 
 .ruletable {
@@ -204,4 +215,40 @@ li a:hover {
     text-align: center;
     background-color: #F8F8F8;
     border: 1px solid black;
+}
+
+.addobjectform {
+    width: 50%;
+    position: relative;
+    border-radius: 15px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #576372;
+}
+
+.addobjectform label {
+    text-align: left;
+    left: 100%;
+    color: white;
+}
+
+.addobjectform input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;.
+}
+
+.addobjectform input[type=submit] {
+    padding:5px 15px;
+    background:#E65785;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    color: white;
 }

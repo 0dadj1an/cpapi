@@ -1,1 +1,1 @@
-__all__ = ['connect', 'misc', 'rules']
+__all__ = ['connect', 'misc', 'rules', 'objects']

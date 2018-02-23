@@ -8,9 +8,6 @@
             {{nav.mynavbar.render()}}
             {% endblock %}
             <div class="content">
-                <div class="header">
-                    <h1>Custom Command</h1>
-                </div>
                 <div class="customform">
                     <form action="" method="post" name="command">
                         <label><b>Command</b></label>
@@ -24,11 +21,13 @@
                         <input type="submit" value="Submit">
                     </form>
                 </div>
-                {% if response %}
-                <div class="customresponse">
-                    <pre id="json">{{ response }}</pre>
-                </div>
-                {% endif %}
+{% if response %}
+<div class="customresponse">
+<pre id="json">
+{{ response }}
+</pre>
+</div>
+{% endif %}
             </div>
         </body>
 </html>

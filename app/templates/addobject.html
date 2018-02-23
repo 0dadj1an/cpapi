@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.mynavbar.render()}}
+            {% endblock %}
+            <div class="content">
+                <div class="addobjectform">
+                    <form action="" method="post" name="addhost">
+                        <label><b>Host Name</b></label>
+                        <input type="text" name="hostname">
+                        <label><b>IPv4 Address</b></label>
+                        <input type="text" name="ipaddress">
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+                <div class="addobjectform">
+                    <form action="" method="post" name="addnet">
+                        <label><b>Network Name</b></label>
+                        <input type="text" name="netname">
+                        <label><b>IPv4 Network</b></label>
+                        <input type="text" name="network">
+                        <label><b>Subnet Mask</b></label>
+                        <input type="text" name="netmask">
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+{% if response %}
+<div class="customresponse">
+<pre id="json">
+{{ response }}
+</pre>
+</div>
+{% endif %}
+            </div>
+        </body>
+</html>

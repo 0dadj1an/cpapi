@@ -8,18 +8,15 @@
             {{nav.mynavbar.render()}}
             {% endblock %}
             <div class="content">
-                <div class="header">
-                    <h1>Show Rulebase</h1>
-                </div>
                 <div class="policyform">
                     <form action="" method="post" name="showrules">
                         <label><b>Rulebase</b></label>
                         <select name="layer">
                             {% for layer in alllayers %}
-                                <option value="{{ layer }}">{{ layer }}</option>
+                                <option value="{{ layer[1] }}">{{ layer[0] }}</option>
                             {% endfor %}
                         </select>
-                        <input type="submit" value="Submit"><br>
+                        <input type="submit" value="Submit">
                     </form>
                 </div>
                 {% if rulebase %}
