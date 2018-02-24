@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     </head>
         <body>
@@ -22,6 +22,7 @@
                     </form>
                 </div>
 {% if response %}
+<br>
 <div class="customresponse">
 <pre id="json">
 {{ response }}

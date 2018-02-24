@@ -7,6 +7,8 @@ from flask import session
 from flask_nav import Nav
 from flask_nav.elements import Navbar
 from flask_nav.elements import View
+from flask_nav.elements import Subgroup
+from flask_nav.elements import Link
 
 from flask_login import UserMixin
 from flask_login import login_required
@@ -24,8 +26,8 @@ nav.init_app(app)
 
 apisession = connect.APISession()
 
-class User(UserMixin):
 
+class User(UserMixin):
     def __init__(self, user_id):
         self.id = user_id
 
@@ -42,11 +44,8 @@ def page_not_found(e):
 
 @nav.navigation()
 def mynavbar():
-    return Navbar('cpapi',
-                  View('Login', 'login'),
-                  View('Custom', 'custom'),
-                  View('Add Object', 'addobject'),
-                  View('Policy', 'policy'),
+    return Navbar('cpapi', View('Login', 'login'), View('Custom', 'custom'),
+                  View('Add Object', 'addobject'), View('Policy', 'policy'),
                   View('Logout', 'logout'))
 
 
@@ -67,10 +66,29 @@ def login():
         password = request.form.get('password')
         domain = request.form.get('domain', None)
 
+        app.logger.info('Login attempt {}@{} > {}'.format(username,
+                                                          request.remote_addr,
+                                                          ipaddress))
         response = apisession.login(ipaddress, username, password, domain)
 
-        if response:
+        try:
+            if response.status_code != 200:
+                try:
+                    return render_template(
+                        'login.html', feedback=response.json()['message'])
+                except Exception as e:
+                    app.logger.error('{} - {}'.format(type(e).__name__, e))
+                    return render_template(
+                        'login.html', feedback=response.text)
+        # No connection happened so there is no status code
+        except AttributeError as e:
             return render_template('login.html', feedback=response)
+
+        app.logger.info('Login Success {}@{} > {}'.format(username,
+                                                          request.remote_addr,
+                                                          ipaddress))
+        apisession.sid = response.json()['sid']
+        apisession.ipaddress = ipaddress
 
         user = User(apisession.sid)
         login_user(user)
@@ -105,12 +123,20 @@ def custom():
         if command != 'logout':
             try:
                 if response.status_code == 403 or response.status_code == 404:
-                    return(render_template('custom.html', allcommands=all_commands, response=str(response)))
+                    return (render_template(
+                        'custom.html',
+                        allcommands=all_commands,
+                        response=str(response)))
                 else:
-                    return(render_template('custom.html', allcommands=all_commands, response=response.text))
+                    return (render_template(
+                        'custom.html',
+                        allcommands=all_commands,
+                        response=response.text))
             except Exception as e:
                 response = 'Incorrect payload format.'
-                return(render_template('custom.html', allcommands=all_commands, response=response))
+                return (render_template(
+                    'custom.html', allcommands=all_commands,
+                    response=response))
         else:
             return redirect('/login')
 
@@ -131,7 +157,12 @@ def addobject():
             netname = request.form.get('netname')
             network = request.form.get('network')
             netmask = request.form.get('netmask')
-            response = objects.add_network(apisession, netname, network, netmask)
+            response = objects.add_network(apisession, netname, network,
+                                           netmask)
+            return render_template('addobject.html', response=response.text)
+        if 'groupname' in request.form.keys():
+            groupname = request.form.get('groupname')
+            response = objects.add_group(apisession, groupname)
             return render_template('addobject.html', response=response.text)
 
 
@@ -146,4 +177,12 @@ def policy():
     if request.method == 'POST':
         all_layers = rules.get_all_layers(apisession)
         response = rules.showrulebase(apisession, request.form.get('layer'))
-        return render_template('policy.html', alllayers=all_layers, rulebase=response)
+        return render_template(
+            'policy.html', alllayers=all_layers, rulebase=response)
+
+@app.route('/showobject/<cp_objectuid>', methods=['GET'])
+@login_required
+def showobject(cp_objectuid):
+
+    response = objects.show_object(apisession, cp_objectuid)
+    return render_template('showobject.html', cpobject=response.text)

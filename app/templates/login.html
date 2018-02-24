@@ -22,11 +22,11 @@
                         <label><b>Domain</b></label>
                         <input type="text" name="domain">
                         <input type="submit" value="Log In">
+                        {% if feedback %}
+                            <br><span><b>{{ feedback }}</b></span>
+                        {% endif %}
                     </form>
                 </div>
-                {% if error %}
-                    <span>{{ error }}</span>
-                {% endif %}
             </div>
         </body>
 </html>

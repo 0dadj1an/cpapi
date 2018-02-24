@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     </head>
         <body>
@@ -20,6 +20,7 @@
                     </form>
                 </div>
                 {% if rulebase %}
+                    <br>
                     <div class="ruletable">
                         <table>
                             <tr>
@@ -38,24 +39,40 @@
                                     <td>{{ rule['name'] }}</td>
                                     <td>
                                     {% for source in rule['source'] %}
-                                        {{ source }}<br>
+                                        {% if source[0] != 'Any' %}
+                                            <a href="/showobject/{{source[1]}}">{{ source[0] }}</a><br>
+                                        {% else %}
+                                            {{ source[0] }}
+                                        {% endif %}
                                     {% endfor %}
                                     </td>
                                     <td>
                                     {% for destination in rule['destination'] %}
-                                        {{ destination }}<br>
+                                        {% if destination[0] != 'Any' %}
+                                            <a href="/showobject/{{destination[1]}}">{{ destination[0] }}</a><br>
+                                        {% else %}
+                                            {{ destination[0] }}
+                                        {% endif %}
                                     {% endfor %}
                                     </td>
                                     <td>
                                     {% for service in rule['service'] %}
-                                        {{ service }}<br>
+                                        {% if service[0] != 'Any' %}
+                                            <a href="/showobject/{{service[1]}}">{{ service[0] }}</a><br>
+                                        {% else %}
+                                            {{ service[0] }}
+                                        {% endif %}
                                     {% endfor %}
                                     </td>
                                     <td>{{ rule['action'] }}</td>
                                     <td>{{ rule['track'] }}</td>
                                     <td>
                                     {% for target in rule['target'] %}
-                                        {{ target }}<br>
+                                        {% if target[0] != 'Policy Targets' %}
+                                            <a href="/showobject/{{target[1]}}">{{ target[0] }}</a><br>
+                                        {% else %}
+                                            {{ target[0] }}
+                                        {% endif %}
                                     {% endfor %}
                                     </td>
                                 </tr>

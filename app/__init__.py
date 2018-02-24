@@ -14,8 +14,9 @@ if ostype == 'Linux':
 app = Flask(__name__)
 app.config['LOG_FOLDER'] = "{}cpapi.log".format(LOG_FOLDER)
 
-formatter = logging.Formatter(
-    '%(asctime)s %(levelname)s %(message)s')
+formatter = logging.Formatter('%(asctime)s %(levelname)s - '
+                              '%(filename)s:%(funcName)s:%(lineno)d - '
+                              '%(message)s')
 handler = RotatingFileHandler(
     app.config['LOG_FOLDER'], maxBytes=10000000, backupCount=10)
 handler.setFormatter(formatter)

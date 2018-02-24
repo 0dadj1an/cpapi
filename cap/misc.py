@@ -14,11 +14,13 @@ def customcommand(apisession, command, payload):
     except Exception as exc:
         response = exc
         return exc
-    response = api_call(apisession.ipaddress, 443, command, payload, apisession.sid)
+    response = api_call(apisession.ipaddress, 443, command, payload,
+                        apisession.sid)
     return response
 
 
 def getallcommands(apisession):
     """Get all available commands for custom command page."""
-    getcommands_result = api_call(apisession.ipaddress, 443, 'show-commands', {}, apisession.sid)
+    getcommands_result = api_call(apisession.ipaddress, 443, 'show-commands',
+                                  {}, apisession.sid)
     return [obj['name'] for obj in getcommands_result.json()['commands']]

@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     </head>
         <body>
@@ -8,28 +8,42 @@
             {{nav.mynavbar.render()}}
             {% endblock %}
             <div class="content">
-                <div class="addobjectform">
-                    <form action="" method="post" name="addhost">
-                        <label><b>Host Name</b></label>
-                        <input type="text" name="hostname">
-                        <label><b>IPv4 Address</b></label>
-                        <input type="text" name="ipaddress">
-                        <input type="submit" value="Submit">
-                    </form>
-                </div>
-                <div class="addobjectform">
-                    <form action="" method="post" name="addnet">
-                        <label><b>Network Name</b></label>
-                        <input type="text" name="netname">
-                        <label><b>IPv4 Network</b></label>
-                        <input type="text" name="network">
-                        <label><b>Subnet Mask</b></label>
-                        <input type="text" name="netmask">
-                        <input type="submit" value="Submit">
-                    </form>
+                <div class="objectcontent">
+                    <div class="addobjectform">
+                        <h1>Add Host</h1>
+                        <form action="" method="post" name="addhost">
+                            <label><b>Host Name</b></label>
+                            <input type="text" name="hostname">
+                            <label><b>IPv4 Address</b></label>
+                            <input type="text" name="ipaddress">
+                            <input type="submit" value="Submit">
+                        </form>
+                    </div>
+                    <br>
+                    <div class="addobjectform">
+                        <h1>Add Network</h1>
+                        <form action="" method="post" name="addnet">
+                            <label><b>Network Name</b></label>
+                            <input type="text" name="netname">
+                            <label><b>IPv4 Network</b></label>
+                            <input type="text" name="network">
+                            <label><b>Subnet Mask</b></label>
+                            <input type="text" name="netmask">
+                            <input type="submit" value="Submit">
+                        </form>
+                    </div>
+                    <br>
+                    <div class="addobjectform">
+                        <h1>Add Group</h1>
+                        <form action="" method="post" name="addgroup">
+                            <label><b>Group Name</b></label>
+                            <input type="text" name="groupname">
+                            <input type="submit" value="Submit">
+                        </form>
+                    </div>
                 </div>
 {% if response %}
-<div class="customresponse">
+<div class="objectresponse">
 <pre id="json">
 {{ response }}
 </pre>

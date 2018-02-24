@@ -11,6 +11,10 @@ ul {
     background-color: #333;
 }
 
+ul li:last-child {
+    float: right;
+}
+
 li {
     float: left;
 }
@@ -43,18 +47,18 @@ li a:hover {
     align-items: center;
     flex-direction: row;
     justify-content: center;
+    position: relative;
 }
 
 .loginform {
     width: 50%;
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     border-radius: 25px;
     border: 2px solid #E65785;
     padding: 20px;
     background-color: #576372;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .loginform label {
@@ -217,8 +221,26 @@ li a:hover {
     border: 1px solid black;
 }
 
-.addobjectform {
+.objectcontent {
+    margin: 20px;
     width: 50%;
+    float: left;
+}
+
+.objectresponse {
+    margin: 20px;
+    width: 40%;
+    float: right;
+    position: relative;
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.addobjectform {
+    width: 100%;
     position: relative;
     border-radius: 15px;
     border: 2px solid #E65785;
@@ -226,6 +248,10 @@ li a:hover {
     margin-left: auto;
     margin-right: auto;
     background-color: #576372;
+}
+
+.addobjectform h1 {
+    color: white;
 }
 
 .addobjectform label {
