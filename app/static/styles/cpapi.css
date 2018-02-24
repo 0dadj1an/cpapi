@@ -297,3 +297,12 @@ li a:hover {
 .showobject p {
     color: white;
 }
+
+.disabledrule {
+    opacity: 0.5;
+}
+
+.negatedcell {
+    background-color: #690019;
+    opacity:0.5;
+}

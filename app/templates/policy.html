@@ -34,36 +34,56 @@
                                 <th>Target</th>
                             </tr>
                             {% for rule in rulebase %}
+                                {% if rule['enabled'] == true %}
                                 <tr>
                                     <td>{{ rule['number'] }}</td>
+                                {% else %}
+                                <tr class="disabledrule">
+                                    <td>{{ rule['number'] }} X</td>
+                                {% endif %}
                                     <td>{{ rule['name'] }}</td>
-                                    <td>
-                                    {% for source in rule['source'] %}
-                                        {% if source[0] != 'Any' %}
-                                            <a href="/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
-                                        {% else %}
-                                            {{ source[0] }}
-                                        {% endif %}
-                                    {% endfor %}
-                                    </td>
-                                    <td>
-                                    {% for destination in rule['destination'] %}
-                                        {% if destination[0] != 'Any' %}
-                                            <a href="/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
-                                        {% else %}
-                                            {{ destination[0] }}
-                                        {% endif %}
-                                    {% endfor %}
-                                    </td>
-                                    <td>
-                                    {% for service in rule['service'] %}
-                                        {% if service[0] != 'Any' %}
-                                            <a href="/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
-                                        {% else %}
-                                            {{ service[0] }}
-                                        {% endif %}
-                                    {% endfor %}
-                                    </td>
+                                    {% if rule['source-negate'] == true %}
+                                        <td class="negatedcell" background-color="#690019;">
+                                            -----Negated-----<br>
+                                    {% else %}
+                                        <td>
+                                    {% endif %}
+                                        {% for source in rule['source'] %}
+                                            {% if source[0] != 'Any' %}
+                                                <a href="/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
+                                            {% else %}
+                                                {{ source[0] }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </td>
+                                    {% if rule['destination-negate'] == true %}
+                                        <td class="negatedcell" background-color="#690019;">
+                                            -----Negated-----<br>
+                                    {% else %}
+                                        <td>
+                                    {% endif %}
+                                        {% for destination in rule['destination'] %}
+                                            {% if destination[0] != 'Any' %}
+                                                <a href="/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
+                                            {% else %}
+                                                {{ destination[0] }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </td>
+                                    {% if rule['service-negate'] == true %}
+                                        <td class="negatedcell" background-color="#690019;">
+                                            -----Negated-----<br>
+                                    {% else %}
+                                        <td>
+                                    {% endif %}
+                                        {% for service in rule['service'] %}
+                                            {% if service[0] != 'Any' %}
+                                                <a href="/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
+                                            {% else %}
+                                                {{ service[0] }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </td>
                                     <td>{{ rule['action'] }}</td>
                                     <td>{{ rule['track'] }}</td>
                                     <td>

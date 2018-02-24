@@ -63,7 +63,7 @@ def showrulebase(apisession, layer_uid):
 
 
 def filterpolicyrule(rule, show_rulebase_result):
-    """The actually filtering of a rule."""
+    """The actual filtering of a rule."""
     filteredrule = {}
     countersrc = 0
     counterdst = 0
@@ -91,47 +91,40 @@ def filterpolicyrule(rule, show_rulebase_result):
     for obj in show_rulebase_result['objects-dictionary']:
         if name == obj['uid']:
             name = obj['name']
-    for obj in show_rulebase_result['objects-dictionary']:
         if num == obj['uid']:
             num = obj['name']
+        if act == obj['uid']:
+            act = obj['name']
+        if trc == obj['uid']:
+            trc = obj['name']
     for srcobj in src:
         for obj in show_rulebase_result['objects-dictionary']:
             if srcobj == obj['uid']:
                 src_all.append((obj['name'], srcobj))
-                # src[countersrc] = obj['name']
-                # countersrc = countersrc + 1
     for dstobj in dst:
         for obj in show_rulebase_result['objects-dictionary']:
             if dstobj == obj['uid']:
                 dst_all.append((obj['name'], dstobj))
-                # dst[counterdst] = obj['name']
-                # counterdst = counterdst + 1
     for srvobj in srv:
         for obj in show_rulebase_result['objects-dictionary']:
             if srvobj == obj['uid']:
                 srv_all.append((obj['name'], srvobj))
-                # srv[countersrv] = obj['name']
-                # countersrv = countersrv + 1
-    for obj in show_rulebase_result['objects-dictionary']:
-        if act == obj['uid']:
-            act = obj['name']
-    for obj in show_rulebase_result['objects-dictionary']:
-        if trc == obj['uid']:
-            trc = obj['name']
     for trgobj in trg:
         for obj in show_rulebase_result['objects-dictionary']:
             if trgobj == obj['uid']:
                 trg_all.append((obj['name'], trgobj))
-                # trg[countertrg] = obj['name']
-                # countertrg = countertrg + 1
     filteredrule.update({
         'number': num,
         'name': name,
         'source': src_all,
+        'source-negate': rule['source-negate'],
         'destination': dst_all,
+        'destination-negate': rule['destination-negate'],
         'service': srv_all,
+        'service-negate': rule['service-negate'],
         'action': act,
         'track': trc,
         'target': trg_all,
+        'enabled': rule['enabled']
     })
     return filteredrule
