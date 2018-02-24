@@ -185,4 +185,4 @@ def policy():
 def showobject(cp_objectuid):
 
     response = objects.show_object(apisession, cp_objectuid)
-    return render_template('showobject.html', cpobject=response.text)
+    return render_template('showobject.html', cpobject=response.json())

@@ -278,3 +278,22 @@ li a:hover {
     border-radius: 5px;
     color: white;
 }
+
+.showobject {
+    width: 50%;
+    position: relative;
+    border-radius: 15px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #576372;
+}
+
+.showobject h1 {
+    color: #E65785;
+}
+
+.showobject p {
+    color: white;
+}

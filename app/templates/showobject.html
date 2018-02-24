@@ -1,3 +1,25 @@
-<pre id="json">
-{{ cpobject }}
-</pre>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    </head>
+        <body>
+            <div class="content">
+                <div class="showobject">
+                    {% if cpobject['type'] == 'host' %}
+                        <h1>Host</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p>IP Address: {{ cpobject['ipv4-address'] }}</p>
+                    {% elif cpobject.type == 'network' %}
+                        <h1>Network</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p>Network: {{ cpobject['subnet4'] }}</p>
+                        <p>Netmask: {{ cpobject['subnet-mask'] }}</p>
+                    {% else %}
+                        <h1>{{ cpobject['type'] }}</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </body>
+</html>

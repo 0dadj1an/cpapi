@@ -21,8 +21,13 @@ def add_group(apisession, groupname):
                                   add_group_data, apisession.sid)
     return add_group_response
 
+
 def show_object(apisession, objuid):
-    show_obj_data = {'uid': objuid, 'details-level': 'full'}
+    show_obj_data = {'uid': objuid}
     show_obj_response = api_call(apisession.ipaddress, 443, '/show-object',
                                  show_obj_data, apisession.sid)
-    return show_obj_response
+    type_obj_data = {'uid': objuid, 'details-level': 'full'}
+    type_obj_response = api_call(apisession.ipaddress, 443, '/show-{}'.format(
+        show_obj_response.json()['object']['type']), type_obj_data,
+                                 apisession.sid)
+    return type_obj_response
