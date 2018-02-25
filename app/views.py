@@ -152,18 +152,19 @@ def addobject():
             hostname = request.form.get('hostname')
             hostipaddress = request.form.get('ipaddress')
             response = objects.add_host(apisession, hostname, hostipaddress)
-            return render_template('addobject.html', response=response.text)
         if 'netname' in request.form.keys():
             netname = request.form.get('netname')
             network = request.form.get('network')
             netmask = request.form.get('netmask')
             response = objects.add_network(apisession, netname, network,
                                            netmask)
-            return render_template('addobject.html', response=response.text)
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
             response = objects.add_group(apisession, groupname)
-            return render_template('addobject.html', response=response.text)
+
+        if response.status_code == 200:
+            apisession.publish()
+        return render_template('addobject.html', response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
