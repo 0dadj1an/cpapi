@@ -40,6 +40,7 @@ function rulesearch() {
             if (data.includes(string)) {
                 console.log('Match')
                 row.style.display = "table-cell";
+                break;
             } else {
                 console.log('No Match')
                 row.style.display = "none";
