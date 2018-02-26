@@ -35,7 +35,6 @@ def load_user(user_id):
 
 @app.errorhandler(401)
 def page_not_found(e):
-    feedback = 'Please authenticate first.'
     return redirect('/login')
 
 
@@ -136,8 +135,7 @@ def custom():
                         lastcomm=command,
                         payload=payload,
                         response=response.text))
-            except Exception as e:
-                app.logger.critical(type(e).__name__)
+            except AttributeError:
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
