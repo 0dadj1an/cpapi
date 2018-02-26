@@ -4,6 +4,8 @@ function hidehost() {
         form.style.display = "block";
     } else if (form.style.display == "block") {
         form.style.display = "none";
+    } else {
+        form.style.display = "block";
     }
 }
 
@@ -13,6 +15,8 @@ function hidenet() {
         form.style.display = "block";
     } else if (form.style.display == "block") {
         form.style.display = "none";
+    } else {
+        form.style.display = "block";
     }
 }
 
@@ -22,5 +26,7 @@ function hidegroup() {
         form.style.display = "block";
     } else if (form.style.display == "block") {
         form.style.display = "none";
+    } else {
+        form.style.display = "block";
     }
 }

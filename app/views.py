@@ -44,14 +44,19 @@ def page_not_found(e):
 
 
 @nav.navigation()
-def mynavbar():
-    return Navbar('cpapi', View('Login', 'login'), View('Custom', 'custom'),
-                  View('Object', 'object'), View('Policy', 'policy'),
-                  View('Logout', 'logout'))
+def preauth():
+    return Navbar('cpapi', View('Login', 'login'))
+
+
+@nav.navigation()
+def postauth():
+    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'object'),
+                           View('Policy', 'policy'), View('Logout', 'logout'))
 
 
 @app.before_request
 def before_request():
+
     keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
     if request.endpoint in keepalive_pages:
         response = apisession.keepalive()
