@@ -38,11 +38,9 @@ function rulesearch() {
         for (var j = 0, col; col = row.cells[j]; j++) {
             data = col.innerHTML;
             if (data.includes(string)) {
-                console.log('Match')
                 row.removeAttribute("style");
                 break;
             } else {
-                console.log('No Match')
                 row.style.display = "none";
             }
         }
