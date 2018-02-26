@@ -2,6 +2,7 @@
     <head>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
         <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+        <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
     </head>
         <body>
             {% block navbar %}
@@ -13,7 +14,11 @@
                         <label><b>Rulebase</b></label>
                         <select name="layer">
                             {% for layer in alllayers %}
-                                <option value="{{ layer[1] }}">{{ layer[0] }}</option>
+                                {% if layer[1] == lastlayer %}
+                                    <option value="{{ layer[1] }}" selected>{{ layer[0] }}</option>
+                                {% else %}
+                                    <option value="{{ layer[1] }}">{{ layer[0] }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                         <input type="submit" value="Submit">
@@ -21,9 +26,14 @@
                 </div>
                 {% if rulebase %}
                     <br>
+                    <div class="rulesearch">
+                        <label><b>Search Rulebase</b></label>
+                        <input id="searchstring" type="text" name="search" onchange="rulesearch()">
+                    </div>
+                    <br>
                     <div class="ruletable">
                         <table>
-                            <tr>
+                            <thead>
                                 <th>Number</th>
                                 <th>Name</th>
                                 <th>Source</th>
@@ -32,7 +42,8 @@
                                 <th>Action</th>
                                 <th>Track</th>
                                 <th>Target</th>
-                            </tr>
+                            </thead>
+                            <tbody id="tbody">
                             {% for rule in rulebase %}
                                 {% if rule['enabled'] == true %}
                                 <tr>
@@ -97,6 +108,7 @@
                                     </td>
                                 </tr>
                             {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 {% endif %}

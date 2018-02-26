@@ -1,5 +1,4 @@
 import ast
-import time
 
 from cap.post import api_call
 

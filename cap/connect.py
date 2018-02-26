@@ -5,7 +5,8 @@ class APISession:
     def __init__(self):
         pass
 
-    def login(self, ipaddress, username, password, domain=None):
+    @staticmethod
+    def login(ipaddress, username, password, domain=None):
         """Login to Check Point API."""
         if domain == None:
             payload = {

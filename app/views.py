@@ -1,14 +1,10 @@
 from flask import render_template
 from flask import redirect
-from flask import url_for
 from flask import request
-from flask import session
 
 from flask_nav import Nav
 from flask_nav.elements import Navbar
 from flask_nav.elements import View
-from flask_nav.elements import Subgroup
-from flask_nav.elements import Link
 
 from flask_login import UserMixin
 from flask_login import login_required
@@ -39,8 +35,7 @@ def load_user(user_id):
 
 @app.errorhandler(401)
 def page_not_found(e):
-    feedback = 'Please authenticate first.'
-    return render_template('login.html', feedback=feedback)
+    return redirect('/login')
 
 
 @nav.navigation()
@@ -50,7 +45,7 @@ def preauth():
 
 @nav.navigation()
 def postauth():
-    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'object'),
+    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'cpobject'),
                            View('Policy', 'policy'), View('Logout', 'logout'))
 
 
@@ -60,8 +55,7 @@ def before_request():
     if request.endpoint in keepalive_pages:
         response = apisession.keepalive()
         if response.status_code != 200:
-            feedback = 'Previous session expired.'
-            return render_template('login.html', feedback=feedback)
+            return redirect('/login')
 
 
 @app.route('/')
@@ -141,7 +135,7 @@ def custom():
                         lastcomm=command,
                         payload=payload,
                         response=response.text))
-            except Exception as e:
+            except AttributeError:
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
@@ -153,11 +147,11 @@ def custom():
             return redirect('/login')
 
 
-@app.route('/object', methods=['GET', 'POST'])
+@app.route('/cpobject', methods=['GET', 'POST'])
 @login_required
-def object():
+def cpobject():
     if request.method == 'GET':
-        return render_template('object.html')
+        return render_template('cpobject.html')
     if request.method == 'POST':
         if 'hostname' in request.form.keys():
             hostname = request.form.get('hostname')
@@ -179,7 +173,7 @@ def object():
             apisession.publish()
         print(section)
         return render_template(
-            'object.html',
+            'cpobject.html',
             response=response.text,
             section=section)
 
@@ -192,9 +186,13 @@ def policy():
         return render_template('policy.html', alllayers=all_layers)
     if request.method == 'POST':
         all_layers = rules.get_all_layers(apisession)
-        response = rules.showrulebase(apisession, request.form.get('layer'))
+        layer = request.form.get('layer')
+        response = rules.showrulebase(apisession, layer)
         return render_template(
-            'policy.html', alllayers=all_layers, rulebase=response)
+            'policy.html',
+            alllayers=all_layers,
+            rulebase=response,
+            lastlayer=layer)
 
 
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
