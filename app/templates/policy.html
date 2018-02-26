@@ -33,7 +33,7 @@
                     <br>
                     <div class="ruletable">
                         <table id="allruletable">
-                            <tr>
+                            <thead>
                                 <th>Number</th>
                                 <th>Name</th>
                                 <th>Source</th>
@@ -42,7 +42,8 @@
                                 <th>Action</th>
                                 <th>Track</th>
                                 <th>Target</th>
-                            </tr>
+                            </thead>
+                            <tbody id="tbody">
                             {% for rule in rulebase %}
                                 {% if rule['enabled'] == true %}
                                 <tr>
@@ -107,6 +108,7 @@
                                     </td>
                                 </tr>
                             {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 {% endif %}
