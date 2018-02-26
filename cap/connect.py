@@ -33,6 +33,7 @@ class APISession:
         return response
 
     def keepalive(self):
+        """Keepalive Check Point session."""
         response = api_call(self.ipaddress, 443, 'keepalive', {}, self.sid)
         return response
 
