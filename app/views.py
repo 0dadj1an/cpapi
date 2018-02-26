@@ -56,7 +56,6 @@ def postauth():
 
 @app.before_request
 def before_request():
-
     keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
     if request.endpoint in keepalive_pages:
         response = apisession.keepalive()
@@ -72,21 +71,17 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == 'GET':
         return render_template('login.html')
-
     if request.method == 'POST':
         ipaddress = request.form.get('ipaddress')
         username = request.form.get('username')
         password = request.form.get('password')
         domain = request.form.get('domain', None)
-
         app.logger.info('Login attempt {}@{} > {}'.format(username,
                                                           request.remote_addr,
                                                           ipaddress))
         response = apisession.login(ipaddress, username, password, domain)
-
         try:
             if response.status_code != 200:
                 try:
@@ -105,17 +100,14 @@ def login():
                                                           ipaddress))
         apisession.sid = response.json()['sid']
         apisession.ipaddress = ipaddress
-
         user = User(apisession.sid)
         login_user(user)
-
         return redirect('/custom')
 
 
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
-
     if request.method == 'GET':
         apisession.logout()
         logout_user()
@@ -125,16 +117,13 @@ def logout():
 @app.route('/custom', methods=['GET', 'POST'])
 @login_required
 def custom():
-
     if request.method == 'GET':
         all_commands = misc.getallcommands(apisession)
         return render_template('custom.html', allcommands=all_commands)
-
     if request.method == 'POST':
         all_commands = misc.getallcommands(apisession)
         command = request.form.get('command')
         payload = request.form.get('payload')
-
         response = misc.customcommand(apisession, command, payload)
         if command != 'logout':
             try:
@@ -142,16 +131,23 @@ def custom():
                     return (render_template(
                         'custom.html',
                         allcommands=all_commands,
+                        lastcomm=command,
+                        payload=payload,
                         response=str(response)))
                 else:
                     return (render_template(
                         'custom.html',
                         allcommands=all_commands,
+                        lastcomm=command,
+                        payload=payload,
                         response=response.text))
             except Exception as e:
                 response = 'Incorrect payload format.'
                 return (render_template(
-                    'custom.html', allcommands=all_commands,
+                    'custom.html',
+                    allcommands=all_commands,
+                    lastcomm=command,
+                    payload=payload,
                     response=response))
         else:
             return redirect('/login')
@@ -160,46 +156,49 @@ def custom():
 @app.route('/object', methods=['GET', 'POST'])
 @login_required
 def object():
-
     if request.method == 'GET':
         return render_template('object.html')
     if request.method == 'POST':
         if 'hostname' in request.form.keys():
             hostname = request.form.get('hostname')
             hostipaddress = request.form.get('ipaddress')
+            section = 'hostform'
             response = objects.add_host(apisession, hostname, hostipaddress)
         if 'netname' in request.form.keys():
             netname = request.form.get('netname')
             network = request.form.get('network')
             netmask = request.form.get('netmask')
+            section = 'netform'
             response = objects.add_network(apisession, netname, network,
                                            netmask)
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
+            section = 'groupform'
             response = objects.add_group(apisession, groupname)
-
         if response.status_code == 200:
             apisession.publish()
-        return render_template('object.html', response=response.text)
+        print(section)
+        return render_template(
+            'object.html',
+            response=response.text,
+            section=section)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
 @login_required
 def policy():
-
     if request.method == 'GET':
         all_layers = rules.get_all_layers(apisession)
         return render_template('policy.html', alllayers=all_layers)
-
     if request.method == 'POST':
         all_layers = rules.get_all_layers(apisession)
         response = rules.showrulebase(apisession, request.form.get('layer'))
         return render_template(
             'policy.html', alllayers=all_layers, rulebase=response)
 
+
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
 @login_required
 def showobject(cp_objectuid):
-
     response = objects.show_object(apisession, cp_objectuid)
     return render_template('showobject.html', cpobject=response.json())

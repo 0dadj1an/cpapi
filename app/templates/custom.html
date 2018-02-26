@@ -13,11 +13,19 @@
                         <label><b>Command</b></label>
                         <select name="command">
                             {% for command in allcommands %}
-                                <option value="{{ command }}">{{ command }}</option>
+                                {% if command == lastcomm %}
+                                    <option value="{{ command }}" selected>{{ command }}</option>
+                                {% else %}
+                                    <option value="{{ command }}">{{ command }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                         <label><b>Payload</b></label>
-                        <input type="text" name="payload" value="{}">
+                        {% if payload %}
+                            <input type="text" name="payload" value="{{payload}}">
+                        {% else %}
+                            <input type="text" name="payload" value="{}">
+                        {% endif %}
                         <input type="submit" value="Submit">
                     </form>
                 </div>
