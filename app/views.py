@@ -192,9 +192,13 @@ def policy():
         return render_template('policy.html', alllayers=all_layers)
     if request.method == 'POST':
         all_layers = rules.get_all_layers(apisession)
-        response = rules.showrulebase(apisession, request.form.get('layer'))
+        layer = request.form.get('layer')
+        response = rules.showrulebase(apisession, layer)
         return render_template(
-            'policy.html', alllayers=all_layers, rulebase=response)
+            'policy.html',
+            alllayers=all_layers,
+            rulebase=response,
+            lastlayer=layer)
 
 
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
