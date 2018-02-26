@@ -250,8 +250,21 @@ li a:hover {
     background-color: #576372;
 }
 
+#hostform {
+    display: none;
+}
+
+#netform {
+    display: none;
+}
+
+#groupform {
+    display: none;
+}
+
 .addobjectform h1 {
     color: white;
+    text-decoration: underline;
 }
 
 .addobjectform label {

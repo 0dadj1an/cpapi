@@ -39,14 +39,25 @@ def load_user(user_id):
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return redirect('/login')
+    feedback = 'Please authenticate first.'
+    return render_template('login.html', feedback=feedback)
 
 
 @nav.navigation()
 def mynavbar():
     return Navbar('cpapi', View('Login', 'login'), View('Custom', 'custom'),
-                  View('Add Object', 'addobject'), View('Policy', 'policy'),
+                  View('Object', 'object'), View('Policy', 'policy'),
                   View('Logout', 'logout'))
+
+
+@app.before_request
+def before_request():
+    keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
+    if request.endpoint in keepalive_pages:
+        response = apisession.keepalive()
+        if response.status_code != 200:
+            feedback = 'Previous session expired.'
+            return render_template('login.html', feedback=feedback)
 
 
 @app.route('/')
@@ -141,12 +152,12 @@ def custom():
             return redirect('/login')
 
 
-@app.route('/addobject', methods=['GET', 'POST'])
+@app.route('/object', methods=['GET', 'POST'])
 @login_required
-def addobject():
+def object():
 
     if request.method == 'GET':
-        return render_template('addobject.html')
+        return render_template('object.html')
     if request.method == 'POST':
         if 'hostname' in request.form.keys():
             hostname = request.form.get('hostname')
@@ -164,7 +175,7 @@ def addobject():
 
         if response.status_code == 200:
             apisession.publish()
-        return render_template('addobject.html', response=response.text)
+        return render_template('object.html', response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
