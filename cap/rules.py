@@ -65,10 +65,6 @@ def showrulebase(apisession, layer_uid):
 def filterpolicyrule(rule, show_rulebase_result):
     """The actual filtering of a rule."""
     filteredrule = {}
-    countersrc = 0
-    counterdst = 0
-    countersrv = 0
-    countertrg = 0
     if 'name' in rule:
         name = rule['name']
     else:

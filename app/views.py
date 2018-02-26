@@ -1,14 +1,10 @@
 from flask import render_template
 from flask import redirect
-from flask import url_for
 from flask import request
-from flask import session
 
 from flask_nav import Nav
 from flask_nav.elements import Navbar
 from flask_nav.elements import View
-from flask_nav.elements import Subgroup
-from flask_nav.elements import Link
 
 from flask_login import UserMixin
 from flask_login import login_required
@@ -40,7 +36,7 @@ def load_user(user_id):
 @app.errorhandler(401)
 def page_not_found(e):
     feedback = 'Please authenticate first.'
-    return render_template('login.html', feedback=feedback)
+    return redirect('/login')
 
 
 @nav.navigation()
@@ -50,7 +46,7 @@ def preauth():
 
 @nav.navigation()
 def postauth():
-    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'object'),
+    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'cpobject'),
                            View('Policy', 'policy'), View('Logout', 'logout'))
 
 
@@ -60,8 +56,7 @@ def before_request():
     if request.endpoint in keepalive_pages:
         response = apisession.keepalive()
         if response.status_code != 200:
-            feedback = 'Previous session expired.'
-            return render_template('login.html', feedback=feedback)
+            return redirect('/login')
 
 
 @app.route('/')
@@ -142,6 +137,7 @@ def custom():
                         payload=payload,
                         response=response.text))
             except Exception as e:
+                app.logger.critical(type(e).__name__)
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
@@ -153,11 +149,11 @@ def custom():
             return redirect('/login')
 
 
-@app.route('/object', methods=['GET', 'POST'])
+@app.route('/cpobject', methods=['GET', 'POST'])
 @login_required
-def object():
+def cpobject():
     if request.method == 'GET':
-        return render_template('object.html')
+        return render_template('cpobject.html')
     if request.method == 'POST':
         if 'hostname' in request.form.keys():
             hostname = request.form.get('hostname')
@@ -179,7 +175,7 @@ def object():
             apisession.publish()
         print(section)
         return render_template(
-            'object.html',
+            'cpobject.html',
             response=response.text,
             section=section)
 
