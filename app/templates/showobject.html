@@ -15,6 +15,59 @@
                         <p>Name: {{ cpobject['name'] }}</p>
                         <p>Network: {{ cpobject['subnet4'] }}</p>
                         <p>Netmask: {{ cpobject['subnet-mask'] }}</p>
+                    {% elif cpobject['type'] == 'group' %}
+                        <h1>Group</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p><u>Members</u></p>
+                        {% for member in cpobject['members'] %}
+                            <p><a href="/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
+                        {% endfor %}
+                    {% elif cpobject['type'] == 'service-tcp' %}
+                        <h1>TCP Service</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p>Port(s): {{ cpobject['port'] }}</p>
+                    {% elif cpobject['type'] == 'service-udp' %}
+                        <h1>UDP Service</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p>Port(s): {{ cpobject['port'] }}</p>
+                    {% elif cpobject['type'] == 'simple-gateway' %}
+                        <h1>Check Point Gateway</h1>
+                        <p>Name: {{ cpobject['name'] }}</p>
+                        <p>Hardware: {{ cpobject['hardware'] }}</p>
+                        <p>Version: {{ cpobject['version'] }}</p>
+                        <p>OS: {{ cpobject['os-name'] }}</p>
+                        <p><u>Interfaces</u></p>
+                        {% for interface in cpobject['interfaces'] %}
+                            <p>{{ interface['name']}}: {{ interface['ipv4-address'] }}/{{ interface['ipv4-mask-length']}}<p>
+                        {% endfor %}
+                        <p><u>Blades</u></p>
+                        {% if cpobject['firewall'] %}
+                            <p>Firewall<p>
+                        {% endif %}
+                        {% if cpobject['vpn'] %}
+                            <p>VPN<p>
+                        {% endif %}
+                        {% if cpobject['application-control'] %}
+                            <p>Application Control<p>
+                        {% endif %}
+                        {% if cpobject['url-filtering'] %}
+                            <p>URL Filtering<p>
+                        {% endif %}
+                        {% if cpobject['ips'] %}
+                            <p>IPS<p>
+                        {% endif %}
+                        {% if cpobject['content-awareness'] %}
+                            <p>Content Awareness<p>
+                        {% endif %}
+                        {% if cpobject['anti-bot'] %}
+                            <p>Anti-Bot<p>
+                        {% endif %}
+                        {% if cpobject['anti-virus'] %}
+                            <p>Anti-Virus<p>
+                        {% endif %}
+                        {% if cpobject['threat-emulation'] %}
+                            <p>Threat Emulation<p>
+                        {% endif %}
                     {% else %}
                         <h1>{{ cpobject['type'] }}</h1>
                         <p>Name: {{ cpobject['name'] }}</p>
