@@ -345,3 +345,71 @@ li a:hover {
     background-color: #690019;
     opacity:0.5;
 }
+
+.commandform {
+    width: 50%;
+    position: relative;
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #576372;
+}
+
+.commandform span {
+    color: red;
+}
+
+.commandform label {
+    text-align: left;
+    left: 100%;
+    color: white;
+}
+
+.commandform select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    height: 150px;
+}
+
+.commandform textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    resize: vertical;
+    height: 150px;
+}
+
+.commandform input[type=submit] {
+    padding:5px 15px;
+    background:#E65785;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    color: white;
+}
+
+.commandresponse {
+    width: 50%;
+    position: relative;
+    border-radius: 25px;
+    border: 2px solid #E65785;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.commandresponse label {
+    text-align: left;
+    left: 100%;
+    color: #E65785;
+}

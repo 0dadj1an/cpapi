@@ -45,8 +45,9 @@ def preauth():
 
 @nav.navigation()
 def postauth():
-    return Navbar('cpapi', View('Custom', 'custom'), View('Object', 'cpobject'),
-                           View('Policy', 'policy'), View('Logout', 'logout'))
+    return Navbar('cpapi', View('Custom', 'custom'), View(
+        'Object', 'cpobject'), View('Policy', 'policy'),
+                  View('Commands', 'commands'), View('Logout', 'logout'))
 
 
 @app.before_request
@@ -72,9 +73,8 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         domain = request.form.get('domain', None)
-        app.logger.info('Login attempt {}@{} > {}'.format(username,
-                                                          request.remote_addr,
-                                                          ipaddress))
+        app.logger.info('Login attempt {}@{} > {}'.format(
+            username, request.remote_addr, ipaddress))
         response = apisession.login(ipaddress, username, password, domain)
         try:
             if response.status_code != 200:
@@ -89,9 +89,8 @@ def login():
         except AttributeError as e:
             return render_template('login.html', feedback=response)
 
-        app.logger.info('Login Success {}@{} > {}'.format(username,
-                                                          request.remote_addr,
-                                                          ipaddress))
+        app.logger.info('Login Success {}@{} > {}'.format(
+            username, request.remote_addr, ipaddress))
         apisession.sid = response.json()['sid']
         apisession.ipaddress = ipaddress
         user = User(apisession.sid)
@@ -173,9 +172,7 @@ def cpobject():
             apisession.publish()
         print(section)
         return render_template(
-            'cpobject.html',
-            response=response.text,
-            section=section)
+            'cpobject.html', response=response.text, section=section)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
@@ -200,3 +197,23 @@ def policy():
 def showobject(cp_objectuid):
     response = objects.show_object(apisession, cp_objectuid)
     return render_template('showobject.html', cpobject=response.json())
+
+
+@app.route('/commands', methods=['GET', 'POST'])
+@login_required
+def commands():
+    if request.method == 'GET':
+        all_targets = misc.getalltargets(apisession)
+        return render_template('commands.html', alltargets=all_targets)
+    if request.method == 'POST':
+        all_targets = misc.getalltargets(apisession)
+        if request.form.getlist('target') == [] or request.form.get(
+                'command') == '':
+            error = 'No target and/or command provided.'
+            return render_template(
+                'commands.html', alltargets=all_targets, error=error)
+        targets = request.form.getlist('target')
+        command = request.form.get('script')
+        response = misc.runcommand(apisession, targets, command)
+        return render_template(
+            'commands.html', alltargets=all_targets, response=response)
