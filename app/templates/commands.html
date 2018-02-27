@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+        <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
+    </head>
+        <body>
+            {% block navbar %}
+            {{nav.postauth.render()}}
+            {% endblock %}
+            <div class="content">
+                <div class="commandform">
+                    <form action="" method="post" name="command">
+                        <label><b>Target(s)</b></label>
+                        <select multiple name="target">
+                            {% for target in alltargets %}
+                                <option value="{{ target }}">{{ target }}</option>
+                            {% endfor %}
+                        </select>
+                        <label><b>Script</b></label>
+                        <textarea type="text" name="script"></textarea>
+                        <input type="submit" value="Submit">
+                        {% if error %}
+                            <br><span><b>{{ error }}</b></span>
+                        {% endif %}
+                    </form>
+                </div>
+{% if response %}
+{% for task in response %}
+<br>
+<div class="commandresponse">
+<label><b>{{ task['target'] }} &#8208;&#8208; {{ task['status'] }}</b></label>
+<pre>
+Response:
+{{ task['response'] }}
+</pre>
+</div>
+{% endfor %}
+{% endif %}
+            </div>
+        </body>
+</html>

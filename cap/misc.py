@@ -1,6 +1,8 @@
 import ast
+import time
 
 from cap.post import api_call
+from cap.utility import base64_ascii
 
 
 def customcommand(apisession, command, payload):
@@ -23,3 +25,72 @@ def getallcommands(apisession):
     getcommands_result = api_call(apisession.ipaddress, 443, 'show-commands',
                                   {}, apisession.sid)
     return [obj['name'] for obj in getcommands_result.json()['commands']]
+
+
+def getalltargets(apisession):
+    """Get all gateways and servers from Check Point."""
+    get_targets_data = {'limit': 500}
+    get_targets_result = api_call(apisession.ipaddress, 443,
+                                  'show-gateways-and-servers',
+                                  get_targets_data, apisession.sid)
+    return [obj['name'] for obj in get_targets_result.json()['objects']]
+
+
+def runcommand(apisession, target, scriptcontent):
+    """Issue command against Check Point targets, verify task is complete on each gateways
+    and return response for each target."""
+    taskreturn = []
+    run_script_data = {
+        'script-name': 'cpapi',
+        'script': scriptcontent,
+        'targets': target
+    }
+    response = api_call(apisession.ipaddress, 443, 'run-script',
+                        run_script_data, apisession.sid)
+    if response.status_code == 200:
+        if 'tasks' in response.json():
+            for task in response.json()['tasks']:
+                tasktrg = task['target']
+                taskid = task['task-id']
+                taskperc = 0
+                while taskperc < 100:
+                    taskresponse = gettask(apisession, taskid)
+                    taskperc = taskresponse.json()['tasks'][0][
+                        'progress-percentage']
+                    if taskperc == 100:
+                        if taskresponse.json()['tasks'][0]['task-details'][0][
+                                'responseMessage']:
+                            base64resp = taskresponse.json()['tasks'][0][
+                                'task-details'][0]['responseMessage']
+                            asciiresp = base64_ascii(base64resp)
+                            taskreturn.append({
+                                'target':
+                                tasktrg,
+                                'status':
+                                taskresponse.json()['tasks'][0]['status'],
+                                'response':
+                                asciiresp
+                            })
+                        else:
+                            taskreturn.append({
+                                'target':
+                                tasktrg,
+                                'status':
+                                taskresponse.json()['tasks'][0]['status'],
+                                'response':
+                                'Not Available'
+                            })
+                    time.sleep(1)
+            return taskreturn
+    elif response.status_code == 404:
+        return response.text
+    else:
+        return response
+
+
+def gettask(apisession, task):
+    """Function for runcommand to get task status."""
+    get_task_data = {'task-id': task, 'details-level': 'full'}
+    response = api_call(apisession.ipaddress, 443, 'show-task', get_task_data,
+                        apisession.sid)
+    return response
