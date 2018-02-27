@@ -19,7 +19,7 @@
                     {% elif cpobject['type'] == 'group' %}
                         <h1>Group</h1>
                         <p>Name: {{ cpobject['name'] }}</p>
-                        <p><u>Members</u></p>
+                        <p><b>Members:</b></p>
                         {% for member in cpobject['members'] %}
                             <p><a href="/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
                         {% endfor %}
