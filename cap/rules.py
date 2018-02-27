@@ -28,12 +28,12 @@ def dorulebase(rules, rulebase):
 def showrulebase(apisession, layer_uid):
     """Issues API call to manager and holds response of rules until all
     filtering is complete."""
-    count = 500
+    count = 25
     show_rulebase_data = {
         'uid': layer_uid,
         'details-level': 'standard',
         'offset': 0,
-        'limit': 500,
+        'limit': 25,
         'use-object-dictionary': 'true'
     }
     show_rulebase_result = api_call(apisession.ipaddress, 443,
@@ -50,14 +50,14 @@ def showrulebase(apisession, layer_uid):
                 'uid': layer_uid,
                 'details-level': 'standard',
                 'offset': count,
-                'limit': 500,
+                'limit': 25,
                 'use-object-dictionary': 'true'
             }
             show_rulebase_result = api_call(apisession.ipaddress, 443,
                                             'show-access-rulebase',
                                             show_rulebase_data, apisession.sid)
             dorulebase(rules, show_rulebase_result)
-            count += 500
+            count += 25
 
     return rules
 
