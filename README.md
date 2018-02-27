@@ -6,7 +6,7 @@ General tool for interacting with Check Point Software MGMT Web API.
 * pip3 install flask flask_nav flask-login requests
 * Run via:
 	* Local development server:
-		* python3 ~/cpapi/app/run.py
+		* python3 ~/cpapi/run.py
 	* Flask Web Server Deployments
 		* http://flask.pocoo.org/docs/0.12/deploying/
 * Configure Log Directories under /cpapiweb/app/\_\_init\_\_.py
