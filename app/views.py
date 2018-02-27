@@ -1,6 +1,7 @@
 from flask import render_template
 from flask import redirect
 from flask import request
+from flask import session
 
 from flask_nav import Nav
 from flask_nav.elements import Navbar
@@ -54,8 +55,11 @@ def postauth():
 def before_request():
     keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
     if request.endpoint in keepalive_pages:
-        response = apisession.keepalive()
-        if response.status_code != 200:
+        if hasattr(apisession, 'ipaddress'):
+            response = apisession.keepalive()
+            if response.status_code != 200:
+                return redirect('/login')
+        else:
             return redirect('/login')
 
 
