@@ -18,6 +18,9 @@ def dorulebase(rules, rulebase):
             if thetype == 'access-rule':
                 filteredrule = filterpolicyrule(rule, rulebase.json())
                 rules.append(filteredrule)
+            else:
+                section = rule['name']
+                rules.append({'type': 'section', 'name': section})
         if 'rulebase' in rule:
             for subrule in rule['rulebase']:
                 filteredrule = filterpolicyrule(subrule, rulebase.json())
@@ -74,7 +77,6 @@ def filterpolicyrule(rule, show_rulebase_result):
     src_all = []
     dst = rule['destination']
     dst_all = []
-    dst_uid = rule['destination']
     srv = rule['service']
     srv_all = []
     act = rule['action']
@@ -110,6 +112,7 @@ def filterpolicyrule(rule, show_rulebase_result):
             if trgobj == obj['uid']:
                 trg_all.append((obj['name'], trgobj))
     filteredrule.update({
+        'type': 'rule',
         'number': num,
         'name': name,
         'source': src_all,

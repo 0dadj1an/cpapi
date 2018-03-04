@@ -1,0 +1,30 @@
+<ul class="main-navigation">
+  {% if 'custom' in request.path %}
+  <li><a class="active" href="/custom">Custom</a></li>
+  {% else %}
+  <li><a href="/custom">Custom</a></li>
+  {% endif %}
+  {% if 'add' in request.path %}
+  <li><a class="active">Add Objects</a>
+  {% else %}
+  <li><a>Add Objects</a>
+  {% endif %}
+    <ul>
+      <li><a href="/addhost">Host</a></li>
+      <li><a href="/addnetwork">Network</a></li>
+      <li><a href="/addgroup">Group</a></li>
+    </ul>
+  </li>
+  {% if 'policy' in request.path %}
+  <li><a class="active" href="/policy">Policy</a></li>
+  {% else %}
+  <li><a href="/policy">Policy</a></li>
+  {% endif %}
+  {% if 'commands' in request.path %}
+  <li><a class="active" href="/commands">Commands</a></li>
+  {% else %}
+  <li><a href="/commands">Commands</a></li>
+  {% endif %}
+  <li><a href="/logout">Logout</a></li>
+</ul>
+<br>

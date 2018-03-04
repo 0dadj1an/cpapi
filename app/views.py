@@ -1,7 +1,6 @@
 from flask import render_template
 from flask import redirect
 from flask import request
-from flask import session
 
 from flask_nav import Nav
 from flask_nav.elements import Navbar
@@ -150,33 +149,49 @@ def custom():
             return redirect('/login')
 
 
-@app.route('/cpobject', methods=['GET', 'POST'])
+@app.route('/addhost', methods=['GET', 'POST'])
 @login_required
-def cpobject():
+def addhost():
     if request.method == 'GET':
-        return render_template('cpobject.html')
+        return render_template('addhost.html')
     if request.method == 'POST':
         if 'hostname' in request.form.keys():
             hostname = request.form.get('hostname')
             hostipaddress = request.form.get('ipaddress')
-            section = 'hostform'
-            response = objects.add_host(apisession, hostname, hostipaddress)
+            response = objects.addhost(apisession, hostname, hostipaddress)
+        if response.status_code == 200:
+            apisession.publish()
+        return render_template('addhost.html', response=response.text)
+
+
+@app.route('/addnetwork', methods=['GET', 'POST'])
+@login_required
+def addnetwork():
+    if request.method == 'GET':
+        return render_template('addnetwork.html')
+    if request.method == 'POST':
         if 'netname' in request.form.keys():
             netname = request.form.get('netname')
             network = request.form.get('network')
             netmask = request.form.get('netmask')
-            section = 'netform'
-            response = objects.add_network(apisession, netname, network,
-                                           netmask)
-        if 'groupname' in request.form.keys():
-            groupname = request.form.get('groupname')
-            section = 'groupform'
-            response = objects.add_group(apisession, groupname)
+            response = objects.addnetwork(apisession, netname, network, netmask)
         if response.status_code == 200:
             apisession.publish()
-        print(section)
-        return render_template(
-            'cpobject.html', response=response.text, section=section)
+        return render_template('addnetwork.html', response=response.text)
+
+
+@app.route('/addgroup', methods=['GET', 'POST'])
+@login_required
+def addgroup():
+    if request.method == 'GET':
+        return render_template('addgroup.html')
+    if request.method == 'POST':
+        if 'groupname' in request.form.keys():
+            groupname = request.form.get('groupname')
+            response = objects.addgroup(apisession, groupname)
+        if response.status_code == 200:
+            apisession.publish()
+        return render_template('addgroup.html', response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
