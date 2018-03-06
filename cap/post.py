@@ -7,16 +7,16 @@ requests.packages.urllib3.disable_warnings()
 
 def api_call(ipaddress, port, command, json_payload, sid):
     '''The backbone of all calls issued to Check Point API.'''
-    url = 'https://' + str(ipaddress) + ':' + str(port) + '/web_api/' + command
+    url = 'https://{}:{}/web_api/{}'.format(ipaddress, str(port), command)
     if sid == None:
         request_headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'CPAPI v1.0.0'
+            'User-Agent': 'CPAPI v1.2.0'
         }
     else:
         request_headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'CPAPI v1.0.0',
+            'User-Agent': 'CPAPI v1.2.0',
             'X-chkp-sid': sid
         }
     try:

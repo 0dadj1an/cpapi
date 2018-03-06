@@ -1,35 +1,35 @@
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.0.0">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
-        <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
-    </head>
-        <body>
-            {% block navbar %}
-            {{nav.postauth.render()}}
-            {% endblock %}
-            <div class="content">
-                <div class="customform">
-                    <form action="" method="post" name="command">
-                        <label><b>Command</b></label>
-                        <select name="command">
-                            {% for command in allcommands %}
-                                {% if command == lastcomm %}
-                                    <option value="{{ command }}" selected>{{ command }}</option>
-                                {% else %}
-                                    <option value="{{ command }}">{{ command }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                        <label><b>Payload</b></label>
-                        {% if payload %}
-                            <input type="text" name="payload" value="{{payload}}">
-                        {% else %}
-                            <input type="text" name="payload" value="{}">
-                        {% endif %}
-                        <input type="submit" value="Submit">
-                    </form>
-                </div>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
+  </head>
+    <body>
+      <div class="main-navigation">
+        {% include 'postlognav.html' %}
+      </div>
+      <div class="content">
+        <div class="customform">
+          <form action="" method="post" name="command">
+            <label><b>Command</b></label>
+            <select name="command">
+              {% for command in allcommands %}
+                {% if command == lastcomm %}
+                <option value="{{ command }}" selected>{{ command }}</option>
+                {% else %}
+                <option value="{{ command }}">{{ command }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <label><b>Payload</b></label>
+            {% if payload %}
+            <input type="text" name="payload" value="{{payload}}">
+            {% else %}
+            <input type="text" name="payload" value="{}">
+            {% endif %}
+            <input type="submit" value="Submit">
+          </form>
+        </div>
 {% if response %}
 <br>
 <div class="customresponse">
@@ -38,6 +38,6 @@
 </pre>
 </div>
 {% endif %}
-            </div>
-        </body>
+      </div>
+    </body>
 </html>

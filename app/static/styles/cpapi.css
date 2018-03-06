@@ -1,415 +1,484 @@
 body {
-    background-color: #FAFAFF;
-    margin: 0;
+  background-color: #FAFAFF;
+  margin: 0;
 }
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-ul li:last-child {
-    float: right;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #111;
-}
-
+/* Navbar */
 .active {
-    background-color: #E65785;
+  background-color: #E65785;
 }
 
+.main-navigation li:last-child {
+  float: right;
+}
+
+.main-navigation ul {
+  background: #333;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-navigation ul li {
+  background: #333;
+  display: block;
+  float: left;
+  position: relative;
+}
+
+.main-navigation li ul {
+  display: none;
+}
+
+.main-navigation li > ul > li > a {
+  border: 1px solid #b7b7b7;
+  border-top: 5px;
+  font-weight: bold;
+}
+
+.main-navigation ul li a {
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  padding: 1em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.main-navigation ul li a:hover {
+  background: #111;
+}
+
+.main-navigation li:hover > ul {
+  display: block;
+  position: absolute;
+}
+
+.main-navigation li:hover li {
+  float: none;
+}
+
+.main-navigation li:hover a {
+  background: #333;
+}
+
+.main-navigation li:hover li a:hover {
+  background: #E65785;
+}
+
+.main-navigation li ul li {
+  border-top: 0;
+  z-index: 999;
+}
+
+.main-navigation ul ul ul {
+  left: 100%;
+  top: 0;
+}
+
+.main-navigation ul:before,
+.main-navigation ul:after {
+  content: " ";
+  display: table;
+}
+
+.main-navigation ul:after {
+  clear: both;
+}
+
+#disabled {
+  color: #777777;
+  pointer-events: none;
+}
+
+/* Rest */
 .content {
-    margin: 20px;
+  margin: 20px;
 }
 
 .header {
-    width: 100%;
-    height:50px;
-    display:flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: center;
-    position: relative;
+  align-items: center;
+  display:flex;
+  flex-direction: row;
+  height:50px;
+  justify-content: center;
+  position: relative;
+  width: 100%;
 }
 
 .loginform {
-    width: 50%;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    background-color: #576372;
-    margin-left: auto;
-    margin-right: auto;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .loginform label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .loginform span {
-    color: red;
+  color: red;
 }
 
 .loginform input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;.
+  border: 1px solid #ccc;
+  box-sizing: border-box;.
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .loginform input[type=submit] {
-    padding:5px 15px;
-    background:#E65785;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    color: white;
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  color: white;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
 }
 
 .customform {
-    width: 50%;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border-radius: 25px;
+  border: 2px solid #E65785;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .customform label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .customform select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;.
+  border: 1px solid #ccc;
+  box-sizing: border-box;.
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .customform input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;.
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .customform input[type=submit] {
-    padding:5px 15px;
-    background:#E65785;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    color: white;
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  color: white;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
 }
 
 .customresponse {
-    width: 50%;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  padding: 20px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .policyform {
-    width: 50%;
-    position: relative;
-    border-radius: 15px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .policyform label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .policyform select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;.
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .policyform input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .policyform input[type=submit] {
-    padding:5px 15px;
-    background:#E65785;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    color: white;
+  color: white;
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
 }
 
 .rulesearch {
-    width: 50%;
-    position: relative;
-    border-radius: 15px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .rulesearch label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .rulesearch input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .ruletable {
-    width: 100%;
-    position: relative;
-    border: 2px solid #E65785;
-    padding: 5px;
-    border-radius: 15px;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  padding: 5px;
+  position: relative;
+  width: 100%;
 }
 
 .ruletable table {
-    position: relative;
-    width: 100%;
-
+  position: relative;
+  width: 100%;
 }
 
 .ruletable tr:hover td {
-    background-color: #DAEAFF
+  background-color: #DAEAFF
 }
 
 .ruletable th {
-    text-align: center;
-    background-color: #576372;
-    color: #ffffff;
-    border: 1px solid black;
+  background-color: #576372;
+  border: 1px solid black;
+  color: #ffffff;
+  text-align: center;
 }
 
 .ruletable td {
-    text-align: center;
-    background-color: #F8F8F8;
-    border: 1px solid black;
+  background-color: #FBFBFB;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.ruletable td:first-child {
+  background-color: #EFEFF0;
+}
+
+.rulesection td {
+  background-color: #FFF9B2 !important;
+  padding: 5px;
+  text-align: left;
 }
 
 .objectcontent {
-    margin: 20px;
-    width: 50%;
-    float: left;
+  float: left;
+  margin: 20px;
+  width: 50%;
 }
 
 .objectresponse {
-    margin: 20px;
-    width: 40%;
-    float: right;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  float: right;
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 40%;
 }
 
 .addobjectform {
-    width: 100%;
-    position: relative;
-    border-radius: 15px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 100%;
 }
 
 #hostform {
-    display: none;
+  display: none;
 }
 
 #netform {
-    display: none;
+  display: none;
 }
 
 #groupform {
-    display: none;
+  display: none;
 }
 
 .addobjectform h1 {
-    color: white;
-    text-decoration: underline;
+  color: white;
+  text-decoration: underline;
 }
 
 .addobjectform label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .addobjectform input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;.
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
 }
 
 .addobjectform input[type=submit] {
-    padding:5px 15px;
-    background:#E65785;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    color: white;
+  color: white;
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
 }
 
 .showobject {
-    width: 50%;
-    position: relative;
-    border-radius: 15px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .showobject h1 {
-    color: #E65785;
+  color: #E65785;
 }
 
 .showobject p {
-    color: white;
+  color: white;
+}
+
+.showobject a {
+  color: #E65785;
 }
 
 .disabledrule {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .negatedcell {
-    background-color: #690019;
-    opacity:0.5;
+  background-color: #690019;
+  opacity:0.5;
 }
 
 .commandform {
-    width: 50%;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #576372;
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 75%;
 }
 
 .commandform span {
-    color: red;
+  color: red;
 }
 
 .commandform label {
-    text-align: left;
-    left: 100%;
-    color: white;
+  color: white;
+  left: 100%;
+  text-align: left;
 }
 
 .commandform select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    height: 150px;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  height: 150px;
 }
 
 .commandform textarea {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    resize: vertical;
-    height: 150px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 150px;
+  margin: 8px 0;
+  padding: 12px 20px;
+  resize: vertical;
+  width: 100%;
 }
 
 .commandform input[type=submit] {
-    padding:5px 15px;
-    background:#E65785;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    color: white;
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  color: white;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
 }
 
 .commandresponse {
-    width: 50%;
-    position: relative;
-    border-radius: 25px;
-    border: 2px solid #E65785;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  position: relative;
+  width: 50%;
 }
 
 .commandresponse label {
-    text-align: left;
-    left: 100%;
-    color: #E65785;
+  color: #E65785;
+  left: 100%;
+  text-align: left;
 }
