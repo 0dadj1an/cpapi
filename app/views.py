@@ -35,7 +35,8 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
+    keepalive_pages = ['custom', 'addhost', 'addnetwork', 'addgroup' 'policy',
+                       'showobject', 'commands', 'logout']
     if request.endpoint in keepalive_pages:
         if hasattr(apisession, 'ipaddress'):
             response = apisession.keepalive()
