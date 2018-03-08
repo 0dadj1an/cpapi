@@ -7,7 +7,7 @@ from cap.utility import base64_ascii
 
 def pre_data(apisession):
     # Black omitted as defalut option.
-    all_colors = [
+    apisession.all_colors = [
         'aquamarine', 'blue', 'crete blue', 'burlywood', 'cyan',
         'dark green', 'khaki', 'orchid', 'dark orange', 'dark sea green', 'pink',
         'turquoise', 'dark blue', 'firebrick', 'brown', 'forest green', 'gold',
@@ -15,22 +15,28 @@ def pre_data(apisession):
         'sea green', 'sky blue', 'magenta', 'purple', 'slate blue', 'violet red',
         'navy blue', 'olive', 'orange', 'red', 'sienna', 'yellow'
     ]
+    apisession.all_commands = getallcommands(apisession)
+    apisession.all_targets = getalltargets(apisession)
+    apisession.all_layers = getalllayers(apisession)
 
-    all_commands = getallcommands(apisession)
-    all_targets = getalltargets(apisession)
-    all_layers = getalllayers(apisession)
-    return {
-        'all_colors': all_colors,
-        'all_commands': all_commands,
-        'all_targets': all_targets,
-        'all_layers': all_layers}
 
 def getalllayers(apisession):
     """Retrieve all rule base layers from management server."""
-    get_layers_result = api_call(apisession.ipaddress, 443,
-                                 'show-access-layers', {}, apisession.sid)
-    return [(layer['name'], layer['uid'])
-            for layer in get_layers_result.json()['access-layers']]
+    all_layers = []
+    apisession.offset = 0
+    get_layers_data = {'limit': apisession.limit, 'offset': apisession.offset}
+    get_layers_result = api_call(apisession.ipaddress, 443, 'show-access-layers', get_layers_data, apisession.sid)
+    for layer in get_layers_result.json()['access-layers']:
+        all_layers.append((layer['name'], layer['uid']))
+
+    while get_layers_result.json()['to'] != get_layers_result.json()['total']:
+        apisession.offset += 50
+        get_more_layers = {'limit': apisession.limit, 'offset': apisession.offset}
+        get_layers_result = api_call(apisession.ipaddress, 443, 'show-access-layers', get_more_layers, apisession.sid)
+        for layer in get_layers_result.json()['access-layers']:
+            all_layers.append((layer['name'], layer['uid']))
+
+    return all_layers
 
 
 def customcommand(apisession, command, payload):
@@ -57,11 +63,21 @@ def getallcommands(apisession):
 
 def getalltargets(apisession):
     """Get all gateways and servers from Check Point."""
-    get_targets_data = {'limit': 500}
-    get_targets_result = api_call(apisession.ipaddress, 443,
-                                  'show-gateways-and-servers',
-                                  get_targets_data, apisession.sid)
-    return [obj['name'] for obj in get_targets_result.json()['objects']]
+    all_targets = []
+    apisession.offset = 0
+    get_targets_data = {'limit': apisession.limit, 'offset': apisession.offset}
+    get_targets_result = api_call(apisession.ipaddress, 443, 'show-gateways-and-servers', get_targets_data, apisession.sid)
+    for target in get_targets_result.json()['objects']:
+        all_targets.append(target['name'])
+
+    while get_targets_result.json()['to'] != get_targets_result.json()['total']:
+        apisession.offset += 50
+        get_more_targets = {'limit': apisession.limit, 'offset': apisession.offset}
+        get_targets_result = api_call(apisession.ipaddress, 443, 'show-gateways-and-servers', get_more_targets, apisession.sid)
+        for target in get_targets_result.json()['objects']:
+            all_targets.append(target['name'])
+
+    return all_targets
 
 
 def runcommand(apisession, target, scriptcontent):
