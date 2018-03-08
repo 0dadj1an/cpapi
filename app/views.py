@@ -1,6 +1,7 @@
 from flask import render_template
 from flask import redirect
 from flask import request
+from flask import session
 
 from flask_login import UserMixin
 from flask_login import login_required
@@ -80,6 +81,7 @@ def login():
         apisession.ipaddress = ipaddress
         user = User(apisession.sid)
         login_user(user)
+        session['pre_data'] = misc.pre_data(apisession)
         return redirect('/custom')
 
 
@@ -96,10 +98,9 @@ def logout():
 @login_required
 def custom():
     if request.method == 'GET':
-        all_commands = misc.getallcommands(apisession)
-        return render_template('custom.html', allcommands=all_commands)
+        return render_template(
+            'custom.html', allcommands=session['pre_data']['all_commands'])
     if request.method == 'POST':
-        all_commands = misc.getallcommands(apisession)
         command = request.form.get('command')
         payload = request.form.get('payload')
         response = misc.customcommand(apisession, command, payload)
@@ -108,14 +109,14 @@ def custom():
                 if response.status_code == 403 or response.status_code == 404:
                     return (render_template(
                         'custom.html',
-                        allcommands=all_commands,
+                        allcommands=session['pre_data']['all_commands'],
                         lastcomm=command,
                         payload=payload,
                         response=str(response)))
                 else:
                     return (render_template(
                         'custom.html',
-                        allcommands=all_commands,
+                        allcommands=session['pre_data']['all_commands'],
                         lastcomm=command,
                         payload=payload,
                         response=response.text))
@@ -123,7 +124,7 @@ def custom():
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
-                    allcommands=all_commands,
+                    allcommands=session['pre_data']['all_commands'],
                     lastcomm=command,
                     payload=payload,
                     response=response))
@@ -135,60 +136,129 @@ def custom():
 @login_required
 def addhost():
     if request.method == 'GET':
-        return render_template('addhost.html')
+        return render_template(
+            'addhost.html',
+            alltargets=session['pre_data']['all_targets'],
+            colors=session['pre_data']['all_colors'])
     if request.method == 'POST':
-        if 'hostname' in request.form.keys():
-            hostname = request.form.get('hostname')
-            hostipaddress = request.form.get('ipaddress')
-            response = objects.addhost(apisession, hostname, hostipaddress)
+        hostdata = request.form.to_dict()
+        hostpayload = {
+            'name': hostdata['hostname'],
+            'ipv4-address': hostdata['hostip'],
+            'color': hostdata['hostcolor']
+        }
+        if 'nat-settings' in hostdata:
+            hostpayload.update({
+                'nat-settings': {
+                    'auto-rule': True,
+                    'method': hostdata['method']
+                }
+            })
+            if 'hide-behind' in hostdata:
+                hostpayload['nat-settings'].update({
+                    'hide-behind':
+                    hostdata['hide-behind']
+                })
+            if 'install-on' in hostdata:
+                if hostdata['install-on'] != '':
+                    hostpayload['nat-settings'].update({
+                        'install-on':
+                        hostdata['install-on']
+                    })
+            if 'natipaddress' in hostdata:
+                hostpayload['nat-settings'].update({
+                    'ip-address':
+                    hostdata['natipaddress']
+                })
+        response = objects.addhost(apisession, hostpayload)
         if response.status_code == 200:
             apisession.publish()
-        return render_template('addhost.html', response=response.text)
+        return render_template(
+            'addhost.html',
+            alltargets=session['pre_data']['all_targets'],
+            colors=session['pre_data']['all_colors'],
+            response=response.text)
 
 
 @app.route('/addnetwork', methods=['GET', 'POST'])
 @login_required
 def addnetwork():
     if request.method == 'GET':
-        return render_template('addnetwork.html')
+        return render_template(
+            'addnetwork.html',
+            alltargets=session['pre_data']['all_targets'],
+            colors=session['pre_data']['all_colors'])
     if request.method == 'POST':
-        if 'netname' in request.form.keys():
-            netname = request.form.get('netname')
-            network = request.form.get('network')
-            netmask = request.form.get('netmask')
-            response = objects.addnetwork(apisession, netname, network, netmask)
+        netdata = request.form.to_dict()
+        netpayload = {
+            'name': netdata['netname'],
+            'subnet': netdata['network'],
+            'subnet-mask': netdata['netmask'],
+            'color': netdata['netcolor']
+        }
+        if 'nat-settings' in netdata:
+            netpayload.update({
+                'nat-settings': {
+                    'auto-rule': True,
+                    'method': netdata['method']
+                }
+            })
+            if 'hide-behind' in netdata:
+                netpayload['nat-settings'].update({
+                    'hide-behind':
+                    netdata['hide-behind']
+                })
+            if 'install-on' in netdata:
+                if netdata['install-on'] != '':
+                    netpayload['nat-settings'].update({
+                        'install-on':
+                        netdata['install-on']
+                    })
+            if 'natipaddress' in netdata:
+                netpayload['nat-settings'].update({
+                    'ip-address':
+                    netdata['natipaddress']
+                })
+        response = objects.addnetwork(apisession, netpayload)
         if response.status_code == 200:
             apisession.publish()
-        return render_template('addnetwork.html', response=response.text)
+        return render_template(
+            'addnetwork.html',
+            alltargets=session['pre_data']['all_targets'],
+            colors=session['pre_data']['all_colors'],
+            response=response.text)
 
 
 @app.route('/addgroup', methods=['GET', 'POST'])
 @login_required
 def addgroup():
     if request.method == 'GET':
-        return render_template('addgroup.html')
+        return render_template(
+            'addgroup.html', colors=session['pre_data']['all_colors'])
     if request.method == 'POST':
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
             response = objects.addgroup(apisession, groupname)
         if response.status_code == 200:
             apisession.publish()
-        return render_template('addgroup.html', response=response.text)
+        return render_template(
+            'addgroup.html',
+            colors=session['pre_data']['all_colors'],
+            response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
 @login_required
 def policy():
     if request.method == 'GET':
-        all_layers = rules.get_all_layers(apisession)
-        return render_template('policy.html', alllayers=all_layers)
+        return render_template(
+            'policy.html', alllayers=session['pre_data']['all_layers'])
     if request.method == 'POST':
-        all_layers = rules.get_all_layers(apisession)
         layer = request.form.get('layer')
         response = rules.showrulebase(apisession, layer)
         return render_template(
             'policy.html',
-            alllayers=all_layers,
+            alllayers=session['pre_data']['all_layers'],
             rulebase=response,
             lastlayer=layer)
 
@@ -204,17 +274,20 @@ def showobject(cp_objectuid):
 @login_required
 def commands():
     if request.method == 'GET':
-        all_targets = misc.getalltargets(apisession)
-        return render_template('commands.html', alltargets=all_targets)
+        return render_template(
+            'commands.html', alltargets=session['pre_data']['all_targets'])
     if request.method == 'POST':
-        all_targets = misc.getalltargets(apisession)
         if request.form.getlist('target') == [] or request.form.get(
                 'command') == '':
             error = 'No target and/or command provided.'
             return render_template(
-                'commands.html', alltargets=all_targets, error=error)
+                'commands.html',
+                alltargets=session['pre_data']['all_targets'],
+                error=error)
         targets = request.form.getlist('target')
         command = request.form.get('script')
         response = misc.runcommand(apisession, targets, command)
         return render_template(
-            'commands.html', alltargets=all_targets, response=response)
+            'commands.html',
+            alltargets=session['pre_data']['all_targets'],
+            response=response)

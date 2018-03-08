@@ -1,14 +1,6 @@
 from cap.post import api_call
 
 
-def get_all_layers(apisession):
-    """Retrieve all rule base layers from management server."""
-    get_layers_result = api_call(apisession.ipaddress, 443,
-                                 'show-access-layers', {}, apisession.sid)
-    return [(layer['name'], layer['uid'])
-            for layer in get_layers_result.json()['access-layers']]
-
-
 def dorulebase(rules, rulebase):
     """Recieves json respone of showrulebase and sends rule dictionaries into
     filterpolicyrule."""

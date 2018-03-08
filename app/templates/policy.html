@@ -1,30 +1,30 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.3.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
       <div class="main-navigation">
-        {% include 'postlognav.html' %}
+        {%- include 'postlognav.html' -%}
       </div>
       <div class="content">
         <div class="policyform">
           <form action="" method="post" name="showrules">
             <label><b>Rulebase</b></label>
             <select name="layer">
-            {% for layer in alllayers %}
-              {% if layer[1] == lastlayer %}
+            {%- for layer in alllayers -%}
+              {%- if layer[1] == lastlayer -%}
               <option value="{{ layer[1] }}" selected>{{ layer[0] }}</option>
-              {% else %}
+              {%- else -%}
               <option value="{{ layer[1] }}">{{ layer[0] }}</option>
-              {% endif %}
-            {% endfor %}
+              {%- endif -%}
+            {%- endfor -%}
             </select>
             <input type="submit" value="Submit">
           </form>
         </div>
-        {% if rulebase %}
+        {%- if rulebase -%}
         <br>
         <div class="rulesearch">
           <label><b>Search Rulebase</b></label>
@@ -44,80 +44,80 @@
               <th>Target</th>
             </thead>
             <tbody id="tbody">
-            {% for rule in rulebase %}
-              {% if rule['type'] == 'section' %}
+            {%- for rule in rulebase -%}
+              {%- if rule['type'] == 'section' -%}
               <tr class="rulesection">
                 <td colspan="8">{{ rule['name'] }}</td>
               </tr>
-              {% elif rule['type'] == 'rule' %}
-                {% if rule['enabled'] == true %}
+              {%- elif rule['type'] == 'rule' -%}
+                {%- if rule['enabled'] == true -%}
                 <tr>
                   <td>{{ rule['number'] }}</td>
-                {% else %}
+                {%- else -%}
                 <tr class="disabledrule">
                   <td>{{ rule['number'] }} X</td>
-                {% endif %}
+                {%- endif -%}
                   <td>{{ rule['name'] }}</td>
-                  {% if rule['source-negate'] == true %}
+                  {%- if rule['source-negate'] == true -%}
                   <td class="negatedcell" background-color="#690019;">
                       -----Negated-----<br>
-                  {% else %}
+                  {%- else -%}
                   <td>
-                  {% endif %}
-                    {% for source in rule['source'] %}
-                      {% if source[0] != 'Any' %}
+                  {%- endif -%}
+                    {%- for source in rule['source'] -%}
+                      {%- if source[0] != 'Any' -%}
                       <a href="/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
-                      {% else %}
+                      {%- else -%}
                       {{ source[0] }}
-                      {% endif %}
-                    {% endfor %}
+                      {%- endif -%}
+                    {%- endfor -%}
                   </td>
-                  {% if rule['destination-negate'] == true %}
+                  {%- if rule['destination-negate'] == true -%}
                   <td class="negatedcell" background-color="#690019;">
                       -----Negated-----<br>
-                  {% else %}
+                  {%- else -%}
                   <td>
-                  {% endif %}
-                    {% for destination in rule['destination'] %}
-                      {% if destination[0] != 'Any' %}
+                  {%- endif -%}
+                    {%- for destination in rule['destination'] -%}
+                      {%- if destination[0] != 'Any' -%}
                       <a href="/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
-                      {% else %}
+                      {%- else -%}
                       {{ destination[0] }}
-                      {% endif %}
-                    {% endfor %}
+                      {%- endif -%}
+                    {%- endfor -%}
                   </td>
-                  {% if rule['service-negate'] == true %}
+                  {%- if rule['service-negate'] == true -%}
                   <td class="negatedcell" background-color="#690019;">
                       -----Negated-----<br>
-                  {% else %}
+                  {%- else -%}
                   <td>
-                  {% endif %}
-                    {% for service in rule['service'] %}
-                      {% if service[0] != 'Any' %}
+                  {%- endif -%}
+                    {%- for service in rule['service'] -%}
+                      {%- if service[0] != 'Any' -%}
                       <a href="/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
-                      {% else %}
+                      {%- else -%}
                       {{ service[0] }}
-                      {% endif %}
-                    {% endfor %}
+                      {%- endif -%}
+                    {%- endfor -%}
                   </td>
                   <td>{{ rule['action'] }}</td>
                   <td>{{ rule['track'] }}</td>
                   <td>
-                  {% for target in rule['target'] %}
-                    {% if target[0] != 'Policy Targets' %}
+                  {%- for target in rule['target'] -%}
+                    {%- if target[0] != 'Policy Targets' -%}
                     <a href="/showobject/{{target[1]}}" target="_blank">{{ target[0] }}</a><br>
-                    {% else %}
+                    {%- else -%}
                     {{ target[0] }}
-                    {% endif %}
-                  {% endfor %}
+                    {%- endif -%}
+                  {%- endfor -%}
                   </td>
                 </tr>
-              {% endif %}
-            {% endfor %}
+              {%- endif -%}
+            {%- endfor -%}
             </tbody>
           </table>
         </div>
-      {% endif %}
+      {%- endif -%}
       </div>
     </body>
 </html>

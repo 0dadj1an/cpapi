@@ -1,43 +1,43 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.3.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
       <div class="main-navigation">
-        {% include 'postlognav.html' %}
+        {%- include 'postlognav.html' -%}
       </div>
       <div class="content">
         <div class="customform">
           <form action="" method="post" name="command">
             <label><b>Command</b></label>
             <select name="command">
-              {% for command in allcommands %}
-                {% if command == lastcomm %}
+              {%- for command in allcommands -%}
+                {%- if command == lastcomm -%}
                 <option value="{{ command }}" selected>{{ command }}</option>
-                {% else %}
+                {%- else -%}
                 <option value="{{ command }}">{{ command }}</option>
-                {% endif %}
-              {% endfor %}
+                {%- endif -%}
+              {%- endfor -%}
             </select>
             <label><b>Payload</b></label>
-            {% if payload %}
+            {%- if payload -%}
             <input type="text" name="payload" value="{{payload}}">
-            {% else %}
+            {%- else -%}
             <input type="text" name="payload" value="{}">
-            {% endif %}
+            {%- endif -%}
             <input type="submit" value="Submit">
           </form>
         </div>
-{% if response %}
+{%- if response -%}
 <br>
 <div class="customresponse">
 <pre id="json">
 {{ response }}
 </pre>
 </div>
-{% endif %}
+{%- endif -%}
       </div>
     </body>
 </html>

@@ -3,6 +3,44 @@ body {
   margin: 0;
 }
 
+input[type=submit] {
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  color: white;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
+}
+
+label {
+  color: white;
+  left: 100%;
+  text-align: left;
+}
+
+span {
+  color: red;
+}
+
+input[type=text], input[type=password] {
+  border: 1px solid #ccc;
+  box-sizing: border-box;.
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
+}
+
+select {
+  border: 1px solid #ccc;
+  box-sizing: border-box;.
+  display: inline-block;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 100%;
+}
+
 /* Navbar */
 .active {
   background-color: #E65785;
@@ -117,35 +155,6 @@ body {
   width: 50%;
 }
 
-.loginform label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
-.loginform span {
-  color: red;
-}
-
-.loginform input[type=text], input[type=password] {
-  border: 1px solid #ccc;
-  box-sizing: border-box;.
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.loginform input[type=submit] {
-  background:#E65785;
-  border:0 none;
-  border-radius: 5px;
-  color: white;
-  cursor:pointer;
-  padding:5px 15px;
-  -webkit-border-radius: 5px;
-}
-
 .customform {
   background-color: #576372;
   border-radius: 25px;
@@ -157,40 +166,6 @@ body {
   width: 50%;
 }
 
-.customform label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
-.customform select {
-  border: 1px solid #ccc;
-  box-sizing: border-box;.
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.customform input[type=text] {
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.customform input[type=submit] {
-  background:#E65785;
-  border:0 none;
-  border-radius: 5px;
-  color: white;
-  cursor:pointer;
-  padding:5px 15px;
-  -webkit-border-radius: 5px;
-}
-
 .customresponse {
   border: 2px solid #E65785;
   border-radius: 25px;
@@ -199,6 +174,10 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+
+.customresponse pre {
+  white-space: pre-wrap;
 }
 
 .policyform {
@@ -212,40 +191,6 @@ body {
   width: 50%;
 }
 
-.policyform label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
-.policyform select {
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.policyform input[type=text] {
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.policyform input[type=submit] {
-  color: white;
-  background:#E65785;
-  border:0 none;
-  border-radius: 5px;
-  cursor:pointer;
-  padding:5px 15px;
-  -webkit-border-radius: 5px;
-}
-
 .rulesearch {
   background-color: #576372;
   border: 2px solid #E65785;
@@ -255,21 +200,6 @@ body {
   padding: 20px;
   position: relative;
   width: 50%;
-}
-
-.rulesearch label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
-.rulesearch input[type=text] {
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
 }
 
 .ruletable {
@@ -358,31 +288,6 @@ body {
   text-decoration: underline;
 }
 
-.addobjectform label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
-.addobjectform input[type=text] {
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 8px 0;
-  padding: 12px 20px;
-  width: 100%;
-}
-
-.addobjectform input[type=submit] {
-  color: white;
-  background:#E65785;
-  border:0 none;
-  border-radius: 5px;
-  cursor:pointer;
-  padding:5px 15px;
-  -webkit-border-radius: 5px;
-}
-
 .showobject {
   background-color: #576372;
   border: 2px solid #E65785;
@@ -426,16 +331,6 @@ body {
   width: 75%;
 }
 
-.commandform span {
-  color: red;
-}
-
-.commandform label {
-  color: white;
-  left: 100%;
-  text-align: left;
-}
-
 .commandform select {
   width: 100%;
   padding: 12px 20px;
@@ -457,16 +352,6 @@ body {
   width: 100%;
 }
 
-.commandform input[type=submit] {
-  background:#E65785;
-  border:0 none;
-  border-radius: 5px;
-  color: white;
-  cursor:pointer;
-  padding:5px 15px;
-  -webkit-border-radius: 5px;
-}
-
 .commandresponse {
   border: 2px solid #E65785;
   border-radius: 25px;
@@ -475,10 +360,4 @@ body {
   padding: 20px;
   position: relative;
   width: 50%;
-}
-
-.commandresponse label {
-  color: #E65785;
-  left: 100%;
-  text-align: left;
 }

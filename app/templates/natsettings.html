@@ -1,0 +1,20 @@
+<br>
+<label><b>NAT Configuration</b></label>
+<input type="checkbox" name="nat-settings" onclick="onoffnat()"><br><br>
+<label><b>Translation Method</b><label>
+<select id="method" name="method" disabled onchange="disablemethods()">
+  <option selected value="hide">Hide</option>
+  <option value="static">Static</option>
+</select>
+<input id="gateway" disabled type="radio" name="hide-behind" value="gateway" checked="checked" onclick="disableip()">Gateway
+<input id="ipaddress" disabled type="radio" name="hide-behind" value="ip-address" onclick="enableip()">IP-Address
+<br><br>
+<label><b>IPv4 Address</b></label>
+<input id="ipv4address" disabled type="text" name="natipaddress">
+<label><b>Install On Gateway</b></label>
+<select id="target" disabled name="install-on">
+  <option value="">* All</option>
+  {%- for target in alltargets -%}
+  <option value="{{ target }}">{{ target }}</option>
+  {%- endfor -%}
+</select>
