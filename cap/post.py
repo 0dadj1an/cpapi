@@ -11,12 +11,12 @@ def api_call(ipaddress, port, command, json_payload, sid):
     if sid == None:
         request_headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'CPAPI v1.3.1'
+            'User-Agent': 'CPAPI v1.3.2'
         }
     else:
         request_headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'CPAPI v1.3.1',
+            'User-Agent': 'CPAPI v1.3.2',
             'X-chkp-sid': sid
         }
     try:

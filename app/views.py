@@ -82,7 +82,7 @@ def login():
         apisession.ipaddress = ipaddress
         user = User(apisession.sid)
         login_user(user)
-        session['pre_data'] = misc.pre_data(apisession)
+        misc.pre_data(apisession)
         return redirect('/custom')
 
 
@@ -100,7 +100,7 @@ def logout():
 def custom():
     if request.method == 'GET':
         return render_template(
-            'custom.html', allcommands=session['pre_data']['all_commands'])
+            'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
         command = request.form.get('command')
         payload = request.form.get('payload')
@@ -110,14 +110,14 @@ def custom():
                 if response.status_code == 403 or response.status_code == 404:
                     return (render_template(
                         'custom.html',
-                        allcommands=session['pre_data']['all_commands'],
+                        allcommands=apisession.all_commands,
                         lastcomm=command,
                         payload=payload,
                         response=str(response)))
                 else:
                     return (render_template(
                         'custom.html',
-                        allcommands=session['pre_data']['all_commands'],
+                        allcommands=apisession.all_commands,
                         lastcomm=command,
                         payload=payload,
                         response=response.text))
@@ -125,7 +125,7 @@ def custom():
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
-                    allcommands=session['pre_data']['all_commands'],
+                    allcommands=apisession.all_commands,
                     lastcomm=command,
                     payload=payload,
                     response=response))
@@ -139,8 +139,8 @@ def addhost():
     if request.method == 'GET':
         return render_template(
             'addhost.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'])
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors)
     if request.method == 'POST':
         hostdata = request.form.to_dict()
         hostpayload = {
@@ -176,8 +176,8 @@ def addhost():
             apisession.publish()
         return render_template(
             'addhost.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'],
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors,
             response=response.text)
 
 
@@ -187,8 +187,8 @@ def addnetwork():
     if request.method == 'GET':
         return render_template(
             'addnetwork.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'])
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors)
     if request.method == 'POST':
         netdata = request.form.to_dict()
         netpayload = {
@@ -225,8 +225,8 @@ def addnetwork():
             apisession.publish()
         return render_template(
             'addnetwork.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'],
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors,
             response=response.text)
 
 
@@ -235,7 +235,7 @@ def addnetwork():
 def addgroup():
     if request.method == 'GET':
         return render_template(
-            'addgroup.html', colors=session['pre_data']['all_colors'])
+            'addgroup.html', colors=apisession.all_colors)
     if request.method == 'POST':
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
@@ -244,7 +244,7 @@ def addgroup():
             apisession.publish()
         return render_template(
             'addgroup.html',
-            colors=session['pre_data']['all_colors'],
+            colors=apisession.all_colors,
             response=response.text)
 
 
@@ -253,13 +253,13 @@ def addgroup():
 def policy():
     if request.method == 'GET':
         return render_template(
-            'policy.html', alllayers=session['pre_data']['all_layers'])
+            'policy.html', alllayers=apisession.all_layers)
     if request.method == 'POST':
         layer = request.form.get('layer')
         response = rules.showrulebase(apisession, layer)
         return render_template(
             'policy.html',
-            alllayers=session['pre_data']['all_layers'],
+            alllayers=apisession.all_layers,
             rulebase=response,
             lastlayer=layer)
 
@@ -276,19 +276,19 @@ def showobject(cp_objectuid):
 def commands():
     if request.method == 'GET':
         return render_template(
-            'commands.html', alltargets=session['pre_data']['all_targets'])
+            'commands.html', alltargets=apisession.all_targets)
     if request.method == 'POST':
         if request.form.getlist('target') == [] or request.form.get(
                 'command') == '':
             error = 'No target and/or command provided.'
             return render_template(
                 'commands.html',
-                alltargets=session['pre_data']['all_targets'],
+                alltargets=apisession.all_targets,
                 error=error)
         targets = request.form.getlist('target')
         command = request.form.get('script')
         response = misc.runcommand(apisession, targets, command)
         return render_template(
             'commands.html',
-            alltargets=session['pre_data']['all_targets'],
+            alltargets=apisession.all_targets,
             response=response)

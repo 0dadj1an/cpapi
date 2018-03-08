@@ -3,7 +3,8 @@ from cap.post import api_call
 
 class APISession:
     def __init__(self):
-        pass
+        self.limit = 50
+        self.offset = 0
 
     @staticmethod
     def login(ipaddress, username, password, domain=None):
