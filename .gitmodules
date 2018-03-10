@@ -1,0 +1,3 @@
+[submodule "cpapilib"]
+	path = cpapilib
+	url = https://github.com/themadhatterz/cpapilib
