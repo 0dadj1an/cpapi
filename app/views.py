@@ -111,14 +111,20 @@ def settings():
         if apisession.local_obj != 0:
             if apisession.local_obj != apisession.remote_obj:
                 if apisession.local_obj > apisession.remote_obj:
+                    app.logger.info(
+                        'Deleting local objects that are inconsistent.')
                     apisession.deldifobjects()
                     apisession.getdifobjects()
                 else:
+                    app.logger.info(
+                        'Retreiving remote objects that are inconsistent.')
                     apisession.getdifobjects()
             else:
                 # Use js in future to disable button if objects are equal.
+                app.logger.warn('Equal Retrieve attempted.')
                 pass
         else:
+            app.logger.info('Initial retrieve of objects.')
             apisession.getallobjects()
         apisession.verify_obj()
         return render_template(
@@ -155,6 +161,7 @@ def custom():
                         response=response.text))
             except AttributeError:
                 response = 'Incorrect payload format.'
+                app.logger.warn('Incorrect payload format: {}'.format(payload))
                 return (render_template(
                     'custom.html',
                     allcommands=apisession.all_commands,
@@ -162,7 +169,7 @@ def custom():
                     payload=payload,
                     response=response))
         else:
-            return redirect('/login')
+            return redirect('/logout')
 
 
 @app.route('/addhost', methods=['GET', 'POST'])
@@ -203,6 +210,7 @@ def addhost():
                     'ip-address':
                     hostdata['natipaddress']
                 })
+        app.logger.info('Adding Check Point Host.')
         response = apisession.addhost(hostpayload)
         if response.status_code == 200:
             apisession.publish()
@@ -252,6 +260,7 @@ def addnetwork():
                     'ip-address':
                     netdata['natipaddress']
                 })
+        app.logger.info('Adding Check Point Network.')
         response = apisession.addnetwork(netpayload)
         if response.status_code == 200:
             apisession.publish()
@@ -267,10 +276,12 @@ def addnetwork():
 def addgroup():
     if request.method == 'GET':
         all_objects = apisession.get_local_objs()
-        return render_template('addgroup.html',
-                               colors=apisession.all_colors,
-                               allobjects=all_objects)
+        return render_template(
+            'addgroup.html',
+            colors=apisession.all_colors,
+            allobjects=all_objects)
     if request.method == 'POST':
+        app.logger.info('Adding Check Point Group.')
         all_objects = apisession.get_local_objs()
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
@@ -292,10 +303,13 @@ def policy():
     if request.method == 'GET':
         return render_template('policy.html', alllayers=apisession.all_layers)
     if request.method == 'POST':
+        app.logger.info('Retrieving local objects for policy view.')
         all_objects = apisession.get_local_objs()
         formdata = request.form.to_dict()
         if 'delete' in formdata:
             rulenum = formdata['delete']
+            app.logger.info('Deleting rule number {} from {}'.format(
+                rulenum, apisession.lastlayer))
             feedback = apisession.delete_rule(rulenum)
         if 'add' in formdata:
             ruledata = {
@@ -311,6 +325,8 @@ def policy():
                 'layer': apisession.lastlayer,
                 'install-on': request.form.getlist('install-on')
             }
+            app.logger.info('Adding rule number {} to {}'.format(
+                ruledata['position'], ruledata['layer']))
             feedback = apisession.add_rule(ruledata)
         if 'layer' in formdata:
             apisession.lastlayer = formdata['layer']
@@ -322,6 +338,7 @@ def policy():
                 lastlayer=apisession.lastlayer,
                 allobjects=all_objects)
         else:
+            app.logger.info('Retrieving rulebase after modification.')
             response = apisession.showrulebase(apisession.lastlayer)
             return render_template(
                 'policy.html',
@@ -335,6 +352,7 @@ def policy():
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
 @login_required
 def showobject(cp_objectuid):
+    app.logger.info('Displaying Check Point Object {}.'.format(cp_objectuid))
     response = apisession.show_object(cp_objectuid)
     return render_template('showobject.html', cpobject=response.json())
 
@@ -355,6 +373,7 @@ def commands():
                 error=error)
         targets = request.form.getlist('target')
         command = request.form.get('script')
+        app.logger.info('Running script "{}"'.format(command))
         response = apisession.runcommand(targets, command)
         return render_template(
             'commands.html',
