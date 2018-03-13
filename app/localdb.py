@@ -11,7 +11,7 @@ def createdb(dbname):
 class cplocaldb(object):
     def __init__(self, database):
         self.database = database
-        self.dbconn = sqlite3.connect(database)
+        self.dbconn = sqlite3.connect(database, check_same_thread=False)
         self.dbconn.row_factory = sqlite3.Row
         self.cursor = self.dbconn.cursor()
 
