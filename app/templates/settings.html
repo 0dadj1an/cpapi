@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
+    <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
+  </head>
+    <body>
+      <div class="main-navigation">
+        {%- include 'postlognav.html' -%}
+      </div>
+      <div class="content">
+        <div class="settingsform">
+          <p> Retrieve object data and store them in a local database.<br>
+              Including hosts, networks, groups, gateways and servers, and access roles.<br>
+              This can take several minutes for large environments.<br></p>
+          <form action="" method="post" name="all">
+            <input type="submit" value="Retrieve">
+            <label><b>Local Objects: {{ local }} || Remote Objects: {{ remote }}</b></label>
+          </form>
+        </div>
+      </div>
+    </body>
+</html>

@@ -25,6 +25,11 @@
   {%- else -%}
   <li><a href="/commands">Commands</a></li>
   {%- endif -%}
+  {%- if 'settings' in request.path -%}
+  <li><a class="active" href="/settings">Settings</a></li>
+  {%- else -%}
+  <li><a href="/settings">Settings</a></li>
+  {%- endif -%}
   <li><a href="/logout">Logout</a></li>
 </ul>
 <br>

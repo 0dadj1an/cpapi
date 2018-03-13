@@ -1,7 +1,7 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.3.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
@@ -30,9 +30,26 @@
           <label><b>Search Rulebase</b></label>
           <input id="searchstring" type="text" name="search" onchange="rulesearch()">
         </div>
+{%- if feedback -%}
+<br>
+<div class="customresponse">
+<pre id="json">
+{{ feedback }}
+</pre>
+</div>
+{%- endif -%}
         <br>
         <div class="ruletable">
           <table>
+            <col width="3%">
+            <col width="10%">
+            <col width="20%">
+            <col width="20%">
+            <col width="15%">
+            <col width="8%">
+            <col width="8%">
+            <col width="15%">
+            <col width="1%">
             <thead>
               <th>Number</th>
               <th>Name</th>
@@ -42,20 +59,76 @@
               <th>Action</th>
               <th>Track</th>
               <th>Target</th>
+              <th>Edit</th>
             </thead>
+              <tr class="rulebreak">
+                <td colspan="9"><b>Add Rule</b></td>
+              </tr>
+              <form action="" method="post">
+                <tr>
+                  <td><input type="text" name="position" value="1"></td>
+                  <td><input type="text" name="name"></td>
+                  <td>
+                    <select multiple type="text" name="source">
+                      {% for object in allobjects['networkobjects'] %}
+                      <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select multiple type="text" name="destination">
+                      {% for object in allobjects['networkobjects'] %}
+                      <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select multiple type="text" name="service">
+                      {% for object in allobjects['serviceobjects'] %}
+                      <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select type="text" name="action">
+                      <option value="drop">Drop</option>
+                      <option value="accept">Accept</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select type="text" name="track">
+                      <option value="none">None</option>
+                      <option value="log">Log</option>
+                      <option value="extended log">Extended</option>
+                      <option value="detailed log">Detailed</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select multiple type="text" name="install-on">
+                      {% for object in allobjects['targets'] %}
+                      <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td><input type="image" name="add" value="add" src="{{ url_for('static', filename='files/save.png') }}"></td>
+                <tr>
+              </form>
+            <tr class="rulebreak">
+              <td colspan="9"><b>Policy Rules</b></td>
+            </tr>
             <tbody id="tbody">
             {%- for rule in rulebase -%}
               {%- if rule['type'] == 'section' -%}
               <tr class="rulesection">
-                <td colspan="8">{{ rule['name'] }}</td>
+                <td colspan="9">{{ rule['name'] }}</td>
               </tr>
               {%- elif rule['type'] == 'rule' -%}
                 {%- if rule['enabled'] == true -%}
                 <tr>
-                  <td>{{ rule['number'] }}</td>
+                  <td>{{rule['number']}}</td>
                 {%- else -%}
                 <tr class="disabledrule">
-                  <td>{{ rule['number'] }} X</td>
+                  <td>{{rule['number']}} X</td>
                 {%- endif -%}
                   <td>{{ rule['name'] }}</td>
                   {%- if rule['source-negate'] == true -%}
@@ -110,6 +183,11 @@
                     {{ target[0] }}
                     {%- endif -%}
                   {%- endfor -%}
+                  </td>
+                  <td>
+                    <form action="" method="post">
+                      <input type="image" name="delete" value="{{ rule['number'] }}" src="{{ url_for('static', filename='files/delete.png') }}">
+                    </form>
                   </td>
                 </tr>
               {%- endif -%}

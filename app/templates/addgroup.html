@@ -1,7 +1,7 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v=1.3.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='cpapi.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
@@ -16,11 +16,16 @@
               <label><b>Group Name</b></label>
               <input type="text" name="groupname">
               <label><b>Color</b></label>
-              <select>
+              <select name="groupcolor">
                 <option selected value="black">black</option>
                 {%- for color in colors -%}
                 <option value="{{ color }}">{{ color }}</option>
                 {%- endfor -%}
+              </select>
+              <select multiple name="members">
+                {% for cpobject in allobjects['networkobjects'] %}
+                  <option value="{{ cpobject[0] }}">{{ cpobject[1] }} - {{ cpobject[2] }}</option>
+                {% endfor %}
               </select>
               <input type="submit" value="Submit">
             </form>

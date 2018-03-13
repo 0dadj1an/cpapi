@@ -10,12 +10,12 @@ from flask_login import logout_user
 from flask_login import LoginManager
 
 from app import app
-from cap import *
+from app.checkpoint import CheckPoint_API
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-apisession = connect.APISession()
+apisession = CheckPoint_API()
 
 
 class User(UserMixin):
@@ -35,7 +35,10 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    keepalive_pages = ['custom', 'object', 'policy', 'showobject', 'logout']
+    keepalive_pages = [
+        'custom', 'addhost', 'addnetwork', 'addgroup'
+        'policy', 'showobject', 'commands', 'logout'
+    ]
     if request.endpoint in keepalive_pages:
         if hasattr(apisession, 'ipaddress'):
             response = apisession.keepalive()
@@ -78,10 +81,11 @@ def login():
         app.logger.info('Login Success {}@{} > {}'.format(
             username, request.remote_addr, ipaddress))
         apisession.sid = response.json()['sid']
+        apisession.version = response.json()['api-server-version']
         apisession.ipaddress = ipaddress
         user = User(apisession.sid)
         login_user(user)
-        session['pre_data'] = misc.pre_data(apisession)
+        apisession.pre_data()
         return redirect('/custom')
 
 
@@ -94,29 +98,56 @@ def logout():
         return redirect('/login')
 
 
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'GET':
+        apisession.verify_obj()
+        return render_template(
+            'settings.html',
+            remote=apisession.remote_obj,
+            local=apisession.local_obj)
+    if request.method == 'POST':
+        if apisession.local_obj != 0:
+            if apisession.local_obj != apisession.remote_obj:
+                if apisession.local_obj > apisession.remote_obj:
+                    apisession.deldifobjects()
+                    apisession.getdifobjects()
+                else:
+                    apisession.getdifobjects()
+            else:
+                apisession.getallobjects()
+        else:
+            apisession.getallobjects()
+        apisession.verify_obj()
+        return render_template(
+            'settings.html',
+            remote=apisession.remote_obj,
+            local=apisession.local_obj)
+
+
 @app.route('/custom', methods=['GET', 'POST'])
 @login_required
 def custom():
     if request.method == 'GET':
         return render_template(
-            'custom.html', allcommands=session['pre_data']['all_commands'])
+            'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
         command = request.form.get('command')
         payload = request.form.get('payload')
-        response = misc.customcommand(apisession, command, payload)
+        response = apisession.customcommand(command, payload)
         if command != 'logout':
             try:
                 if response.status_code == 403 or response.status_code == 404:
                     return (render_template(
                         'custom.html',
-                        allcommands=session['pre_data']['all_commands'],
+                        allcommands=apisession.all_commands,
                         lastcomm=command,
                         payload=payload,
                         response=str(response)))
                 else:
                     return (render_template(
                         'custom.html',
-                        allcommands=session['pre_data']['all_commands'],
+                        allcommands=apisession.all_commands,
                         lastcomm=command,
                         payload=payload,
                         response=response.text))
@@ -124,7 +155,7 @@ def custom():
                 response = 'Incorrect payload format.'
                 return (render_template(
                     'custom.html',
-                    allcommands=session['pre_data']['all_commands'],
+                    allcommands=apisession.all_commands,
                     lastcomm=command,
                     payload=payload,
                     response=response))
@@ -138,8 +169,8 @@ def addhost():
     if request.method == 'GET':
         return render_template(
             'addhost.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'])
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors)
     if request.method == 'POST':
         hostdata = request.form.to_dict()
         hostpayload = {
@@ -170,13 +201,13 @@ def addhost():
                     'ip-address':
                     hostdata['natipaddress']
                 })
-        response = objects.addhost(apisession, hostpayload)
+        response = apisession.addhost(hostpayload)
         if response.status_code == 200:
             apisession.publish()
         return render_template(
             'addhost.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'],
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors,
             response=response.text)
 
 
@@ -186,8 +217,8 @@ def addnetwork():
     if request.method == 'GET':
         return render_template(
             'addnetwork.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'])
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors)
     if request.method == 'POST':
         netdata = request.form.to_dict()
         netpayload = {
@@ -219,13 +250,13 @@ def addnetwork():
                     'ip-address':
                     netdata['natipaddress']
                 })
-        response = objects.addnetwork(apisession, netpayload)
+        response = apisession.addnetwork(netpayload)
         if response.status_code == 200:
             apisession.publish()
         return render_template(
             'addnetwork.html',
-            alltargets=session['pre_data']['all_targets'],
-            colors=session['pre_data']['all_colors'],
+            alltargets=apisession.all_targets,
+            colors=apisession.all_colors,
             response=response.text)
 
 
@@ -233,17 +264,23 @@ def addnetwork():
 @login_required
 def addgroup():
     if request.method == 'GET':
-        return render_template(
-            'addgroup.html', colors=session['pre_data']['all_colors'])
+        all_objects = apisession.get_local_objs()
+        return render_template('addgroup.html',
+                               colors=apisession.all_colors,
+                               allobjects=all_objects)
     if request.method == 'POST':
+        all_objects = apisession.get_local_objs()
         if 'groupname' in request.form.keys():
             groupname = request.form.get('groupname')
-            response = objects.addgroup(apisession, groupname)
+            groupcolor = request.form.get('groupcolor')
+            members = request.form.getlist('members')
+            response = apisession.addgroup(groupname, color, members)
         if response.status_code == 200:
             apisession.publish()
         return render_template(
             'addgroup.html',
-            colors=session['pre_data']['all_colors'],
+            colors=apisession.all_colors,
+            allobjects=all_objects,
             response=response.text)
 
 
@@ -251,22 +288,52 @@ def addgroup():
 @login_required
 def policy():
     if request.method == 'GET':
-        return render_template(
-            'policy.html', alllayers=session['pre_data']['all_layers'])
+        return render_template('policy.html', alllayers=apisession.all_layers)
     if request.method == 'POST':
-        layer = request.form.get('layer')
-        response = rules.showrulebase(apisession, layer)
-        return render_template(
-            'policy.html',
-            alllayers=session['pre_data']['all_layers'],
-            rulebase=response,
-            lastlayer=layer)
+        all_objects = apisession.get_local_objs()
+        formdata = request.form.to_dict()
+        if 'delete' in formdata:
+            rulenum = formdata['delete']
+            feedback = apisession.delete_rule(rulenum)
+        if 'add' in formdata:
+            ruledata = {
+                'position': request.form.get('position'),
+                'name': request.form.get('name'),
+                'source': request.form.getlist('source'),
+                'destination': request.form.getlist('destination'),
+                'service': request.form.getlist('service'),
+                'action': request.form.get('action'),
+                'track': {
+                    'type': request.form.get('track')
+                },
+                'layer': apisession.lastlayer,
+                'install-on': request.form.getlist('install-on')
+            }
+            feedback = apisession.add_rule(ruledata)
+        if 'layer' in formdata:
+            apisession.lastlayer = formdata['layer']
+            response = apisession.showrulebase(formdata['layer'])
+            return render_template(
+                'policy.html',
+                alllayers=apisession.all_layers,
+                rulebase=response,
+                lastlayer=apisession.lastlayer,
+                allobjects=all_objects)
+        else:
+            response = apisession.showrulebase(apisession.lastlayer)
+            return render_template(
+                'policy.html',
+                alllayers=apisession.all_layers,
+                rulebase=response,
+                lastlayer=apisession.lastlayer,
+                allobjects=all_objects,
+                feedback=feedback)
 
 
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
 @login_required
 def showobject(cp_objectuid):
-    response = objects.show_object(apisession, cp_objectuid)
+    response = apisession.show_object(cp_objectuid)
     return render_template('showobject.html', cpobject=response.json())
 
 
@@ -275,19 +342,19 @@ def showobject(cp_objectuid):
 def commands():
     if request.method == 'GET':
         return render_template(
-            'commands.html', alltargets=session['pre_data']['all_targets'])
+            'commands.html', alltargets=apisession.all_targets)
     if request.method == 'POST':
         if request.form.getlist('target') == [] or request.form.get(
                 'command') == '':
             error = 'No target and/or command provided.'
             return render_template(
                 'commands.html',
-                alltargets=session['pre_data']['all_targets'],
+                alltargets=apisession.all_targets,
                 error=error)
         targets = request.form.getlist('target')
         command = request.form.get('script')
-        response = misc.runcommand(apisession, targets, command)
+        response = apisession.runcommand(targets, command)
         return render_template(
             'commands.html',
-            alltargets=session['pre_data']['all_targets'],
+            alltargets=apisession.all_targets,
             response=response)
