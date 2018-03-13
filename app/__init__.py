@@ -7,18 +7,21 @@ from logging.handlers import RotatingFileHandler
 ostype = platform.system()
 
 if ostype == 'Windows':
-    LOG_FOLDER = '{}\\'.format(os.getcwd())
+    BASEDIR = '{}\\'.format(os.getcwd())
 if ostype == 'Linux':
-    LOG_FOLDER = '/var/log/cpapi/'
+    BASEDIR = '/var/log/cpapi/'
 
 app = Flask(__name__)
-app.config['LOG_FOLDER'] = "{}cpapi.log".format(LOG_FOLDER)
+app.config['version'] = '1.4.0'
+app.config['BASEDIR'] = BASEDIR
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s - '
                               '%(filename)s:%(funcName)s:%(lineno)d - '
                               '%(message)s')
 handler = RotatingFileHandler(
-    app.config['LOG_FOLDER'], maxBytes=10000000, backupCount=10)
+    '{}cpapi.log'.format(app.config['BASEDIR']),
+    maxBytes=10000000,
+    backupCount=10)
 handler.setFormatter(formatter)
 app.logger.setLevel('DEBUG')
 app.logger.addHandler(handler)

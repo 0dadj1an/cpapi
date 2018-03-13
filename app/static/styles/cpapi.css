@@ -236,6 +236,12 @@ select {
   background-color: #EFEFF0;
 }
 
+.rulebreak td {
+  background-color: #E65785 !important;
+  color: white;
+  text-align: center;
+}
+
 .rulesection td {
   background-color: #FFF9B2 !important;
   padding: 5px;
@@ -271,6 +277,19 @@ select {
   width: 100%;
 }
 
+/* Settings */
+.settingsform {
+  background-color: #576372;
+  border: 2px solid #E65785;
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  width: 40%;
+}
+
+.settingsform p {
+  color: white;
+}
 #hostform {
   display: none;
 }
