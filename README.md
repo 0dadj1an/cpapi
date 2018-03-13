@@ -17,4 +17,6 @@ General tool for interacting with Check Point Software MGMT Web API.
 * Send custom commands based on reference guide.
 * Add objects. (host, network, group)
 * View Check Point Policy.
+* Add/Delete Check Point Rules
 * Run commands on gateways and servers.
+* Store Check Point Objects locally for faster use.
