@@ -23,9 +23,9 @@
                 {%- endfor -%}
               </select>
               <select multiple name="members">
-                {% for cpobject in allobjects['networkobjects'] %}
+                {%- for cpobject in allobjects['networkobjects'] -%}
                   <option value="{{ cpobject[0] }}">{{ cpobject[1] }} - {{ cpobject[2] }}</option>
-                {% endfor %}
+                {%- endfor -%}
               </select>
               <input type="submit" value="Submit">
             </form>

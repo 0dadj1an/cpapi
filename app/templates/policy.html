@@ -70,23 +70,23 @@
                   <td><input type="text" name="name"></td>
                   <td>
                     <select multiple type="text" name="source">
-                      {% for object in allobjects['networkobjects'] %}
+                      {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
                     <select multiple type="text" name="destination">
-                      {% for object in allobjects['networkobjects'] %}
+                      {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
                     <select multiple type="text" name="service">
-                      {% for object in allobjects['serviceobjects'] %}
+                      {%- for object in allobjects['serviceobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
@@ -105,9 +105,9 @@
                   </td>
                   <td>
                     <select multiple type="text" name="install-on">
-                      {% for object in allobjects['targets'] %}
+                      {%- for object in allobjects['targets'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td><input type="image" name="add" value="add" src="{{ url_for('static', filename='files/save.png') }}"></td>
