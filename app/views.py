@@ -107,6 +107,7 @@ def settings():
             remote=apisession.remote_obj,
             local=apisession.local_obj)
     if request.method == 'POST':
+        apisession.verify_obj()
         if apisession.local_obj != 0:
             if apisession.local_obj != apisession.remote_obj:
                 if apisession.local_obj > apisession.remote_obj:
@@ -115,10 +116,8 @@ def settings():
                 else:
                     apisession.getdifobjects()
             else:
-                apisession.getallobjects()
-        elif apisession.local_obj == apisession.remote_obj:
-            # Use js in future to disable button if objects are equal.
-            pass
+                # Use js in future to disable button if objects are equal.
+                pass
         else:
             apisession.getallobjects()
         apisession.verify_obj()
