@@ -13,7 +13,7 @@
       </div>
       <div class="content">
         <div class="customform">
-          <form action="/custom" method="post" name="command">
+          <form action="/custom" name="command" enctype="application/json">
             <label><b>Command</b></label>
             <select id="command" name="command">
               {%- for command in allcommands -%}

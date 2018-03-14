@@ -1,3 +1,4 @@
+from flask import jsonify
 from flask import render_template
 from flask import redirect
 from flask import request
@@ -124,13 +125,12 @@ def custom():
         return render_template(
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
+        info = request.form.to_dict()
         print(request.__dict__)
-        print(request.get_json())
-        response = apisession.customcommand(command, payload)
-        if command != 'logout':
-            return jsonify(response)
-        else:
-            return redirect('/logout')
+        print(info)
+        response = apisession.customcommand(info['command'], info['payload'])
+        return jsonify(response)
+
 
 
 @app.route('/addhost', methods=['GET', 'POST'])
