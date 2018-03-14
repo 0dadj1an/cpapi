@@ -126,7 +126,6 @@ def custom():
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
         info = request.get_json()
-        print('did we make it?')
         response = apisession.customcommand(info['command'], info['payload'])
         return jsonify(response)
 

@@ -1,21 +1,26 @@
-function serverPost() {
-    var url = "http://127.0.0.1:8080/custom";
+function serverPost(url, payload, element) {
+    var url = url;
     var method = "POST";
-    var postData = {};
-    var command = document.getElementById("command").value;
-    var payload = document.getElementById("payload").value;
-    postData["command"] = command;
-    postData["payload"] = payload;
     var request = new XMLHttpRequest();
     request.onload = function() {
         var status = request.status;
         var data = request.responseText;
-        document.getElementById("json").innerHTML = data;
+        element.innerText = data;
     }
-
     request.open(method, url);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.send(JSON.stringify(postData));
+    request.send(JSON.stringify(payload));
+}
+
+function customPost() {
+    var url = window.location.href;
+    var postData = {};
+    var command = document.getElementById("command").value;
+    var payload = document.getElementById("payload").value;
+    var element = document.getElementById("json")
+    postData["command"] = command;
+    postData["payload"] = payload;
+    serverPost(url, postData, element);
 }
 
 function rulesearch() {

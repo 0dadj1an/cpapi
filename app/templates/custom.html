@@ -29,10 +29,11 @@
           {%- else -%}
           <input id="payload" type="text" name="payload" value="{}">
           {%- endif -%}
-          <button onclick="serverPost()" type="submit" value="Submit">
+          <button onclick="customPost()" type="submit" value="Submit">Submit</button>
         </div>
         <br>
         <div class="customresponse">
+          <h1>Response</h1>
           <pre id="json"></pre>
         </div>
       </div>

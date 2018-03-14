@@ -186,6 +186,11 @@ select {
   width: 50%;
 }
 
+.customresponse h1 {
+  color: #E65785;
+  text-align: center;
+}
+
 .customresponse pre {
   white-space: pre-wrap;
 }
