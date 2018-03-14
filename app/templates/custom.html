@@ -29,16 +29,12 @@
           {%- else -%}
           <input id="payload" type="text" name="payload" value="{}">
           {%- endif -%}
-          <input onclick="serverPost()" type="submit" value="Submit">
+          <button onclick="serverPost()" type="submit" value="Submit">
         </div>
-{%- if response -%}
-<br>
-<div class="customresponse">
-<pre id="json">
-{{ response }}
-</pre>
-</div>
-{%- endif -%}
+        <br>
+        <div class="customresponse">
+          <pre id="json"></pre>
+        </div>
       </div>
     </body>
 </html>

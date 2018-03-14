@@ -125,12 +125,10 @@ def custom():
         return render_template(
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
-        print('post incoming')
-        # info = request.get_json()
-        # print(info)
+        info = request.get_json()
+        print('did we make it?')
         response = apisession.customcommand(info['command'], info['payload'])
         return jsonify(response)
-
 
 
 @app.route('/addhost', methods=['GET', 'POST'])

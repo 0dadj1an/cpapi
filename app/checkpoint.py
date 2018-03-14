@@ -1,3 +1,5 @@
+import ast
+
 from cpapilib.Management import Management
 
 class CheckPoint(Management):
@@ -63,4 +65,4 @@ class CheckPoint(Management):
             return 'Invalid input provided.'
         except Exception as exc:
             return exc
-        return self.api_call(command, payload)
+        return self.api_call(command, **payload)

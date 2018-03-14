@@ -13,6 +13,16 @@ input[type=submit] {
   -webkit-border-radius: 5px;
 }
 
+button {
+  background:#E65785;
+  border:0 none;
+  border-radius: 5px;
+  color: white;
+  cursor:pointer;
+  padding:5px 15px;
+  -webkit-border-radius: 5px;
+}
+
 label {
   color: white;
   left: 100%;
