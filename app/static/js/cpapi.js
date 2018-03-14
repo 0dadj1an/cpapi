@@ -1,3 +1,28 @@
+function serverPost() {
+    var url = "http://127.0.0.1:8080/custom";
+    var method = "POST";
+    var postData = new Object();
+    var command = document.getElementById("command").value;
+    var payload = document.getElementById("payload").value;
+    postData.command = command;
+    postData.payload = payload;
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        console.log(request.status);
+        console.log(request.responseText);
+    }
+
+    request.open(method, url);
+
+    request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+
+    console.log('sending');
+    console.log(postData);
+    request.send(postData)
+}
+
 function rulesearch() {
     var string = document.getElementById("searchstring").value;
     var table = document.getElementById("tbody");
@@ -51,6 +76,5 @@ function disablemethods() {
 }
 
 $(document).ready(function() {
-    console.log('do something')
     $('.selectjs').select2();
 });

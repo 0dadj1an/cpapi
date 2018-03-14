@@ -10,13 +10,12 @@ from flask_login import logout_user
 from flask_login import LoginManager
 
 from app import app
-from app.checkpoint import CheckPoint_API
+from app.checkpoint import CheckPoint
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-apisession = CheckPoint_API()
-
+apisession = ''
 
 class User(UserMixin):
     def __init__(self, user_id):
@@ -40,9 +39,9 @@ def before_request():
         'policy', 'showobject', 'commands', 'logout'
     ]
     if request.endpoint in keepalive_pages:
-        if hasattr(apisession, 'ipaddress'):
+        if apisession.sid:
             response = apisession.keepalive()
-            if response.status_code != 200:
+            if response['message'] != 'OK':
                 return redirect('/login')
         else:
             return redirect('/login')
@@ -58,35 +57,20 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     if request.method == 'POST':
-        ipaddress = request.form.get('ipaddress')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        domain = request.form.get('domain', None)
+        global apisession
+        loginform = request.form.to_dict()
         app.logger.info('Login attempt {}@{} > {}'.format(
-            username, request.remote_addr, ipaddress))
-        response = apisession.login(ipaddress, username, password, domain)
-        try:
-            if response.status_code != 200:
-                try:
-                    return render_template(
-                        'login.html', feedback=response.json()['message'])
-                except Exception as e:
-                    app.logger.error('{} - {}'.format(type(e).__name__, e))
-                    return render_template(
-                        'login.html', feedback=response.text)
-        # No connection happened so there is no status code
-        except AttributeError as e:
-            return render_template('login.html', feedback=response)
-
-        app.logger.info('Login Success {}@{} > {}'.format(
-            username, request.remote_addr, ipaddress))
-        apisession.sid = response.json()['sid']
-        apisession.version = response.json()['api-server-version']
-        apisession.ipaddress = ipaddress
-        user = User(apisession.sid)
-        login_user(user)
-        apisession.pre_data()
-        return redirect('/custom')
+            loginform['user'], request.remote_addr, loginform['ipaddress']))
+        apisession = CheckPoint(loginform['ipaddress'], loginform['user'],
+            password=loginform['password'], domain=loginform['domain'])
+        apisession.login()
+        if apisession.sid:
+            apisession.pre_data()
+            user = User(apisession.sid)
+            login_user(user)
+            return redirect('/custom')
+        else:
+            print('failed login')
 
 
 @app.route('/logout', methods=['GET'])
@@ -140,34 +124,11 @@ def custom():
         return render_template(
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
-        command = request.form.get('command')
-        payload = request.form.get('payload')
+        print(request.__dict__)
+        print(request.get_json())
         response = apisession.customcommand(command, payload)
         if command != 'logout':
-            try:
-                if response.status_code == 403 or response.status_code == 404:
-                    return (render_template(
-                        'custom.html',
-                        allcommands=apisession.all_commands,
-                        lastcomm=command,
-                        payload=payload,
-                        response=str(response)))
-                else:
-                    return (render_template(
-                        'custom.html',
-                        allcommands=apisession.all_commands,
-                        lastcomm=command,
-                        payload=payload,
-                        response=response.text))
-            except AttributeError:
-                response = 'Incorrect payload format.'
-                app.logger.warn('Incorrect payload format: {}'.format(payload))
-                return (render_template(
-                    'custom.html',
-                    allcommands=apisession.all_commands,
-                    lastcomm=command,
-                    payload=payload,
-                    response=response))
+            return jsonify(response)
         else:
             return redirect('/logout')
 
