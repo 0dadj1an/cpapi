@@ -55,6 +55,7 @@ class CheckPoint_API(object):
             self.localdb = '{}{}.db'.format(app.config['BASEDIR'],
                                             self.ipaddress)
         if not os.path.exists(self.localdb):
+            app.logger.info('Creating local DB {}'.format(self.localdb))
             localdb.createdb(self.localdb)
         self.dbobj = localdb.cplocaldb(self.localdb)
 
@@ -66,6 +67,7 @@ class CheckPoint_API(object):
         if self.sid:
             self.request_headers.update({'X-chkp-sid': self.sid})
         try:
+            app.logger.info('Command Issued: {}'.format(command))
             response = requests.post(
                 self.url + command,
                 data=json.dumps(json_payload),
@@ -137,7 +139,11 @@ class CheckPoint_API(object):
         return add_net_response
 
     def addgroup(self, groupname, color, members):
-        add_group_data = {'name': groupname, 'color': color, 'members': members}
+        add_group_data = {
+            'name': groupname,
+            'color': color,
+            'members': members
+        }
         add_group_response = self.api_call('add-group', add_group_data)
         return add_group_response
 
@@ -155,6 +161,9 @@ class CheckPoint_API(object):
             self.offset = 0
             local_limit = 500
             objs_data = {'limit': local_limit, 'offset': self.offset}
+            app.logger.info(
+                'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+                format(pluobj, self.offset, local_limit))
             objs_result = self.api_call('show-{}'.format(pluobj), objs_data)
             for obj in objs_result.json()['objects']:
                 self.dbobj.insert_object(obj)
@@ -162,6 +171,9 @@ class CheckPoint_API(object):
                 while objs_result.json()['to'] != objs_result.json()['total']:
                     self.offset += 500
                     moreobjs = {'limit': local_limit, 'offset': self.offset}
+                    app.logger.info(
+                        'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+                        format(pluobj, self.offset, local_limit))
                     objs_result = self.api_call('show-{}'.format(pluobj),
                                                 moreobjs)
                     for obj in objs_result.json()['objects']:
@@ -398,7 +410,11 @@ class CheckPoint_API(object):
                     filteredrule = self.filterpolicyrule(rule, rulebase.json())
                     rules.append(filteredrule)
                 else:
-                    section = rule['name']
+                    # Section can have no name just like rule...
+                    if 'name' in rule:
+                        section = rule['name']
+                    else:
+                        section = ''
                     rules.append({'type': 'section', 'name': section})
             if 'rulebase' in rule:
                 for subrule in rule['rulebase']:
@@ -418,6 +434,9 @@ class CheckPoint_API(object):
             'limit': self.limit,
             'use-object-dictionary': 'true'
         }
+        app.logger.info(
+            'Retrieving rules from layer:{}, offset:{}, limit:{}'.format(
+                layer_uid, self.offset, self.limit))
         show_rule_result = self.api_call('show-access-rulebase',
                                          show_rulebase_data)
 
@@ -433,6 +452,9 @@ class CheckPoint_API(object):
                 'limit': self.limit,
                 'use-object-dictionary': 'true'
             }
+            app.logger.info(
+                'Retrieving rules from layer:{}, offset:{}, limit:{}'.format(
+                    layer_uid, self.offset, self.limit))
             show_rule_result = self.api_call('show-access-rulebase',
                                              show_more_rulebase)
             self.dorulebase(rules, show_rule_result)

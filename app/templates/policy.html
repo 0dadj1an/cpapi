@@ -1,7 +1,10 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
@@ -41,8 +44,8 @@
         <br>
         <div class="ruletable">
           <table>
-            <col width="3%">
-            <col width="10%">
+            <col width="1%">
+            <col width="12%">
             <col width="20%">
             <col width="20%">
             <col width="15%">
@@ -69,34 +72,34 @@
                   <td><input type="text" name="position" value="1"></td>
                   <td><input type="text" name="name"></td>
                   <td>
-                    <select multiple type="text" name="source">
-                      {% for object in allobjects['networkobjects'] %}
+                    <select class="selectjs" multiple="multiple" type="text" name="source">
+                      {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select multiple type="text" name="destination">
-                      {% for object in allobjects['networkobjects'] %}
+                    <select class="selectjs" multiple="multiple" type="text" name="destination">
+                      {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select multiple type="text" name="service">
-                      {% for object in allobjects['serviceobjects'] %}
+                    <select class="selectjs" multiple="multiple" type="text" name="service">
+                      {%- for object in allobjects['serviceobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select type="text" name="action">
+                    <select class="selectjs" type="text" name="action">
                       <option value="drop">Drop</option>
                       <option value="accept">Accept</option>
                     </select>
                   </td>
                   <td>
-                    <select type="text" name="track">
+                    <select class="selectjs" type="text" name="track">
                       <option value="none">None</option>
                       <option value="log">Log</option>
                       <option value="extended log">Extended</option>
@@ -104,10 +107,10 @@
                     </select>
                   </td>
                   <td>
-                    <select multiple type="text" name="install-on">
-                      {% for object in allobjects['targets'] %}
+                    <select class="selectjs" multiple="multiple" name="install-on">
+                      {%- for object in allobjects['targets'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
-                      {% endfor %}
+                      {%- endfor -%}
                     </select>
                   </td>
                   <td><input type="image" name="add" value="add" src="{{ url_for('static', filename='files/save.png') }}"></td>

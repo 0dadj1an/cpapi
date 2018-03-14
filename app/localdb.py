@@ -60,7 +60,7 @@ class cplocaldb(object):
                 all_objects['serviceobjects'].append(row)
             else:
                 all_objects['networkobjects'].append(row)
-                if 'host' in row[2]:
+                if 'host' in row[2].lower():
                     # Check Point Management Object
                     pass
                 else:
