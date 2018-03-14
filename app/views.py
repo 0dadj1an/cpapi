@@ -287,7 +287,7 @@ def addgroup():
             groupname = request.form.get('groupname')
             groupcolor = request.form.get('groupcolor')
             members = request.form.getlist('members')
-            response = apisession.addgroup(groupname, color, members)
+            response = apisession.addgroup(groupname, groupcolor, members)
         if response.status_code == 200:
             apisession.publish()
         return render_template(
