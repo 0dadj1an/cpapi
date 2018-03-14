@@ -16,6 +16,8 @@ function serverPost() {
 
     request.open(method, url);
     request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    console.log('sending post from js');
+    console.log(postData);
     request.send(postData)
 }
 

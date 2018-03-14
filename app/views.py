@@ -125,9 +125,9 @@ def custom():
         return render_template(
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
-        info = request.form.to_dict()
-        print(request.__dict__)
-        print(info)
+        print('post incoming')
+        # info = request.get_json()
+        # print(info)
         response = apisession.customcommand(info['command'], info['payload'])
         return jsonify(response)
 

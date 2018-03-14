@@ -13,25 +13,23 @@
       </div>
       <div class="content">
         <div class="customform">
-          <form action="/custom" name="command" enctype="application/json">
-            <label><b>Command</b></label>
-            <select id="command" name="command">
-              {%- for command in allcommands -%}
-                {%- if command == lastcomm -%}
-                <option value="{{ command }}" selected>{{ command }}</option>
-                {%- else -%}
-                <option value="{{ command }}">{{ command }}</option>
-                {%- endif -%}
-              {%- endfor -%}
-            </select>
-            <label><b>Payload</b></label>
-            {%- if payload -%}
-            <input id="payload" type="text" name="payload" value="{{payload}}">
-            {%- else -%}
-            <input id="payload" type="text" name="payload" value="{}">
-            {%- endif -%}
-            <input onclick="serverPost()" type="submit" value="Submit">
-          </form>
+          <label><b>Command</b></label>
+          <select id="command" name="command">
+            {%- for command in allcommands -%}
+              {%- if command == lastcomm -%}
+              <option value="{{ command }}" selected>{{ command }}</option>
+              {%- else -%}
+              <option value="{{ command }}">{{ command }}</option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+          <label><b>Payload</b></label>
+          {%- if payload -%}
+          <input id="payload" type="text" name="payload" value="{{payload}}">
+          {%- else -%}
+          <input id="payload" type="text" name="payload" value="{}">
+          {%- endif -%}
+          <input onclick="serverPost()" type="submit" value="Submit">
         </div>
 {%- if response -%}
 <br>
