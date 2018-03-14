@@ -49,3 +49,8 @@ function disablemethods() {
         disableip();
     }
 }
+
+$(document).ready(function() {
+    console.log('do something')
+    $('.selectjs').select2();
+});
