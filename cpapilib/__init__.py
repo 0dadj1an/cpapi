@@ -28,7 +28,5 @@
 #               _.-'       |      BBb       '-.  '-.
 #              (___________\____.dBBBb.________)____)
 #
-from .Management import Management
-
 __version__ = '2.0.0'
 __wizard__ = 'some unicode wizard'

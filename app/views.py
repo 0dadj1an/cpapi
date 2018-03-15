@@ -12,6 +12,7 @@ from flask_login import LoginManager
 
 from app import app
 from app.checkpoint import CheckPoint
+from sqlhelp import sqlhelper
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -35,17 +36,17 @@ def page_not_found(e):
 
 @app.before_request
 def before_request():
-    keepalive_pages = [
-        'custom', 'addhost', 'addnetwork', 'addgroup'
-        'policy', 'showobject', 'commands', 'logout'
-    ]
+    keepalive_pages = ['custom', 'policy', 'showobject', 'commands', 'logout']
+    needdbconn = ['policy']
     if request.endpoint in keepalive_pages:
         if apisession.sid:
             response = apisession.keepalive()
             if response['message'] != 'OK':
                 return redirect('/login')
+            dbobj =
         else:
             return redirect('/login')
+
 
 
 @app.route('/')
