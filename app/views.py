@@ -64,14 +64,19 @@ def login():
             loginform['user'], request.remote_addr, loginform['ipaddress']))
         apisession = CheckPoint(loginform['ipaddress'], loginform['user'],
             password=loginform['password'], domain=loginform['domain'])
-        apisession.login()
+        response = apisession.login()
         if apisession.sid:
+            app.logger.info('Login success {}@{} > {}'.format(
+                loginform['user'], request.remote_addr, loginform['ipaddress']))
             apisession.pre_data()
             user = User(apisession.sid)
             login_user(user)
             return redirect('/custom')
         else:
-            print('failed login')
+            app.logger.info('Login failure {}@{} > {}'.format(
+                loginform['user'], request.remote_addr, loginform['ipaddress']))
+            app.logger.info(response)
+            return render_template('login.html', feedback=response)
 
 
 @app.route('/logout', methods=['GET'])
@@ -125,134 +130,9 @@ def custom():
         return render_template(
             'custom.html', allcommands=apisession.all_commands)
     if request.method == 'POST':
-        info = request.get_json()
-        response = apisession.customcommand(info['command'], info['payload'])
+        json = request.get_json()
+        response = apisession.customcommand(json['command'], json['payload'])
         return jsonify(response)
-
-
-@app.route('/addhost', methods=['GET', 'POST'])
-@login_required
-def addhost():
-    if request.method == 'GET':
-        return render_template(
-            'addhost.html',
-            alltargets=apisession.all_targets,
-            colors=apisession.all_colors)
-    if request.method == 'POST':
-        hostdata = request.form.to_dict()
-        hostpayload = {
-            'name': hostdata['hostname'],
-            'ipv4-address': hostdata['hostip'],
-            'color': hostdata['hostcolor']
-        }
-        if 'nat-settings' in hostdata:
-            hostpayload.update({
-                'nat-settings': {
-                    'auto-rule': True,
-                    'method': hostdata['method']
-                }
-            })
-            if 'hide-behind' in hostdata:
-                hostpayload['nat-settings'].update({
-                    'hide-behind':
-                    hostdata['hide-behind']
-                })
-            if 'install-on' in hostdata:
-                if hostdata['install-on'] != '':
-                    hostpayload['nat-settings'].update({
-                        'install-on':
-                        hostdata['install-on']
-                    })
-            if 'natipaddress' in hostdata:
-                hostpayload['nat-settings'].update({
-                    'ip-address':
-                    hostdata['natipaddress']
-                })
-        app.logger.info('Adding Check Point Host.')
-        response = apisession.addhost(hostpayload)
-        if response.status_code == 200:
-            apisession.publish()
-        return render_template(
-            'addhost.html',
-            alltargets=apisession.all_targets,
-            colors=apisession.all_colors,
-            response=response.text)
-
-
-@app.route('/addnetwork', methods=['GET', 'POST'])
-@login_required
-def addnetwork():
-    if request.method == 'GET':
-        return render_template(
-            'addnetwork.html',
-            alltargets=apisession.all_targets,
-            colors=apisession.all_colors)
-    if request.method == 'POST':
-        netdata = request.form.to_dict()
-        netpayload = {
-            'name': netdata['netname'],
-            'subnet': netdata['network'],
-            'subnet-mask': netdata['netmask'],
-            'color': netdata['netcolor']
-        }
-        if 'nat-settings' in netdata:
-            netpayload.update({
-                'nat-settings': {
-                    'auto-rule': True,
-                    'method': netdata['method']
-                }
-            })
-            if 'hide-behind' in netdata:
-                netpayload['nat-settings'].update({
-                    'hide-behind':
-                    netdata['hide-behind']
-                })
-            if 'install-on' in netdata:
-                if netdata['install-on'] != '':
-                    netpayload['nat-settings'].update({
-                        'install-on':
-                        netdata['install-on']
-                    })
-            if 'natipaddress' in netdata:
-                netpayload['nat-settings'].update({
-                    'ip-address':
-                    netdata['natipaddress']
-                })
-        app.logger.info('Adding Check Point Network.')
-        response = apisession.addnetwork(netpayload)
-        if response.status_code == 200:
-            apisession.publish()
-        return render_template(
-            'addnetwork.html',
-            alltargets=apisession.all_targets,
-            colors=apisession.all_colors,
-            response=response.text)
-
-
-@app.route('/addgroup', methods=['GET', 'POST'])
-@login_required
-def addgroup():
-    if request.method == 'GET':
-        all_objects = apisession.get_local_objs()
-        return render_template(
-            'addgroup.html',
-            colors=apisession.all_colors,
-            allobjects=all_objects)
-    if request.method == 'POST':
-        app.logger.info('Adding Check Point Group.')
-        all_objects = apisession.get_local_objs()
-        if 'groupname' in request.form.keys():
-            groupname = request.form.get('groupname')
-            groupcolor = request.form.get('groupcolor')
-            members = request.form.getlist('members')
-            response = apisession.addgroup(groupname, groupcolor, members)
-        if response.status_code == 200:
-            apisession.publish()
-        return render_template(
-            'addgroup.html',
-            colors=apisession.all_colors,
-            allobjects=all_objects,
-            response=response.text)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
@@ -322,17 +202,9 @@ def commands():
         return render_template(
             'commands.html', alltargets=apisession.all_targets)
     if request.method == 'POST':
-        if request.form.getlist('target') == [] or request.form.get(
-                'command') == '':
-            error = 'No target and/or command provided.'
-            return render_template(
-                'commands.html',
-                alltargets=apisession.all_targets,
-                error=error)
-        targets = request.form.getlist('target')
-        command = request.form.get('script')
-        app.logger.info('Running script "{}"'.format(command))
-        response = apisession.runcommand(targets, command)
+        json = request.get_json()
+        app.logger.info('Running script "{}"'.format(json['command']))
+        response = apisession.runcommand(json['targets'], json['command'])
         return render_template(
             'commands.html',
             alltargets=apisession.all_targets,

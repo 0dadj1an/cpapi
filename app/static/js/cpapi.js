@@ -1,4 +1,4 @@
-function serverPost(url, payload, element) {
+function responsePost(url, payload, element) {
     var url = url;
     var method = "POST";
     var request = new XMLHttpRequest();
@@ -20,7 +20,7 @@ function customPost() {
     var element = document.getElementById("json")
     postData["command"] = command;
     postData["payload"] = payload;
-    serverPost(url, postData, element);
+    responsePost(url, postData, element);
 }
 
 function rulesearch() {
@@ -36,42 +36,6 @@ function rulesearch() {
                 row.style.display = "none";
             }
         }
-    }
-}
-
-function onoffnat() {
-    var check = document.getElementById("method");
-    if (check.disabled == true) {
-        document.getElementById("method").disabled = false;
-        document.getElementById("gateway").disabled = false;
-        document.getElementById("target").disabled = false;
-    } else {
-        document.getElementById("method").disabled = true;
-        document.getElementById("gateway").disabled = true;
-        document.getElementById("ipv4address").disabled = true;
-        document.getElementById("target").disabled = true;
-    }
-}
-
-function enableip() {
-    document.getElementById("ipv4address").disabled = false;
-}
-
-function disableip() {
-    document.getElementById("ipv4address").disabled = true;
-}
-
-function disablemethods() {
-    var method = document.getElementById("method");
-    if (method.value == "static") {
-        document.getElementById("gateway").disabled = true;
-        document.getElementById("ipaddress").disabled = true;
-        enableip();
-    } else {
-        document.getElementById("gateway").checked = true;
-        document.getElementById("gateway").disabled = false;
-        document.getElementById("ipaddress").disabled = false;
-        disableip();
     }
 }
 

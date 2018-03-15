@@ -263,35 +263,6 @@ select {
   text-align: left;
 }
 
-.objectcontent {
-  float: left;
-  margin: 20px;
-  width: 50%;
-}
-
-.objectresponse {
-  border: 2px solid #E65785;
-  border-radius: 25px;
-  float: right;
-  margin: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 20px;
-  position: relative;
-  width: 40%;
-}
-
-.addobjectform {
-  background-color: #576372;
-  border: 2px solid #E65785;
-  border-radius: 15px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 20px;
-  position: relative;
-  width: 100%;
-}
-
 /* Settings */
 .settingsform {
   background-color: #576372;
@@ -315,11 +286,6 @@ select {
 
 #groupform {
   display: none;
-}
-
-.addobjectform h1 {
-  color: white;
-  text-decoration: underline;
 }
 
 .showobject {

@@ -24,12 +24,8 @@
             {%- endfor -%}
           </select>
           <label><b>Payload</b></label>
-          {%- if payload -%}
-          <input id="payload" type="text" name="payload" value="{{payload}}">
-          {%- else -%}
           <input id="payload" type="text" name="payload" value="{}">
-          {%- endif -%}
-          <button onclick="customPost()" type="submit" value="Submit">Submit</button>
+          <button onclick="customPost()">Submit</button>
         </div>
         <br>
         <div class="customresponse">

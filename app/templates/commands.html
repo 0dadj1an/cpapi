@@ -13,20 +13,15 @@
       </div>
       <div class="content">
         <div class="commandform">
-          <form action="" method="post" name="command">
-            <label><b>Target(s)</b></label>
-            <select class="selectjs" multiple="multiple" name="target">
-              {%- for target in alltargets -%}
-              <option value="{{ target }}">{{ target }}</option>
-              {%- endfor -%}
-            </select>
-            <label><b>Script</b></label>
-            <textarea type="text" name="script"></textarea>
-            <input type="submit" value="Submit">
-            {%- if error -%}
-            <br><span><b>{{ error }}</b></span>
-            {%- endif -%}
-          </form>
+          <label><b>Target(s)</b></label>
+          <select class="selectjs" multiple="multiple" name="target">
+            {%- for target in alltargets -%}
+            <option value="{{ target }}">{{ target }}</option>
+            {%- endfor -%}
+          </select>
+          <label><b>Script</b></label>
+          <textarea type="text" name="script"></textarea>
+          <button onclick="commandPost()">Submit</button>
         </div>
 {%- if response -%}
 {%- for task in response -%}
