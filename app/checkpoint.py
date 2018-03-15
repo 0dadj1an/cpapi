@@ -1,6 +1,7 @@
 import ast
 import base64
 import os
+import time
 
 from app import sqlhelp
 
@@ -112,7 +113,7 @@ class CheckPoint(Management):
                 complete = True
                 if response['tasks'][0]['task-details'][0]['responseMessage']:
                     base64resp = response['tasks'][0]['task-details'][0]['responseMessage']
-                    asciiresp = self.base64base64_ascii(base64resp)
+                    asciiresp = self.base64_ascii(base64resp)
                     return {
                         'target': target,
                         'status': response['tasks'][0]['status'],

@@ -14,27 +14,20 @@
       <div class="content">
         <div class="commandform">
           <label><b>Target(s)</b></label>
-          <select class="selectjs" multiple="multiple" name="target">
+          <select id="targets" class="selectjs" multiple="multiple" name="targets">
             {%- for target in alltargets -%}
             <option value="{{ target }}">{{ target }}</option>
             {%- endfor -%}
           </select>
           <label><b>Script</b></label>
-          <textarea type="text" name="script"></textarea>
+          <textarea id="script" type="text" name="script"></textarea>
           <button onclick="commandPost()">Submit</button>
         </div>
-{%- if response -%}
-{%- for task in response -%}
-<br>
-<div class="commandresponse">
-<label><b>{{ task['target'] }} &#8208;&#8208; {{ task['status'] }}</b></label>
-<pre>
-Response:
-{{ task['response'] }}
-</pre>
-</div>
-{%- endfor -%}
-{%- endif -%}
+        <br>
+        <div class="customresponse">
+          <h1>Response</h1>
+          <pre id="json"></pre>
+        </div>
       </div>
     </body>
 </html>
