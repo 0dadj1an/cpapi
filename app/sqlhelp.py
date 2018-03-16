@@ -3,12 +3,12 @@ import sqlite3
 def createdb(dbname):
     open(dbname, 'a')
     dbobj = sqlhelper(dbname)
-    dbobj.cursor.execute('CREATE TABLE hosts (uid text PRIMARY KEY, name text, ipaddress text);')
-    dbobj.cursor.execute('CREATE TABLE networks (uid text PRIMARY KEY, name text, network text, mask text);')
+    dbobj.cursor.execute('CREATE TABLE hosts (uid text PRIMARY KEY, name text, ip4 text, ip6 text);')
+    dbobj.cursor.execute('CREATE TABLE networks (uid text PRIMARY KEY, name text, net4 text, mask4 text, net6 text, mask6 text);')
     dbobj.cursor.execute('CREATE TABLE groups (uid text PRIMARY KEY, name text);')
     dbobj.cursor.execute('CREATE TABLE access_roles (uid text PRIMARY KEY, name text);')
     dbobj.cursor.execute('CREATE TABLE servers (uid text PRIMARY KEY, name text);')
-    dbobj.cursor.execute('CREATE TABLE services (uid text PRIMARY KEY, name text, protocol text);')
+    dbobj.cursor.execute('CREATE TABLE services (uid text PRIMARY KEY, name text, port text, protocol text);')
     dbobj.dbconn.commit()
 
 
@@ -22,23 +22,35 @@ class sqlhelper(object):
 
     def insert_object(self, cpobject):
         if cpobject['type'] == 'host':
-            self.insert_host(cpobject['uid'], cpobject['name'], cpobject['ipv4-address'])
+            if 'ipv4-address' in cpobject and 'ipv6-address' in cpobject:
+                self.insert_host(cpobject['uid'], cpobject['name'], cpobject['ipv4-address'], cpobject['ipv6-address'])
+            elif 'ipv4-address' in cpobject:
+                self.insert_host(cpobject['uid'], cpobject['name'], cpobject['ipv4-address'], None)
+            elif 'ipv6-address' in cpobject:
+                self.insert_host(cpobject['uid'], cpobject['name'], None, cpobject['ipv6-address'])
         elif cpobject['type'] == 'network':
-            self.insert_network(cpobject['uid'], cpobject['name'], cpobject['subnet4'], cpobject['mask-length4'])
+            if 'subnet4' in cpobject and 'subnet6' in cpobject:
+                self.insert_network(cpobject['uid'], cpobject['name'], cpobject['subnet4'], cpobject['mask-length4'], cpobject['subnet6'], cpobject['mask-length6'])
+            elif 'subnet4' in cpobject:
+                self.insert_network(cpobject['uid'], cpobject['name'], cpobject['subnet4'], cpobject['mask-length4'], None, None)
+            elif 'subnet6' in cpobject:
+                self.insert_network(cpobject['uid'], cpobject['name'], None, None, cpobject['subnet6'], cpobject['mask-length6'])
         elif cpobject['type'] == 'group':
-            self.insert_network(cpobject['uid'], cpobject['name'])
-        elif cpobject['type'] == 'service-tcp' or cpobject['type'] == 'service-udp':
-            self.insert_service(cpobject['uid'], cpobject['name'], cpobject['protocol'])
+            self.insert_group(cpobject['uid'], cpobject['name'])
+        elif cpobject['type'] == 'service-tcp':
+            self.insert_service(cpobject['uid'], cpobject['name'], cpobject['port'], 'TCP')
+        elif cpobject['type'] == 'service-udp':
+            self.insert_service(cpobject['uid'], cpobject['name'], cpobject['port'], 'UDP')
         elif cpobject['type'] == 'access-role':
             self.insert_access_role(cpobject['uid'], cpobject['name'])
         else:
             self.insert_server(cpobject['uid'], cpobject['name'])
 
-    def insert_host(self, uid, name, ipaddress):
-        self.cursor.execute('INSERT INTO hosts (uid, name, ipaddress) VALUES ("{}", "{}", "{}");'.format(uid, name, ipaddress))
+    def insert_host(self, uid, name, ip4, ip6):
+        self.cursor.execute('INSERT INTO hosts (uid, name, ip4, ip6) VALUES ("{}", "{}", "{}", "{}");'.format(uid, name, ip4, ip6))
 
-    def insert_network(self, uid, name, network, mask):
-        self.cursor.execute('INSERT INTO networks (uid, name, network, mask) VALUES ("{}", "{}", "{}", "{}");'.format(uid, name, network, mask))
+    def insert_network(self, uid, name, net4, mask4, net6, mask6):
+        self.cursor.execute('INSERT INTO networks (uid, name, net4, mask4, net6, mask6) VALUES ("{}", "{}", "{}", "{}", "{}", "{}");'.format(uid, name, net4, mask4, net6, mask6))
 
     def insert_group(self, uid, name):
         self.cursor.execute('INSERT INTO groups (uid, name) VALUES ("{}", "{}");'.format(uid, name))
@@ -49,14 +61,26 @@ class sqlhelper(object):
     def insert_server(self, uid, name):
         self.cursor.execute('INSERT INTO servers (uid, name) VALUES ("{}", "{}");'.format(uid, name))
 
-    def insert_service(self, uid, name, protocol):
-        self.cursor.execute('INSERT INTO services (uid, name, protocol) VALUES ("{}", "{}", "{}");'.format(uid, name, protocol))
+    def insert_service(self, uid, name, port, protocol):
+        self.cursor.execute('INSERT INTO services (uid, name, port, protocol) VALUES ("{}", "{}", "{}", "{}");'.format(uid, name, port, protocol))
 
     def get_hosts(self):
-        self.cursor.execute('SELECT * FROM hosts;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM hosts;')
+        hosts = self.cursor.fetchall()
+        for host in hosts:
+            response['total'] += 1
+            response['objects'].append(host[0])
+        return response
 
     def get_networks(self):
-        self.cursor.execute('SELECT * FROM networks;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM networks;')
+        networks = self.cursor.fetchall()
+        for net in networks:
+            response['total'] += 1
+            response['objects'].append(net[0])
+        return response
 
     def get_groups(self):
         self.cursor.execute('SELECT * FROM groups;')
@@ -77,3 +101,9 @@ class sqlhelper(object):
             objcount = self.cursor.fetchall()
             local_total += objcount[0][0]
         return local_total
+
+    def check_local(self, cpuid):
+        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = [table for table in self.cursor]
+        for table in tables:
+            self.cursor.execute

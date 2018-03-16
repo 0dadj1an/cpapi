@@ -67,7 +67,33 @@ class CheckPoint(Management):
                 remote_obj += response['total']
         return remote_obj
 
+    def get_remote_uids(self):
+        all_remote_uids = []
+        for single, plural in self.obj_map.items():
+            self.offset = 0
+            payload = {'limit': self.max_limit, 'offset': self.offset, 'details-level': 'uid'}
+            response = self._api_call('show-{}'.format(plural), **payload)
+            for cpobject in response['objects']:
+                all_remote_uids.append(cpobject)
+            if 'to' in response and response['total'] != 0:
+                while response['to'] != response['total']:
+                    self.offset += self.max_limit
+                    payload = {'limit': self.max_limit, 'offset': self.offset, 'details-level': 'uid'}
+                    response = self._api_call('show-{}'.format(plural), **payload)
+                    for cpobject in response['objects']:
+                        all_remote_uids.append(cpobject)
+        return all_remote_uids
+
     def full_sync(self):
+        self.sync_remote()
+        # self.delete_local()
+
+    def delete_local(self):
+        """Delete local descrepencies that no longer exist remotely."""
+        for cpobject in self.get_remote_uids():
+            self.dbobj.check_local(cpobject)
+
+    def sync_remote(self):
         """Collect objects for localdb."""
         for single, plural in self.obj_map.items():
             self.offset = 0
@@ -78,7 +104,7 @@ class CheckPoint(Management):
             response = self._api_call('show-{}'.format(plural), **payload)
             for cpobject in response['objects']:
                 self.dbobj.insert_object(cpobject)
-            if 'total' != 0:
+            if 'to' in response and response['total'] != 0:
                 while response['to'] != response['total']:
                     self.offset += self.max_limit
                     payload = {'limit': self.max_limit, 'offset': self.offset}
@@ -119,7 +145,7 @@ class CheckPoint(Management):
         for layer in response['access-layers']:
             self.all_layers.append((layer['name'], layer['uid']))
         # In case there is ever a way to have 0 layers
-        if response['total'] != 0:
+        if 'to' in response and response['total'] != 0:
             while response['to'] != response['total']:
                 self.offset += self.small_limit
                 payload = {'limit': self.small_limit, 'offset': self.offset}

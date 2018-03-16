@@ -157,17 +157,33 @@ def scripts():
                 alltargets=apisession.all_targets,
                 response=response)
 
+
 class ObjectCheck(Resource):
     def get(self):
         object_status = apisession.object_status()
         return jsonify(object_status)
 
+
 class FullSync(Resource):
     def get(self):
         apisession.full_sync()
 
+
+class ShowHosts(Resource):
+    def get(self):
+        response = apisession.dbobj.get_hosts()
+        return jsonify(response)
+
+
+class ShowNetworks(Resource):
+    def get(self):
+        response = apisession.dbobj.get_networks()
+        return jsonify(response)
+
 api.add_resource(ObjectCheck, '/objects/objectcheck')
-api.add_resource(FullSync, '/fullsync')
+api.add_resource(FullSync, '/objects/fullsync')
+api.add_resource(ShowHosts, '/objects/showhosts')
+api.add_resource(ShowNetworks, '/objects/shownetworks')
     # def put(self):
     #     data = request.get_json()
     #     if 'name' in data:

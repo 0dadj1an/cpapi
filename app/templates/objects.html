@@ -8,21 +8,30 @@
     <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
     <script src="{{url_for('static', filename='js/objects.js')}}"></script>
   </head>
-    <body onload>
+    <body onload="showobjects()">
       <div class="main-navigation">
         {%- include 'postlognav.html' -%}
       </div>
       <div class="content">
-        <div class="left-pane">
-          <div class="objectinfo">
-            <b><label>Local Objects: </label><p id="local">{{ objectstatus['local'] }}</p>
-            <label>Remote Objects: </label><p id="remote">{{ objectstatus['remote'] }}</p></b><br>
-            <button onclick="fullsync()">Full Sync</button>
-            <button onclick="deltasync()">Delta Sync</button>
+        <div class="objectinfo">
+          <label>Local Objects: </label><p id="local">{{ objectstatus['local'] }}</p>
+          <label>Remote Objects: </label><p id="remote">{{ objectstatus['remote'] }}</p>
+        </div>
+        <br>
+        <div class="objectinfo">
+          <div id="hosts">
+            <label id="hostlabel" onclick="togglehost()">Hosts</label>
+              <div id="hostcontainer" style="display:none">
+              </div>
           </div>
         </div>
-        <div class="right-pane">
-          <p>blah</p>
+        <br>
+        <div class="objectinfo">
+          <div id="networks">
+            <label id="networkslabel" onclick="togglenetworks()">Networks</label>
+              <div id="networkcontainer" style="display:none">
+              </div>
+          </div>
         </div>
       </div>
     </body>
