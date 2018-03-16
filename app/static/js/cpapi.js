@@ -23,6 +23,30 @@ function customPost() {
     responsePost(url, postData, element);
 }
 
+function commandPost() {
+    console.log('hi');
+    var url = window.location.href;
+    var method = "POST";
+    var postData = {};
+    var targets = document.getElementById("targets").value;
+    var script = document.getElementById("script").value;
+    var element = document.getElementById("json");
+    console.log(element);
+    postData["targets"] = targets;
+    postData["script"] = script;
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        console.log(data);
+        console.log(element);
+        element.innerText = data;
+    }
+    request.open(method, url);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.send(JSON.stringify(postData));
+}
+
 function rulesearch() {
     var string = document.getElementById("searchstring").value;
     var table = document.getElementById("tbody");

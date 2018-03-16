@@ -203,10 +203,10 @@ def commands():
         return render_template(
             'commands.html', alltargets=apisession.all_targets)
     if request.method == 'POST':
+        jsonresponse = {}
         json = request.get_json()
-        app.logger.info('Running script "{}"'.format(json['command']))
-        response = apisession.runcommand(json['targets'], json['command'])
-        return render_template(
-            'commands.html',
-            alltargets=apisession.all_targets,
-            response=response)
+        app.logger.info('Running script "{}"'.format(json['script']))
+        response = apisession.runcommand(json['targets'], json['script'])
+        for index, resp in enumerate(response):
+            jsonresponse.update({index: resp})
+        return jsonify(jsonresponse)

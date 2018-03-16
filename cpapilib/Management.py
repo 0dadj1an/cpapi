@@ -132,7 +132,7 @@ class Management(object):
 
     def run(self, task, **kwargs):
         """Unique to script and ips-update."""
-        return self.api_call('run-{}'.format(cptype), **kwargs)
+        return self.api_call('run-{}'.format(task), **kwargs)
 
     def unlock(self, **kwargs):
         """Unique to administrators."""
