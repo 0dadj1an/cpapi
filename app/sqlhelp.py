@@ -1,8 +1,6 @@
 import sqlite3
 
-
 def createdb(dbname):
-    tables = ['hosts', 'networks', 'groups', 'access_roles', 'servers']
     open(dbname, 'a')
     dbobj = sqlhelper(dbname)
     dbobj.cursor.execute('CREATE TABLE hosts (uid text PRIMARY KEY, name text, ipaddress text);')
@@ -10,6 +8,7 @@ def createdb(dbname):
     dbobj.cursor.execute('CREATE TABLE groups (uid text PRIMARY KEY, name text);')
     dbobj.cursor.execute('CREATE TABLE access_roles (uid text PRIMARY KEY, name text);')
     dbobj.cursor.execute('CREATE TABLE servers (uid text PRIMARY KEY, name text);')
+    dbobj.cursor.execute('CREATE TABLE services (uid text PRIMARY KEY, name text, protocol text);')
     dbobj.dbconn.commit()
 
 
@@ -19,7 +18,21 @@ class sqlhelper(object):
         self.dbconn = sqlite3.connect(database, check_same_thread=False)
         self.dbconn.row_factory = sqlite3.Row
         self.cursor = self.dbconn.cursor()
+        self.tables = ['hosts', 'networks', 'groups', 'access_roles', 'servers', 'services']
 
+    def insert_object(self, cpobject):
+        if cpobject['type'] == 'host':
+            self.insert_host(cpobject['uid'], cpobject['name'], cpobject['ipv4-address'])
+        elif cpobject['type'] == 'network':
+            self.insert_network(cpobject['uid'], cpobject['name'], cpobject['subnet4'], cpobject['mask-length4'])
+        elif cpobject['type'] == 'group':
+            self.insert_network(cpobject['uid'], cpobject['name'])
+        elif cpobject['type'] == 'service-tcp' or cpobject['type'] == 'service-udp':
+            self.insert_service(cpobject['uid'], cpobject['name'], cpobject['protocol'])
+        elif cpobject['type'] == 'access-role':
+            self.insert_access_role(cpobject['uid'], cpobject['name'])
+        else:
+            self.insert_server(cpobject['uid'], cpobject['name'])
 
     def insert_host(self, uid, name, ipaddress):
         self.cursor.execute('INSERT INTO hosts (uid, name, ipaddress) VALUES ("{}", "{}", "{}");'.format(uid, name, ipaddress))
@@ -36,6 +49,9 @@ class sqlhelper(object):
     def insert_server(self, uid, name):
         self.cursor.execute('INSERT INTO servers (uid, name) VALUES ("{}", "{}");'.format(uid, name))
 
+    def insert_service(self, uid, name, protocol):
+        self.cursor.execute('INSERT INTO services (uid, name, protocol) VALUES ("{}", "{}", "{}");'.format(uid, name, protocol))
+
     def get_hosts(self):
         self.cursor.execute('SELECT * FROM hosts;')
 
@@ -50,3 +66,14 @@ class sqlhelper(object):
 
     def get_servers(self):
         self.cursor.execute('SELECT * FROM servers;')
+
+    def get_services(self):
+        self.cursor.execute('SELECT * FROM services;')
+
+    def total_objects(self):
+        local_total = 0
+        for table in self.tables:
+            self.cursor.execute('SELECT (select count() from {}) as count;'.format(table))
+            objcount = self.cursor.fetchall()
+            local_total += objcount[0][0]
+        return local_total

@@ -10,6 +10,17 @@ from cpapilib.Management import Management
 
 class CheckPoint(Management):
 
+    obj_map = {
+        'host': 'hosts',
+        'network': 'networks',
+        'group': 'groups',
+        'simple-gateway': 'gateways-and-servers',
+        'access-role': 'access-roles',
+        'service-tcp': 'services-tcp',
+        'service-udp': 'services-udp',
+        'service-group': 'service-groups'
+    }
+
     def verify_db(self):
         """At login, ensure local object database exists.
         If not create it via sqlhelp, also create sqlite3 connection."""
@@ -40,37 +51,43 @@ class CheckPoint(Management):
         self.getalltargets()
         self.getalllayers()
 
+    def object_status(self):
+        self.local_obj = self.dbobj.total_objects()
+        self.remote_obj = self.count_remote_objects()
+        return {'local': self.local_obj, 'remote': self.remote_obj}
+
+    def count_remote_objects(self):
+        """Count objects for local comparison"""
+        # Reset count for consecutive pulls.
+        remote_obj = 0
+        for single, plural in self.obj_map.items():
+            payload = {'limit': 1}
+            response = self._api_call('show-{}'.format(plural), **payload)
+            if 'total' in response:
+                remote_obj += response['total']
+        return remote_obj
+
     def full_sync(self):
         """Collect objects for localdb."""
-        sync = ['host', 'network', 'group', 'access-role', 'gateways-and-server']
-        for cptype in sync:
+        for single, plural in self.obj_map.items():
             self.offset = 0
             payload = {'limit': self.max_limit, 'offset': self.offset}
             app.logger.info(
-                'Retrieving {}s from remote database. Offset:{}, Limit:{}'.
-                format(cptype, self.offset, self.max_limit))
-            response = self.shows('host', **payload)
-        # for sinobj, pluobj in self.obj_map.items():
-        #     self.offset = 0
-        #     local_limit = 500
-        #     objs_data = {'limit': local_limit, 'offset': self.offset}
-        #     app.logger.info(
-        #         'Retrieving {} from remote database. Offset:{}, Limit:{}'.
-        #         format(pluobj, self.offset, local_limit))
-        #     objs_result = self.api_call('show-{}'.format(pluobj), objs_data)
-        #     for obj in objs_result.json()['objects']:
-        #         self.dbobj.insert_object(obj)
-        #     if objs_result.json()['total'] != 0:
-        #         while objs_result.json()['to'] != objs_result.json()['total']:
-        #             self.offset += 500
-        #             moreobjs = {'limit': local_limit, 'offset': self.offset}
-        #             app.logger.info(
-        #                 'Retrieving {} from remote database. Offset:{}, Limit:{}'.
-        #                 format(pluobj, self.offset, local_limit))
-        #             objs_result = self.api_call('show-{}'.format(pluobj),
-        #                                         moreobjs)
-        #             for obj in objs_result.json()['objects']:
-        #                 self.dbobj.insert_object(obj)
+                'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+                format(plural, self.offset, self.max_limit))
+            response = self._api_call('show-{}'.format(plural), **payload)
+            for cpobject in response['objects']:
+                self.dbobj.insert_object(cpobject)
+            if 'total' != 0:
+                while response['to'] != response['total']:
+                    self.offset += self.max_limit
+                    payload = {'limit': self.max_limit, 'offset': self.offset}
+                    app.logger.info(
+                        'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+                        format(plural, self.offset, self.max_limit))
+                    response = self._api_call('show-{}'.format(plural), **payload)
+                    for cpobject in response['objects']:
+                        self.dbobj.insert_object(cpobject)
         self.dbobj.dbconn.commit()
 
     def getallcommands(self):

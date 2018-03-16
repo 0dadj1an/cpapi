@@ -4,6 +4,11 @@
   {%- else -%}
   <li><a href="/sandbox">Sandbox</a></li>
   {%- endif -%}
+  {%- if 'objects' in request.path -%}
+  <li><a class="active" href="/objects">Objects</a></li>
+  {%- else -%}
+  <li><a href="/objects">Objects</a></li>
+  {%- endif -%}
   {%- if 'policy' in request.path -%}
   <li><a class="active" href="/policy">Policy</a></li>
   {%- else -%}

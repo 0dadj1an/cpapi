@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
+    <script src="{{url_for('static', filename='js/objects.js')}}"></script>
+  </head>
+    <body onload>
+      <div class="main-navigation">
+        {%- include 'postlognav.html' -%}
+      </div>
+      <div class="content">
+        <div class="left-pane">
+          <div class="objectinfo">
+            <b><label>Local Objects: </label><p id="local">{{ objectstatus['local'] }}</p>
+            <label>Remote Objects: </label><p id="remote">{{ objectstatus['remote'] }}</p></b><br>
+            <button onclick="fullsync()">Full Sync</button>
+            <button onclick="deltasync()">Delta Sync</button>
+          </div>
+        </div>
+        <div class="right-pane">
+          <p>blah</p>
+        </div>
+      </div>
+    </body>
+</html>

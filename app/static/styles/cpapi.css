@@ -263,19 +263,42 @@ select {
   text-align: left;
 }
 
-/* Settings */
-.settingsform {
+/* Objects */
+.left-pane {
+  display:flex;
+  flex-direction:column;
+  height: 100%;
+  margin-bottom: 5%;
+  margin-top: 2%;
+  min-height: 254px;
+  min-width: 254px;
+  position: relative;
+  width: 25%;
+}
+
+.right-pane {
+  height: 100%;
+  margin-top: 2%;
+  margin-bottom: 5%;
+  min-height: 542px;
+  min-width: 1239px;
+  padding-left: 2.5%;
+  width: 75%;
+}
+
+.objectinfo {
   background-color: #576372;
   border: 2px solid #E65785;
   border-radius: 15px;
   padding: 20px;
   position: relative;
-  width: 40%;
+  width: 50%;
 }
 
-.settingsform p {
-  color: white;
+.objectinfo p {
+  color: #E65785;
 }
+
 #hostform {
   display: none;
 }

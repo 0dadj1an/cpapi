@@ -8,6 +8,8 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import LoginManager
+from flask_restful import Resource
+from flask_restful import Api
 
 from app import app
 from app.checkpoint import CheckPoint
@@ -15,6 +17,8 @@ from app.sqlhelp import sqlhelper
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+api = Api(app)
 
 apisession = None
 
@@ -75,7 +79,7 @@ def login():
             apisession.verify_db()
             user = User(apisession.sid)
             login_user(user)
-            return redirect('/sandbox')
+            return redirect('/objects')
         else:
             app.logger.info('Login failure {}@{} > {}'.format(
                 loginform['user'], request.remote_addr, loginform['ipaddress']))
@@ -102,6 +106,14 @@ def sandbox():
         json = request.get_json()
         response = apisession.customcommand(json['command'], json['payload'])
         return jsonify(response)
+
+
+@app.route('/objects', methods=['GET', 'POST'])
+@login_required
+def objects():
+    if request.method == 'GET':
+        object_status = apisession.object_status()
+        return render_template('objects.html', objectstatus=object_status)
 
 
 @app.route('/policy', methods=['GET', 'POST'])
@@ -145,11 +157,24 @@ def scripts():
                 alltargets=apisession.all_targets,
                 response=response)
 
+class ObjectCheck(Resource):
+    def get(self):
+        object_status = apisession.object_status()
+        return jsonify(object_status)
 
-@app.route('/objects', methods=['GET', 'POST'])
-@login_required
-def objects():
-    if request.method == 'GET':
-        return render_template('objects.html')
-    elif request.method == 'POST':
-        pass
+class FullSync(Resource):
+    def get(self):
+        apisession.full_sync()
+
+api.add_resource(ObjectCheck, '/objects/objectcheck')
+api.add_resource(FullSync, '/fullsync')
+    # def put(self):
+    #     data = request.get_json()
+    #     if 'name' in data:
+    #         MANAGERS['managers'].append(data['name'])
+    #         return MANAGERS
+    # def delete(self):
+    #     data = request.get_json()
+    #     if 'name' in data:
+    #         MANAGERS['managers'].remove(data['name'])
+    #         return MANAGERS
