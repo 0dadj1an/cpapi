@@ -180,10 +180,16 @@ class ShowNetworks(Resource):
         response = apisession.dbobj.get_networks()
         return jsonify(response)
 
+class ShowGroups(Resource):
+    def get(self):
+        response = apisession.dbobj.get_groups()
+        return jsonify(response)
+
 api.add_resource(ObjectCheck, '/objects/objectcheck')
 api.add_resource(FullSync, '/objects/fullsync')
 api.add_resource(ShowHosts, '/objects/showhosts')
 api.add_resource(ShowNetworks, '/objects/shownetworks')
+api.add_resource(ShowGroups, '/objects/showgroups')
     # def put(self):
     #     data = request.get_json()
     #     if 'name' in data:

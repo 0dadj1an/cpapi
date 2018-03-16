@@ -284,6 +284,10 @@ select {
   font-weight: bold;
 }
 
+.objectinfo legend {
+    color: #E65785;
+}
+
 .objectinfo h1 {
   color: white;
 }

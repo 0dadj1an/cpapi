@@ -83,7 +83,13 @@ class sqlhelper(object):
         return response
 
     def get_groups(self):
-        self.cursor.execute('SELECT * FROM groups;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM groups;')
+        groups = self.cursor.fetchall()
+        for group in groups:
+            response['total'] += 1
+            response['objects'].append(group[0])
+        return response
 
     def get_access_roles(self):
         self.cursor.execute('SELECT * FROM access_roles;')

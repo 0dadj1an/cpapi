@@ -19,18 +19,32 @@
         </div>
         <br>
         <div class="objectinfo">
-          <div id="hosts">
-            <label id="hostlabel" onclick="togglehost()">Hosts</label>
-              <div id="hostcontainer" style="display:none">
-              </div>
+          <div class="objectsearch">
+            <label><b>Search Objects</b></label>
+            <input id="searchstring" type="text" name="search" onchange="objectsearch()">
           </div>
-        </div>
-        <br>
-        <div class="objectinfo">
-          <div id="networks">
-            <label id="networkslabel" onclick="togglenetworks()">Networks</label>
-              <div id="networkcontainer" style="display:none">
+          <div id="hosts">
+            <fieldset id="hostlabel" onclick="togglehost()">
+              <legend><b>Hosts</b></legend>
+              <div id="hostscontainer" style="display:none">
               </div>
+            </fieldset>
+          </div>
+          <br>
+          <div id="networks">
+            <fieldset id="networkslabel" onclick="togglenetworks()">
+              <legend><b>Networks</b></legend>
+              <div id="networkscontainer" style="display:none">
+              </div>
+            </fieldset>
+          </div>
+          <br>
+          <div id="groups">
+            <fieldset id="groupslabel" onclick="togglegroups()">
+              <legend><b>Groups</b></legend>
+              <div id="groupscontainer" style="display:none">
+              </div>
+            </fieldset>
           </div>
         </div>
       </div>
