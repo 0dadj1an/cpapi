@@ -3,6 +3,7 @@ import base64
 import os
 import time
 
+from app import app
 from app import sqlhelp
 
 from cpapilib.Management import Management
@@ -14,10 +15,10 @@ class CheckPoint(Management):
         If not create it via sqlhelp, also create sqlite3 connection."""
         if self.domain:
             self.localdb = '{}{}_{}.db'.format(app.config['BASEDIR'],
-                                               self.ipaddress, self.domain)
+                                               self.host, self.domain)
         else:
             self.localdb = '{}{}.db'.format(app.config['BASEDIR'],
-                                            self.ipaddress)
+                                            self.host)
         if not os.path.exists(self.localdb):
             app.logger.info('Creating local DB {}'.format(self.localdb))
             sqlhelp.createdb(self.localdb)
@@ -38,6 +39,39 @@ class CheckPoint(Management):
         self.getallcommands()
         self.getalltargets()
         self.getalllayers()
+
+    def full_sync(self):
+        """Collect objects for localdb."""
+        sync = ['host', 'network', 'group', 'access-role', 'gateways-and-server']
+        for cptype in sync:
+            self.offset = 0
+            payload = {'limit': self.max_limit, 'offset': self.offset}
+            app.logger.info(
+                'Retrieving {}s from remote database. Offset:{}, Limit:{}'.
+                format(cptype, self.offset, self.max_limit))
+            response = self.shows('host', **payload)
+        # for sinobj, pluobj in self.obj_map.items():
+        #     self.offset = 0
+        #     local_limit = 500
+        #     objs_data = {'limit': local_limit, 'offset': self.offset}
+        #     app.logger.info(
+        #         'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+        #         format(pluobj, self.offset, local_limit))
+        #     objs_result = self.api_call('show-{}'.format(pluobj), objs_data)
+        #     for obj in objs_result.json()['objects']:
+        #         self.dbobj.insert_object(obj)
+        #     if objs_result.json()['total'] != 0:
+        #         while objs_result.json()['to'] != objs_result.json()['total']:
+        #             self.offset += 500
+        #             moreobjs = {'limit': local_limit, 'offset': self.offset}
+        #             app.logger.info(
+        #                 'Retrieving {} from remote database. Offset:{}, Limit:{}'.
+        #                 format(pluobj, self.offset, local_limit))
+        #             objs_result = self.api_call('show-{}'.format(pluobj),
+        #                                         moreobjs)
+        #             for obj in objs_result.json()['objects']:
+        #                 self.dbobj.insert_object(obj)
+        self.dbobj.dbconn.commit()
 
     def getallcommands(self):
         """Get all available commands for custom command page."""
@@ -84,7 +118,7 @@ class CheckPoint(Management):
             return 'Invalid input provided.'
         except Exception as exc:
             return exc
-        return self.api_call(command, **payload)
+        return self._api_call(command, **payload)
 
     def runcommand(self, targets, script):
         """Issue command against Check Point targets, verify task is complete

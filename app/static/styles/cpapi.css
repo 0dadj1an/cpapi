@@ -165,7 +165,7 @@ select {
   width: 50%;
 }
 
-.customform {
+.sandboxform {
   background-color: #576372;
   border-radius: 25px;
   border: 2px solid #E65785;
@@ -176,7 +176,7 @@ select {
   width: 50%;
 }
 
-.customresponse {
+.sandboxresponse {
   border: 2px solid #E65785;
   border-radius: 25px;
   padding: 20px;
@@ -186,12 +186,12 @@ select {
   width: 50%;
 }
 
-.customresponse h1 {
+.sandboxresponse h1 {
   color: #E65785;
   text-align: center;
 }
 
-.customresponse pre {
+.sandboxresponse pre {
   white-space: pre-wrap;
 }
 
@@ -320,7 +320,7 @@ select {
   opacity:0.5;
 }
 
-.commandform {
+.scriptform {
   background-color: #576372;
   border: 2px solid #E65785;
   border-radius: 25px;
@@ -331,7 +331,7 @@ select {
   width: 75%;
 }
 
-.commandform select {
+.scriptform select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -341,7 +341,7 @@ select {
   height: 150px;
 }
 
-.commandform textarea {
+.scriptform textarea {
   border: 1px solid #ccc;
   box-sizing: border-box;
   display: inline-block;
@@ -352,7 +352,7 @@ select {
   width: 100%;
 }
 
-.commandresponse {
+.scriptresponse {
   border: 2px solid #E65785;
   border-radius: 25px;
   margin-left: auto;
@@ -360,4 +360,8 @@ select {
   padding: 20px;
   position: relative;
   width: 50%;
+}
+
+.scriptresponse h1 {
+  color: #E65785;
 }

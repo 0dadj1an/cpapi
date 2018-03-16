@@ -1,47 +1,25 @@
-function responsePost(url, payload, element) {
-    var url = url;
-    var method = "POST";
-    var request = new XMLHttpRequest();
-    request.onload = function() {
-        var status = request.status;
-        var data = request.responseText;
-        element.innerText = data;
-    }
-    request.open(method, url);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.send(JSON.stringify(payload));
-}
-
-function customPost() {
+function sandboxPost() {
     var url = window.location.href;
+    var method = "POST";
     var postData = {};
     var command = document.getElementById("command").value;
     var payload = document.getElementById("payload").value;
-    var element = document.getElementById("json")
-    postData["command"] = command;
-    postData["payload"] = payload;
-    responsePost(url, postData, element);
-}
-
-function commandPost() {
-    console.log('hi');
-    var url = window.location.href;
-    var method = "POST";
-    var postData = {};
-    var targets = document.getElementById("targets").value;
-    var script = document.getElementById("script").value;
-    var element = document.getElementById("json");
-    console.log(element);
-    postData["targets"] = targets;
-    postData["script"] = script;
+    var element = document.getElementById("sandboxresponse");
     var request = new XMLHttpRequest();
     request.onload = function() {
         var status = request.status;
         var data = request.responseText;
-        console.log(data);
-        console.log(element);
-        element.innerText = data;
+        var header = document.createElement("h1");
+        var headerinfo = document.createTextNode("Response");
+        var response = document.createElement("pre");
+        var responsedata = document.createTextNode(data);
+        header.appendChild(headerinfo);
+        response.appendChild(responsedata);
+        element.appendChild(header);
+        element.appendChild(response);
     }
+    postData["command"] = command;
+    postData["payload"] = payload;
     request.open(method, url);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(postData));

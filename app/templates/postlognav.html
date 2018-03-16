@@ -1,23 +1,18 @@
 <ul>
-  {%- if 'custom' in request.path -%}
-  <li><a class="active" href="/custom">Custom</a></li>
+  {%- if 'sandbox' in request.path -%}
+  <li><a class="active" href="/sandbox">Sandbox</a></li>
   {%- else -%}
-  <li><a href="/custom">Custom</a></li>
+  <li><a href="/sandbox">Sandbox</a></li>
   {%- endif -%}
   {%- if 'policy' in request.path -%}
   <li><a class="active" href="/policy">Policy</a></li>
   {%- else -%}
   <li><a href="/policy">Policy</a></li>
   {%- endif -%}
-  {%- if 'commands' in request.path -%}
-  <li><a class="active" href="/commands">Commands</a></li>
+  {%- if 'scripts' in request.path -%}
+  <li><a class="active" href="/scripts">Scripts</a></li>
   {%- else -%}
-  <li><a href="/commands">Commands</a></li>
-  {%- endif -%}
-  {%- if 'settings' in request.path -%}
-  <li><a class="active" href="/settings">Settings</a></li>
-  {%- else -%}
-  <li><a href="/settings">Settings</a></li>
+  <li><a href="/scripts">Scripts</a></li>
   {%- endif -%}
   <li><a href="/logout">Logout</a></li>
 </ul>

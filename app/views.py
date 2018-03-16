@@ -3,7 +3,6 @@ from flask import render_template
 from flask import redirect
 from flask import request
 from flask import session
-
 from flask_login import UserMixin
 from flask_login import login_required
 from flask_login import login_user
@@ -12,12 +11,13 @@ from flask_login import LoginManager
 
 from app import app
 from app.checkpoint import CheckPoint
-from sqlhelp import sqlhelper
+from app.sqlhelp import sqlhelper
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-apisession = ''
+apisession = None
+
 
 class User(UserMixin):
     def __init__(self, user_id):
@@ -34,19 +34,21 @@ def page_not_found(e):
     return redirect('/login')
 
 
+@app.errorhandler(500)
+def internal_error(e):
+    pass
+
+
 @app.before_request
 def before_request():
-    keepalive_pages = ['custom', 'policy', 'showobject', 'commands', 'logout']
-    needdbconn = ['policy']
+    keepalive_pages = ['sandbox', 'policy', 'showobject', 'scripts', 'logout']
     if request.endpoint in keepalive_pages:
         if apisession.sid:
             response = apisession.keepalive()
             if response['message'] != 'OK':
                 return redirect('/login')
-            dbobj =
         else:
             return redirect('/login')
-
 
 
 @app.route('/')
@@ -58,7 +60,7 @@ def index():
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    if request.method == 'POST':
+    elif request.method == 'POST':
         global apisession
         loginform = request.form.to_dict()
         app.logger.info('Login attempt {}@{} > {}'.format(
@@ -70,9 +72,10 @@ def login():
             app.logger.info('Login success {}@{} > {}'.format(
                 loginform['user'], request.remote_addr, loginform['ipaddress']))
             apisession.pre_data()
+            apisession.verify_db()
             user = User(apisession.sid)
             login_user(user)
-            return redirect('/custom')
+            return redirect('/sandbox')
         else:
             app.logger.info('Login failure {}@{} > {}'.format(
                 loginform['user'], request.remote_addr, loginform['ipaddress']))
@@ -89,48 +92,13 @@ def logout():
         return redirect('/login')
 
 
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    if request.method == 'GET':
-        apisession.verify_obj()
-        return render_template(
-            'settings.html',
-            remote=apisession.remote_obj,
-            local=apisession.local_obj)
-    if request.method == 'POST':
-        apisession.verify_obj()
-        if apisession.local_obj != 0:
-            if apisession.local_obj != apisession.remote_obj:
-                if apisession.local_obj > apisession.remote_obj:
-                    app.logger.info(
-                        'Deleting local objects that are inconsistent.')
-                    apisession.deldifobjects()
-                    apisession.getdifobjects()
-                else:
-                    app.logger.info(
-                        'Retreiving remote objects that are inconsistent.')
-                    apisession.getdifobjects()
-            else:
-                # Use js in future to disable button if objects are equal.
-                app.logger.warn('Equal Retrieve attempted.')
-                pass
-        else:
-            app.logger.info('Initial retrieve of objects.')
-            apisession.getallobjects()
-        apisession.verify_obj()
-        return render_template(
-            'settings.html',
-            remote=apisession.remote_obj,
-            local=apisession.local_obj)
-
-
-@app.route('/custom', methods=['GET', 'POST'])
+@app.route('/sandbox', methods=['GET', 'POST'])
 @login_required
-def custom():
+def sandbox():
     if request.method == 'GET':
         return render_template(
-            'custom.html', allcommands=apisession.all_commands)
-    if request.method == 'POST':
+            'sandbox.html', allcommands=apisession.all_commands)
+    elif request.method == 'POST':
         json = request.get_json()
         response = apisession.customcommand(json['command'], json['payload'])
         return jsonify(response)
@@ -141,72 +109,47 @@ def custom():
 def policy():
     if request.method == 'GET':
         return render_template('policy.html', alllayers=apisession.all_layers)
-    if request.method == 'POST':
-        app.logger.info('Retrieving local objects for policy view.')
-        all_objects = apisession.get_local_objs()
-        formdata = request.form.to_dict()
-        if 'delete' in formdata:
-            rulenum = formdata['delete']
-            app.logger.info('Deleting rule number {} from {}'.format(
-                rulenum, apisession.lastlayer))
-            feedback = apisession.delete_rule(rulenum)
-        if 'add' in formdata:
-            ruledata = {
-                'position': request.form.get('position'),
-                'name': request.form.get('name'),
-                'source': request.form.getlist('source'),
-                'destination': request.form.getlist('destination'),
-                'service': request.form.getlist('service'),
-                'action': request.form.get('action'),
-                'track': {
-                    'type': request.form.get('track')
-                },
-                'layer': apisession.lastlayer,
-                'install-on': request.form.getlist('install-on')
-            }
-            app.logger.info('Adding rule number {} to {}'.format(
-                ruledata['position'], ruledata['layer']))
-            feedback = apisession.add_rule(ruledata)
-        if 'layer' in formdata:
-            apisession.lastlayer = formdata['layer']
-            response = apisession.showrulebase(formdata['layer'])
-            return render_template(
-                'policy.html',
-                alllayers=apisession.all_layers,
-                rulebase=response,
-                lastlayer=apisession.lastlayer,
-                allobjects=all_objects)
-        else:
-            app.logger.info('Retrieving rulebase after modification.')
-            response = apisession.showrulebase(apisession.lastlayer)
-            return render_template(
-                'policy.html',
-                alllayers=apisession.all_layers,
-                rulebase=response,
-                lastlayer=apisession.lastlayer,
-                allobjects=all_objects,
-                feedback=feedback)
+    elif request.method == 'POST':
+        pass
 
 
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
 @login_required
 def showobject(cp_objectuid):
-    app.logger.info('Displaying Check Point Object {}.'.format(cp_objectuid))
+    app.logger.info('Displaying Check Point Object: {}.'.format(cp_objectuid))
     response = apisession.show_object(cp_objectuid)
-    return render_template('showobject.html', cpobject=response.json())
+    return render_template('showobject.html', cpobject=response)
 
 
-@app.route('/commands', methods=['GET', 'POST'])
+@app.route('/scripts', methods=['GET', 'POST'])
 @login_required
-def commands():
+def scripts():
     if request.method == 'GET':
         return render_template(
-            'commands.html', alltargets=apisession.all_targets)
-    if request.method == 'POST':
-        jsonresponse = {}
-        json = request.get_json()
-        app.logger.info('Running script "{}"'.format(json['script']))
-        response = apisession.runcommand(json['targets'], json['script'])
-        for index, resp in enumerate(response):
-            jsonresponse.update({index: resp})
-        return jsonify(jsonresponse)
+            'scripts.html', alltargets=apisession.all_targets)
+    elif request.method == 'POST':
+        if request.form.getlist('targets') == [] or request.form.get(
+                'script') == '':
+            error = 'No target and/or command provided.'
+            return render_template(
+                'scripts.html',
+                alltargets=apisession.all_targets,
+                error=error)
+        else:
+            targets = request.form.getlist('targets')
+            command = request.form.get('script')
+            app.logger.info('Running script "{}"'.format(command))
+            response = apisession.runcommand(targets, command)
+            return render_template(
+                'scripts.html',
+                alltargets=apisession.all_targets,
+                response=response)
+
+
+@app.route('/objects', methods=['GET', 'POST'])
+@login_required
+def objects():
+    if request.method == 'GET':
+        return render_template('objects.html')
+    elif request.method == 'POST':
+        pass

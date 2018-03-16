@@ -2,9 +2,8 @@ import getpass
 import json
 import requests
 
-import cpapilib
-
 from app import app
+
 
 class Management(object):
 
@@ -34,7 +33,7 @@ class Management(object):
         self.verify = verify
         self.request_headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'CPAPI v{}'.format(cpapilib.__version__)
+            'User-Agent': 'CPAPI v{}'.format(app.config['version'])
         }
 
         if not verify:
@@ -45,7 +44,7 @@ class Management(object):
         """Standard URL for all Management API Calls."""
         return 'https://{}:{}/web_api/'.format(self.host, self.port)
 
-    def api_call(self, command, **kwargs):
+    def _api_call(self, command, **kwargs):
         """Backbone method for sending POST to Check Point."""
         if self.sid:
             self.request_headers.update({'X-chkp-sid': self.sid})
@@ -80,26 +79,26 @@ class Management(object):
         }
         if self.domain:
             payload.update({'domain': self.domain})
-        response = self.api_call('login', **payload)
+        response = self._api_call('login', **payload)
         if 'sid' in response:
             self.sid = response['sid']
             self.api_version = response['api-server-version']
         return response
 
     def publish(self, **kwargs):
-        return self.api_call('publish', **kwargs)
+        return self._api_call('publish', **kwargs)
 
     def discard(self, **kwargs):
-        return self.api_call('discard', **kwargs)
+        return self._api_call('discard', **kwargs)
 
     def logout(self, **kwargs):
-        return self.api_call('logout', **kwargs)
+        return self._api_call('logout', **kwargs)
 
     def keepalive(self, **kwargs):
-        return self.api_call('keepalive', **kwargs)
+        return self._api_call('keepalive', **kwargs)
 
     def export(self, **kwargs):
-        return self.api_call('export', **kwargs)
+        return self._api_call('export', **kwargs)
 
     def process(self, action, **kwargs):
         return getattr(self, action, **kwargs)
@@ -108,44 +107,31 @@ class Management(object):
         return getattr(self, action)(cptype, **kwargs)
 
     def add(self, cptype, **kwargs):
-        # self.verify_nameuid(kwargs)
-        return self.api_call('add-{}'.format(cptype), **kwargs)
+        return self._api_call('add-{}'.format(cptype), **kwargs)
 
     def set(self, cptype, **kwargs):
-        # self.verify_nameuid(kwargs)
-        return self.api_call('set-{}'.format(cptype), **kwargs)
+        return self._api_call('set-{}'.format(cptype), **kwargs)
 
     def delete(self, cptype, **kwargs):
-        # self.verify_nameuid(kwargs)
-        return self.api_call('delete-{}'.format(cptype), **kwargs)
+        return self._api_call('delete-{}'.format(cptype), **kwargs)
 
     def show(self, cptype, **kwargs):
-        # self.verify_nameuid(kwargs)
-        return self.api_call('show-{}'.format(cptype), **kwargs)
+        return self._api_call('show-{}'.format(cptype), **kwargs)
 
     def shows(self, cptype, **kwargs):
-        return self.api_call('show-{}s'.format(cptype), **kwargs)
+        return self._api_call('show-{}s'.format(cptype), **kwargs)
 
     def policy(self, action, **kwargs):
         """Unique to policy verification and installation."""
-        return self.api_call('{}-policy'.format(action), **kwargs)
+        return self._api_call('{}-policy'.format(action), **kwargs)
 
     def run(self, task, **kwargs):
         """Unique to script and ips-update."""
-        return self.api_call('run-{}'.format(task), **kwargs)
+        return self._api_call('run-{}'.format(task), **kwargs)
 
     def unlock(self, **kwargs):
         """Unique to administrators."""
-        # self.verify_nameuid(**kwargs)
-        return self.api_call('unlock-administrator', **kwargs)
+        return self._api_call('unlock-administrator', **kwargs)
 
     def whereused(self, **kwargs):
-        # self.verify_nameuid(**kwargs)
-        return self.api_call('where-used', **kwargs)
-
-    # def verify_nameuid(self, payload):
-    #     """Check for name/uid on commands it is required."""
-    #     if not any(key in payload for key in ('name', 'uid')):
-    #         self.discard()
-    #         self.logout()
-    #         raise NameUIDException('Name or UID required for command.')
+        return self._api_call('where-used', **kwargs)
