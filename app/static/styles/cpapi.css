@@ -304,29 +304,6 @@ select {
   display: none;
 }
 
-.showobject {
-  background-color: #576372;
-  border: 2px solid #E65785;
-  border-radius: 15px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 20px;
-  position: relative;
-  width: 50%;
-}
-
-.showobject h1 {
-  color: #E65785;
-}
-
-.showobject p {
-  color: white;
-}
-
-.showobject a {
-  color: #E65785;
-}
-
 .disabledrule {
   opacity: 0.5;
 }

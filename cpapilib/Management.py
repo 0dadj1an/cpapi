@@ -49,7 +49,7 @@ class Management(object):
         if self.sid:
             self.request_headers.update({'X-chkp-sid': self.sid})
         try:
-            app.logger.info('Command Issued: {}'.format(command))
+            app.logger.debug('Command Issued: {}'.format(command))
             response = requests.post(
                 self.url + command,
                 data=json.dumps(kwargs),
@@ -92,7 +92,10 @@ class Management(object):
         return self._api_call('discard', **kwargs)
 
     def logout(self, **kwargs):
-        return self._api_call('logout', **kwargs)
+        response = self._api_call('logout', **kwargs)
+        if response['message'] == 'OK':
+            self.sid = None
+        return response
 
     def keepalive(self, **kwargs):
         return self._api_call('keepalive', **kwargs)

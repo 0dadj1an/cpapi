@@ -22,7 +22,17 @@
           <div class="objectsearch">
             <label><b>Search Objects</b></label>
             <input id="searchstring" type="text" name="search" onchange="objectsearch()">
+            <div id="filtered">
+              <fieldset id="filterlabel">
+                <legend><b>Results</b></legend>
+                <div id="filtercontainer">
+                </div>
+              </fieldset>
+            </div>
           </div>
+        </div>
+        <br>
+        <div class="objectinfo">
           <div id="hosts">
             <fieldset id="hostlabel" onclick="togglehost()">
               <legend><b>Hosts</b></legend>
@@ -43,6 +53,30 @@
             <fieldset id="groupslabel" onclick="togglegroups()">
               <legend><b>Groups</b></legend>
               <div id="groupscontainer" style="display:none">
+              </div>
+            </fieldset>
+          </div>
+          <br>
+          <div id="accessroles">
+            <fieldset id="accessroleslabel" onclick="toggleaccessroles()">
+              <legend><b>Access-Roles</b></legend>
+              <div id="accessrolescontainer" style="display:none">
+              </div>
+            </fieldset>
+          </div>
+          <br>
+          <div id="servers">
+            <fieldset id="serverslabel" onclick="toggleservers()">
+              <legend><b>Servers</b></legend>
+              <div id="serverscontainer" style="display:none">
+              </div>
+            </fieldset>
+          </div>
+          <br>
+          <div id="services">
+            <fieldset id="serviceslabel" onclick="toggleservices()">
+              <legend><b>Services</b></legend>
+              <div id="servicescontainer" style="display:none">
               </div>
             </fieldset>
           </div>

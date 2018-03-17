@@ -41,6 +41,8 @@ class sqlhelper(object):
             self.insert_service(cpobject['uid'], cpobject['name'], cpobject['port'], 'TCP')
         elif cpobject['type'] == 'service-udp':
             self.insert_service(cpobject['uid'], cpobject['name'], cpobject['port'], 'UDP')
+        elif cpobject['type'] == 'service-group':
+            self.insert_service(cpobject['uid'], cpobject['name'], None, 'GROUP')
         elif cpobject['type'] == 'access-role':
             self.insert_access_role(cpobject['uid'], cpobject['name'])
         else:
@@ -63,6 +65,13 @@ class sqlhelper(object):
 
     def insert_service(self, uid, name, port, protocol):
         self.cursor.execute('INSERT INTO services (uid, name, port, protocol) VALUES ("{}", "{}", "{}", "{}");'.format(uid, name, port, protocol))
+
+    def delete_object(self, uid):
+        all_local_uids = []
+        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = [table for table in self.cursor]
+        for table in tables:
+            self.cursor.execute('DELETE FROM {} WHERE uid="{}"'.format(table[0], uid))
 
     def get_hosts(self):
         response = {'objects': [], 'total': 0}
@@ -92,13 +101,31 @@ class sqlhelper(object):
         return response
 
     def get_access_roles(self):
-        self.cursor.execute('SELECT * FROM access_roles;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM access_roles;')
+        access_roles = self.cursor.fetchall()
+        for role in access_roles:
+            response['total'] += 1
+            response['objects'].append(role[0])
+        return response
 
     def get_servers(self):
-        self.cursor.execute('SELECT * FROM servers;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM servers;')
+        servers = self.cursor.fetchall()
+        for server in servers:
+            response['total'] += 1
+            response['objects'].append(server[0])
+        return response
 
     def get_services(self):
-        self.cursor.execute('SELECT * FROM services;')
+        response = {'objects': [], 'total': 0}
+        self.cursor.execute('SELECT name FROM services;')
+        services = self.cursor.fetchall()
+        for service in services:
+            response['total'] += 1
+            response['objects'].append(service[0])
+        return response
 
     def total_objects(self):
         local_total = 0
@@ -108,8 +135,13 @@ class sqlhelper(object):
             local_total += objcount[0][0]
         return local_total
 
-    def check_local(self, cpuid):
+    def get_local_uids(self):
+        all_local_uids = []
         self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         tables = [table for table in self.cursor]
         for table in tables:
-            self.cursor.execute
+            self.cursor.execute('SELECT uid FROM {}'.format(table[0]))
+            tableuids = self.cursor.fetchall()
+            for uid in tableuids:
+                all_local_uids.append(uid[0])
+        return all_local_uids

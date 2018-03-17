@@ -23,7 +23,16 @@ setInterval(function() {
 }, 10000);
 
 function deltasync() {
-    console.log('deltasync');
+    var url = window.location + "/deltasync";
+    var method = "GET";
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        showobjects();
+    }
+    request.open(method, url);
+    request.send();
 }
 
 function fullsync() {
@@ -40,17 +49,44 @@ function fullsync() {
 }
 
 function objectsearch() {
-    console.log('search')
+    var outpute = document.getElementById("filtercontainer");
+    while (outpute.firstChild) {
+      outpute.removeChild(outpute.firstChild);
+    }
+    var string = document.getElementById("searchstring").value;
+    if (string == '') {
+        return;
+    }
+    var para = document.getElementsByTagName("p");
+    var curp = "currentpara";
+    for (var i = 0; i < para.length; i++) {
+        curp = para[i]
+        var data = curp.innerText;
+        if (data.includes(string)) {
+            var br = document.createElement("br");
+            var label = document.createElement("label");
+            var match = document.createTextNode(data);
+            label.appendChild(match);
+            outpute.appendChild(label);
+            outpute.appendChild(br)
+        }
+    }
 }
 
 function showobjects() {
     showhosts();
     shownetworks();
     showgroups();
+    showaccessroles();
+    showservers();
+    showservices();
 }
 
 function showhosts() {
     var container = document.getElementById("hostscontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
     var url = window.location + "/showhosts";
     var method = "GET";
     var request = new XMLHttpRequest();
@@ -60,7 +96,7 @@ function showhosts() {
         var resp = JSON.parse(data);
         var i = 0;
         var obj = 'hostname'
-        for (i = 0, obj; obj = resp.objects[i]; i++) {
+        for (i = 0; obj = resp.objects[i]; i++) {
             var p = document.createElement("p");
             var info = document.createTextNode(obj);
             p.appendChild(info);
@@ -82,6 +118,9 @@ function togglehost() {
 
 function shownetworks() {
     var container = document.getElementById("networkscontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
     var url = window.location + "/shownetworks";
     var method = "GET";
     var request = new XMLHttpRequest();
@@ -91,7 +130,7 @@ function shownetworks() {
         var resp = JSON.parse(data);
         var i = 0;
         var obj = 'netname'
-        for (i = 0, obj; obj = resp.objects[i]; i++) {
+        for (i = 0; obj = resp.objects[i]; i++) {
             var p = document.createElement("p");
             var info = document.createTextNode(obj);
             p.appendChild(info);
@@ -113,6 +152,9 @@ function togglenetworks() {
 
 function showgroups() {
     var container = document.getElementById("groupscontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
     var url = window.location + "/showgroups";
     var method = "GET";
     var request = new XMLHttpRequest();
@@ -122,7 +164,7 @@ function showgroups() {
         var resp = JSON.parse(data);
         var i = 0;
         var obj = 'groupname'
-        for (i = 0, obj; obj = resp.objects[i]; i++) {
+        for (i = 0; obj = resp.objects[i]; i++) {
             var p = document.createElement("p");
             var info = document.createTextNode(obj);
             p.appendChild(info);
@@ -135,6 +177,108 @@ function showgroups() {
 
 function togglegroups() {
     var container = document.getElementById("groupscontainer");
+    if (container.style.display != "none") {
+        container.style.display = "none";
+    } else {
+        container.style.display = "block";
+    }
+}
+
+function showaccessroles() {
+    var container = document.getElementById("accessrolescontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    var url = window.location + "/showaccessroles";
+    var method = "GET";
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        var resp = JSON.parse(data);
+        var i = 0;
+        var obj = 'accessrolename'
+        for (i = 0; obj = resp.objects[i]; i++) {
+            var p = document.createElement("p");
+            var info = document.createTextNode(obj);
+            p.appendChild(info);
+            container.appendChild(p);
+        }
+    }
+    request.open(method, url);
+    request.send();
+}
+
+function toggleaccessroles() {
+    var container = document.getElementById("accessrolescontainer");
+    if (container.style.display != "none") {
+        container.style.display = "none";
+    } else {
+        container.style.display = "block";
+    }
+}
+
+function showservers() {
+    var container = document.getElementById("serverscontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    var url = window.location + "/showservers";
+    var method = "GET";
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        var resp = JSON.parse(data);
+        var i = 0;
+        var obj = 'servername'
+        for (i = 0; obj = resp.objects[i]; i++) {
+            var p = document.createElement("p");
+            var info = document.createTextNode(obj);
+            p.appendChild(info);
+            container.appendChild(p);
+        }
+    }
+    request.open(method, url);
+    request.send();
+}
+
+function toggleservers() {
+    var container = document.getElementById("serverscontainer");
+    if (container.style.display != "none") {
+        container.style.display = "none";
+    } else {
+        container.style.display = "block";
+    }
+}
+
+function showservices() {
+    var container = document.getElementById("servicescontainer");
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    var url = window.location + "/showservices";
+    var method = "GET";
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        var resp = JSON.parse(data);
+        var i = 0;
+        var obj = 'servicename'
+        for (i = 0; obj = resp.objects[i]; i++) {
+            var p = document.createElement("p");
+            var info = document.createTextNode(obj);
+            p.appendChild(info);
+            container.appendChild(p);
+        }
+    }
+    request.open(method, url);
+    request.send();
+}
+
+function toggleservices() {
+    var container = document.getElementById("servicescontainer");
     if (container.style.display != "none") {
         container.style.display = "none";
     } else {

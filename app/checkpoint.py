@@ -33,6 +33,7 @@ class CheckPoint(Management):
         if not os.path.exists(self.localdb):
             app.logger.info('Creating local DB {}'.format(self.localdb))
             sqlhelp.createdb(self.localdb)
+        app.logger.info('Connecting to local database {}'.format(self.localdb))
         self.dbobj = sqlhelp.sqlhelper(self.localdb)
 
     def pre_data(self):
@@ -47,6 +48,7 @@ class CheckPoint(Management):
             'magenta', 'purple', 'slate blue', 'violet red', 'navy blue',
             'olive', 'orange', 'red', 'sienna', 'yellow'
         ]
+        app.logger.info('Retrieving pre-load data.')
         self.getallcommands()
         self.getalltargets()
         self.getalllayers()
@@ -54,6 +56,7 @@ class CheckPoint(Management):
     def object_status(self):
         self.local_obj = self.dbobj.total_objects()
         self.remote_obj = self.count_remote_objects()
+        app.logger.info('Object count - Local: {} // Remote: {}'.format(self.local_obj, self.remote_obj))
         return {'local': self.local_obj, 'remote': self.remote_obj}
 
     def count_remote_objects(self):
@@ -85,15 +88,6 @@ class CheckPoint(Management):
         return all_remote_uids
 
     def full_sync(self):
-        self.sync_remote()
-        # self.delete_local()
-
-    def delete_local(self):
-        """Delete local descrepencies that no longer exist remotely."""
-        for cpobject in self.get_remote_uids():
-            self.dbobj.check_local(cpobject)
-
-    def sync_remote(self):
         """Collect objects for localdb."""
         for single, plural in self.obj_map.items():
             self.offset = 0
@@ -115,6 +109,47 @@ class CheckPoint(Management):
                     for cpobject in response['objects']:
                         self.dbobj.insert_object(cpobject)
         self.dbobj.dbconn.commit()
+
+    def delta_sync(self):
+        """Resolve descrepency in local database."""
+        remote_uids = self.get_remote_uids()
+        local_uids = self.dbobj.get_local_uids()
+        delete_list = [uid for uid in local_uids if uid not in remote_uids]
+        sync_list = [uid for uid in remote_uids if uid not in local_uids]
+        for uid in delete_list:
+            app.logger.info('Deleting local object {}'.format(uid))
+            self.dbobj.delete_object(uid)
+        for uid in sync_list:
+            app.logger.info('Syncing remote object {}'.format(uid))
+            self.sync_single(uid)
+        self.dbobj.dbconn.commit()
+
+    def delete_single(self, uid, retry=0):
+        while retry < 10:
+            try:
+                self.dbobj.delete_object(uid)
+            except sqlite3.OperationalError:
+                app.logger.warn('Database locked while performing delete operation.')
+                time.sleep(0.1)
+                self.delete_single(uid, retry + 1)
+        app.logger.error('Max retries exceeded while attempting delete operation.')
+
+    def insert_single(self, cpobject, retry=0):
+        while retry < 10:
+            try:
+                self.dbobj.insert_object(cpobject)
+            except sqlite3.OperationalError:
+                app.logger.warn('Database locked while performing insert operation.')
+                time.sleep(0.1)
+                self.dbobj.insert_object(cpobject, retry + 1)
+        app.logger.error('Max retries exceeded while attempting insert operation.')
+
+    def sync_single(self, uid):
+        fpayload = {'uid': uid}
+        fresponse = self._api_call('show-object', **fpayload)
+        spayload = {'uid': uid}
+        sresponse = self.show(fresponse['object']['type'], **spayload)
+        self.insert_single(sresponse)
 
     def getallcommands(self):
         """Get all available commands for custom command page."""
@@ -184,7 +219,8 @@ class CheckPoint(Management):
     def monitortask(self, target, taskid):
         """Run gettask until task is complete and we can return response."""
         complete = False
-        while not complete:
+        retry = 0
+        while not complete and retry < 30:
             response = self.gettask(taskid)
             if response['tasks'][0]['progress-percentage'] == 100:
                 complete = True
@@ -202,7 +238,14 @@ class CheckPoint(Management):
                         'status': response['tasks'][0]['status'],
                         'response': 'Not Available'
                     }
+            retry += 1
             time.sleep(1)
+        app.logger.warn('Script did not finish within time limit on {}.'.format(target))
+        return {
+            'target': target,
+            'status': 'Task did not complete within 30 seconds.',
+            'response': 'Unavailable.'
+        }
 
     def gettask(self, task):
         """Get individual task information."""

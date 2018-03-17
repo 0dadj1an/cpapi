@@ -121,16 +121,6 @@ def objects():
 def policy():
     if request.method == 'GET':
         return render_template('policy.html', alllayers=apisession.all_layers)
-    elif request.method == 'POST':
-        pass
-
-
-@app.route('/showobject/<cp_objectuid>', methods=['GET'])
-@login_required
-def showobject(cp_objectuid):
-    app.logger.info('Displaying Check Point Object: {}.'.format(cp_objectuid))
-    response = apisession.show_object(cp_objectuid)
-    return render_template('showobject.html', cpobject=response)
 
 
 @app.route('/scripts', methods=['GET', 'POST'])
@@ -160,43 +150,66 @@ def scripts():
 
 class ObjectCheck(Resource):
     def get(self):
-        object_status = apisession.object_status()
-        return jsonify(object_status)
+        if apisession.sid:
+            object_status = apisession.object_status()
+            return jsonify(object_status)
 
 
 class FullSync(Resource):
     def get(self):
-        apisession.full_sync()
+        if hasattr(apisession, 'sid'):
+            apisession.full_sync()
+
+
+class DeltaSync(Resource):
+    def get(self):
+        if hasattr(apisession, 'sid'):
+            apisession.delta_sync()
 
 
 class ShowHosts(Resource):
     def get(self):
-        response = apisession.dbobj.get_hosts()
-        return jsonify(response)
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_hosts()
+            return jsonify(response)
 
 
 class ShowNetworks(Resource):
     def get(self):
-        response = apisession.dbobj.get_networks()
-        return jsonify(response)
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_networks()
+            return jsonify(response)
 
 class ShowGroups(Resource):
     def get(self):
-        response = apisession.dbobj.get_groups()
-        return jsonify(response)
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_groups()
+            return jsonify(response)
+
+class ShowAccessRoles(Resource):
+    def get(self):
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_access_roles()
+            return jsonify(response)
+
+class ShowServers(Resource):
+    def get(self):
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_servers()
+            return jsonify(response)
+
+class ShowServices(Resource):
+    def get(self):
+        if hasattr(apisession, 'sid'):
+            response = apisession.dbobj.get_services()
+            return jsonify(response)
 
 api.add_resource(ObjectCheck, '/objects/objectcheck')
 api.add_resource(FullSync, '/objects/fullsync')
+api.add_resource(DeltaSync, '/objects/deltasync')
 api.add_resource(ShowHosts, '/objects/showhosts')
 api.add_resource(ShowNetworks, '/objects/shownetworks')
 api.add_resource(ShowGroups, '/objects/showgroups')
-    # def put(self):
-    #     data = request.get_json()
-    #     if 'name' in data:
-    #         MANAGERS['managers'].append(data['name'])
-    #         return MANAGERS
-    # def delete(self):
-    #     data = request.get_json()
-    #     if 'name' in data:
-    #         MANAGERS['managers'].remove(data['name'])
-    #         return MANAGERS
+api.add_resource(ShowAccessRoles, '/objects/showaccessroles')
+api.add_resource(ShowServers, '/objects/showservers')
+api.add_resource(ShowServices, '/objects/showservices')

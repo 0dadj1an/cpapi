@@ -23,7 +23,7 @@ handler = RotatingFileHandler(
     maxBytes=10000000,
     backupCount=10)
 handler.setFormatter(formatter)
-app.logger.setLevel('DEBUG')
+app.logger.setLevel('INFO')
 app.logger.addHandler(handler)
 app.secret_key = os.urandom(25)
 
