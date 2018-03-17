@@ -2,10 +2,6 @@
   <head>
     <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    <script src="{{url_for('static', filename='js/cpapi.js')}}"></script>
   </head>
     <body>
       <div class="main-navigation">
@@ -15,7 +11,7 @@
         <div class="scriptform">
           <form action="" method="post">
             <label><b>Target(s)</b></label>
-            <select id="targets" class="selectjs" multiple="multiple" name="targets">
+            <select multiple name="targets">
               {%- for target in alltargets -%}
               <option value="{{ target }}">{{ target }}</option>
               {%- endfor -%}
