@@ -79,7 +79,7 @@ def login():
             apisession.verify_db()
             user = User(apisession.sid)
             login_user(user)
-            return redirect('/objects')
+            return redirect('/sandbox')
         else:
             app.logger.info('Login failure {}@{} > {}'.format(
                 loginform['user'], request.remote_addr, loginform['ipaddress']))
@@ -91,6 +91,8 @@ def login():
 @login_required
 def logout():
     if request.method == 'GET':
+        apisession.dbobj.cursor.close()
+        apisession.dbobj.dbconn.close()
         apisession.logout()
         logout_user()
         return redirect('/login')

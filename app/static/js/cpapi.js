@@ -5,6 +5,10 @@ function sandboxPost() {
     var command = document.getElementById("command").value;
     var payload = document.getElementById("payload").value;
     var element = document.getElementById("sandboxresponse");
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+    element.style.display = "none";
     var request = new XMLHttpRequest();
     request.onload = function() {
         var status = request.status;
@@ -17,6 +21,7 @@ function sandboxPost() {
         response.appendChild(responsedata);
         element.appendChild(header);
         element.appendChild(response);
+        element.style.display = "block";
     }
     postData["command"] = command;
     postData["payload"] = payload;

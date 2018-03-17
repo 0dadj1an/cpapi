@@ -1,6 +1,7 @@
 import ast
 import base64
 import os
+import sqlite3
 import time
 
 from app import app
@@ -125,24 +126,26 @@ class CheckPoint(Management):
         self.dbobj.dbconn.commit()
 
     def delete_single(self, uid, retry=0):
-        while retry < 10:
+        if retry < 10:
             try:
                 self.dbobj.delete_object(uid)
             except sqlite3.OperationalError:
                 app.logger.warn('Database locked while performing delete operation.')
                 time.sleep(0.1)
                 self.delete_single(uid, retry + 1)
-        app.logger.error('Max retries exceeded while attempting delete operation.')
+        else:
+            app.logger.error('Max retries exceeded while attempting delete operation.')
 
     def insert_single(self, cpobject, retry=0):
-        while retry < 10:
+        if retry < 10:
             try:
                 self.dbobj.insert_object(cpobject)
             except sqlite3.OperationalError:
                 app.logger.warn('Database locked while performing insert operation.')
                 time.sleep(0.1)
-                self.dbobj.insert_object(cpobject, retry + 1)
-        app.logger.error('Max retries exceeded while attempting insert operation.')
+                self.insert_single(cpobject, retry + 1)
+        else:
+            app.logger.error('Max retries exceeded while attempting insert operation.')
 
     def sync_single(self, uid):
         fpayload = {'uid': uid}

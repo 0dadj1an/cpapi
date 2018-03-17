@@ -1,5 +1,7 @@
 import sqlite3
 
+from app import app
+
 def createdb(dbname):
     open(dbname, 'a')
     dbobj = sqlhelper(dbname)

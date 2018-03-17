@@ -179,6 +179,7 @@ select {
 .sandboxresponse {
   border: 2px solid #E65785;
   border-radius: 25px;
+  display: none;
   padding: 20px;
   position: relative;
   margin-left: auto;
