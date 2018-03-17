@@ -56,7 +56,7 @@ class CheckPoint(Management):
     def object_status(self):
         self.local_obj = self.dbobj.total_objects()
         self.remote_obj = self.count_remote_objects()
-        app.logger.info('Object count - Local: {} // Remote: {}'.format(self.local_obj, self.remote_obj))
+        app.logger.debug('Object count - Local: {} // Remote: {}'.format(self.local_obj, self.remote_obj))
         return {'local': self.local_obj, 'remote': self.remote_obj}
 
     def count_remote_objects(self):

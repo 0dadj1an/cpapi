@@ -59,7 +59,7 @@ class Management(object):
         except requests.exceptions.RequestException as e:
             app.logger.error('{} : {}'.format(type(e).__name__, e))
         if str(response.status_code)[0] == '2':
-            app.logger.info('Command Success: {}'.format(command))
+            app.logger.debug('Command Success: {}'.format(command))
             return response.json()
         elif str(response.status_code)[0] =='4':
             app.logger.warn('Command Failure: {}'.format(command))
