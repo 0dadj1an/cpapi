@@ -1,4 +1,4 @@
-setInterval(function() {
+function objectupdate() {
     var local = document.getElementById("local");
     var remote = document.getElementById("remote");
     var url = window.location + "/objectcheck";
@@ -20,7 +20,9 @@ setInterval(function() {
     }
     request.open(method, url);
     request.send();
-}, 10000);
+}
+
+setInterval(objectupdate, 10000);
 
 function deltasync() {
     var url = window.location + "/deltasync";
@@ -50,30 +52,39 @@ function fullsync() {
 
 function objectsearch() {
     var outpute = document.getElementById("filtercontainer");
+    var legend = document.getElementById("resultstotal");
     while (outpute.firstChild) {
       outpute.removeChild(outpute.firstChild);
     }
     var string = document.getElementById("searchstring").value;
     if (string == '') {
+        legend.innerText = "Results - 0";
         return;
     }
     var para = document.getElementsByTagName("p");
     var curp = "currentpara";
+    var total = 0;
     for (var i = 0; i < para.length; i++) {
         curp = para[i]
         var data = curp.innerText;
         if (data.includes(string)) {
+            total += 1;
             var br = document.createElement("br");
             var label = document.createElement("label");
             var match = document.createTextNode(data);
             label.appendChild(match);
             outpute.appendChild(label);
-            outpute.appendChild(br)
+            outpute.appendChild(br);
+            legend.innerText = "Results - " + total;
         }
+    }
+    if (total === 0) {
+        legend.innerText = "Results - 0";
     }
 }
 
 function showobjects() {
+    objectupdate();
     showhosts();
     shownetworks();
     showgroups();
@@ -84,6 +95,7 @@ function showobjects() {
 
 function showhosts() {
     var container = document.getElementById("hostscontainer");
+    var legend = document.getElementById("hoststotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -94,6 +106,7 @@ function showhosts() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Hosts - " + resp["total"];
         var i = 0;
         var obj = 'hostname'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -118,6 +131,7 @@ function togglehost() {
 
 function shownetworks() {
     var container = document.getElementById("networkscontainer");
+    var legend = document.getElementById("networkstotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -128,6 +142,7 @@ function shownetworks() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Networks - " + resp["total"];
         var i = 0;
         var obj = 'netname'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -152,6 +167,7 @@ function togglenetworks() {
 
 function showgroups() {
     var container = document.getElementById("groupscontainer");
+    var legend = document.getElementById("groupstotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -162,6 +178,7 @@ function showgroups() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Groups - " + resp["total"];
         var i = 0;
         var obj = 'groupname'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -186,6 +203,7 @@ function togglegroups() {
 
 function showaccessroles() {
     var container = document.getElementById("accessrolescontainer");
+    var legend = document.getElementById("accessrolestotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -196,6 +214,7 @@ function showaccessroles() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Access-Roles - " + resp["total"];
         var i = 0;
         var obj = 'accessrolename'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -220,6 +239,7 @@ function toggleaccessroles() {
 
 function showservers() {
     var container = document.getElementById("serverscontainer");
+    var legend = document.getElementById("serverstotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -230,6 +250,7 @@ function showservers() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Servers - " + resp["total"];
         var i = 0;
         var obj = 'servername'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -254,6 +275,7 @@ function toggleservers() {
 
 function showservices() {
     var container = document.getElementById("servicescontainer");
+    var legend = document.getElementById("servicestotal");
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -264,6 +286,7 @@ function showservices() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
+        legend.innerText = "Services - " + resp["total"];
         var i = 0;
         var obj = 'servicename'
         for (i = 0; obj = resp.objects[i]; i++) {
@@ -285,3 +308,11 @@ function toggleservices() {
         container.style.display = "block";
     }
 }
+
+objectupdate();
+showhosts();
+shownetworks();
+showgroups();
+showaccessroles();
+showservers();
+showservices();

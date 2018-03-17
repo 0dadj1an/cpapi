@@ -20,7 +20,7 @@
             <input id="searchstring" type="text" name="search" onchange="objectsearch()">
             <div id="filtered">
               <fieldset id="filterlabel">
-                <legend><b>Results</b></legend>
+                <legend><b id="resultstotal">Results - 0</b></legend>
                 <div id="filtercontainer">
                 </div>
               </fieldset>
@@ -31,7 +31,7 @@
         <div class="objectinfo">
           <div id="hosts">
             <fieldset id="hostlabel" onclick="togglehost()">
-              <legend><b>Hosts</b></legend>
+              <legend><b id="hoststotal">Hosts - 0</b></legend>
               <div id="hostscontainer" style="display:none">
               </div>
             </fieldset>
@@ -39,7 +39,7 @@
           <br>
           <div id="networks">
             <fieldset id="networkslabel" onclick="togglenetworks()">
-              <legend><b>Networks</b></legend>
+              <legend><b id="networkstotal">Networks - 0</b></legend>
               <div id="networkscontainer" style="display:none">
               </div>
             </fieldset>
@@ -47,7 +47,7 @@
           <br>
           <div id="groups">
             <fieldset id="groupslabel" onclick="togglegroups()">
-              <legend><b>Groups</b></legend>
+              <legend><b id="groupstotal">Groups - 0</b></legend>
               <div id="groupscontainer" style="display:none">
               </div>
             </fieldset>
@@ -55,7 +55,7 @@
           <br>
           <div id="accessroles">
             <fieldset id="accessroleslabel" onclick="toggleaccessroles()">
-              <legend><b>Access-Roles</b></legend>
+              <legend><b id="accessrolestotal">Access-Roles - 0</b></legend>
               <div id="accessrolescontainer" style="display:none">
               </div>
             </fieldset>
@@ -63,7 +63,7 @@
           <br>
           <div id="servers">
             <fieldset id="serverslabel" onclick="toggleservers()">
-              <legend><b>Servers</b></legend>
+              <legend><b id="serverstotal">Servers - 0</b></legend>
               <div id="serverscontainer" style="display:none">
               </div>
             </fieldset>
@@ -71,7 +71,7 @@
           <br>
           <div id="services">
             <fieldset id="serviceslabel" onclick="toggleservices()">
-              <legend><b>Services</b></legend>
+              <legend><b id="servicestotal">Services - 0</b></legend>
               <div id="servicescontainer" style="display:none">
               </div>
             </fieldset>
