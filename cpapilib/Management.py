@@ -37,6 +37,7 @@ class Management(object):
         }
 
         if not verify:
+            #TODO: Currently no way to pass verify=True.
             requests.packages.urllib3.disable_warnings()
 
     @property
@@ -68,7 +69,7 @@ class Management(object):
         elif str(response.status_code)[0] == '5':
             app.logger.error('Server Failure: {}'.format(command))
             app.logger.error(response)
-            raise response
+            return response.text
 
     def login(self):
         if not self.password:
