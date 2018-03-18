@@ -8,7 +8,7 @@ General tool for interacting with Check Point Software MGMT Web API.
 	* IP Address: 10.13.37.1
 	* User: cpapidemo
 	* Password: cpapipassword
-	* Domain: <leave empty>
+	* Domain: Leave Blank
 
 #### Server Configuration
 * git clone https://github.com/themadhatterz/cpapi
