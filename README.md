@@ -5,10 +5,10 @@ General tool for interacting with Check Point Software MGMT Web API.
 * Please **DO NOT** use this server against production environments.
 * This server is for **DEMO** purposes only.
 * Test Management Server available with **READ ONLY** privilege.
-	* IP Address: 10.13.37.1
-	* User: cpapidemo
-	* Password: cpapipassword
-	* Domain: Leave Blank
+  * IP Address: 10.13.37.1
+  * User: cpapidemo
+  * Password: cpapipassword
+  * Domain: Leave Blank
 
 #### Server Configuration
 * git clone https://github.com/themadhatterz/cpapi
@@ -17,19 +17,19 @@ General tool for interacting with Check Point Software MGMT Web API.
   * #sudo mkdir /var/log/cpapi
   * #sudo chown www-data:www-data /var/log/cpapi
 * Development Server:
-    * python3 ~/cpapi/run.py
-* Production Deployment
-	* Flask Web Server Deployments
-    * http://flask.pocoo.org/docs/0.12/deploying/
+  * python3 ~/cpapi/run.py
+* Production Deployment:
+  * Flask Web Server Deployments
+  * http://flask.pocoo.org/docs/0.12/deploying/
 
 #### Features
 * Send Custom Crafted API Commands
 * Manage Network Objects Including:
-	* Hosts
-	* Networks
-	* Groups
-	* Access-Roles
-	* Services
-	* Gateways and Servers
+  * Hosts
+  * Networks
+  * Groups
+  * Access-Roles
+  * Services
+  * Gateways and Servers
 * Manage Check Point Layered Policy
 * Execute commands on Gateways and Servers
