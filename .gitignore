@@ -1,5 +1,5 @@
 # CPAPI
-#wsgi/
+wsgi/
 cpapi.log
 *.db
 
