@@ -2,6 +2,10 @@
   <head>
     <link rel="shortcut icon" href="{{ url_for('static', filename='files/cpapi.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/cpapi.css') }}?v={{config['version']}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="{{url_for('static', filename='js/policy.js')}}"></script>
   </head>
     <body>
       <div class="main-navigation">
@@ -9,36 +13,29 @@
       </div>
       <div class="content">
         <div class="policyform">
-          <form action="" method="post" name="showrules">
-            <label><b>Rulebase</b></label>
-            <select name="layer">
-            {%- for layer in alllayers -%}
-              {%- if layer[1] == lastlayer -%}
-              <option value="{{ layer[1] }}" selected>{{ layer[0] }}</option>
-              {%- else -%}
-              <option value="{{ layer[1] }}">{{ layer[0] }}</option>
-              {%- endif -%}
-            {%- endfor -%}
-            </select>
-            <input type="submit" value="Submit">
-          </form>
+          <label><b>Rulebase</b></label>
+          <select id="layer" name="layer">
+          {%- for layer in alllayers -%}
+            {%- if layer[1] == lastlayer -%}
+            <option value="{{ layer[1] }}" selected>{{ layer[0] }}</option>
+            {%- else -%}
+            <option value="{{ layer[1] }}">{{ layer[0] }}</option>
+            {%- endif -%}
+          {%- endfor -%}
+          </select>
+          <button onclick="showpolicyPost()">Submit</button>
+          <br><br>
+          <b><span id="policyprogress"></span></b>
         </div>
-        {%- if rulebase -%}
         <br>
         <div class="rulesearch">
           <label><b>Search Rulebase</b></label>
           <input id="searchstring" type="text" name="search" onchange="rulesearch()">
         </div>
-{%- if feedback -%}
-<br>
-<div class="customresponse">
-<pre id="json">
-{{ feedback }}
-</pre>
-</div>
-{%- endif -%}
         <br>
-        <div class="ruletable">
+        <div id="policyfeedback" class="policyfeedback">
+        </div>
+        <div id="ruletable" class="ruletable">
           <table>
             <col width="1%">
             <col width="12%">
@@ -68,34 +65,34 @@
                   <td><input type="text" name="position" value="1"></td>
                   <td><input type="text" name="name"></td>
                   <td>
-                    <select class="selectjs" multiple="multiple" type="text" name="source">
+                    <select multiple="multiple" type="text" name="source">
                       {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
                       {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select class="selectjs" multiple="multiple" type="text" name="destination">
+                    <select multiple="multiple" type="text" name="destination">
                       {%- for object in allobjects['networkobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
                       {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select class="selectjs" multiple="multiple" type="text" name="service">
+                    <select multiple="multiple" type="text" name="service">
                       {%- for object in allobjects['serviceobjects'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
                       {%- endfor -%}
                     </select>
                   </td>
                   <td>
-                    <select class="selectjs" type="text" name="action">
+                    <select type="text" name="action">
                       <option value="drop">Drop</option>
                       <option value="accept">Accept</option>
                     </select>
                   </td>
                   <td>
-                    <select class="selectjs" type="text" name="track">
+                    <select type="text" name="track">
                       <option value="none">None</option>
                       <option value="log">Log</option>
                       <option value="extended log">Extended</option>
@@ -103,7 +100,7 @@
                     </select>
                   </td>
                   <td>
-                    <select class="selectjs" multiple="multiple" name="install-on">
+                    <select multiple="multiple" name="install-on">
                       {%- for object in allobjects['targets'] -%}
                       <option value="{{object[0]}}">{{ object[1] }} - {{ object[2] }}</option>
                       {%- endfor -%}
@@ -116,85 +113,9 @@
               <td colspan="9"><b>Policy Rules</b></td>
             </tr>
             <tbody id="tbody">
-            {%- for rule in rulebase -%}
-              {%- if rule['type'] == 'section' -%}
-              <tr class="rulesection">
-                <td colspan="9">{{ rule['name'] }}</td>
-              </tr>
-              {%- elif rule['type'] == 'rule' -%}
-                {%- if rule['enabled'] == true -%}
-                <tr>
-                  <td>{{rule['number']}}</td>
-                {%- else -%}
-                <tr class="disabledrule">
-                  <td>{{rule['number']}} X</td>
-                {%- endif -%}
-                  <td>{{ rule['name'] }}</td>
-                  {%- if rule['source-negate'] == true -%}
-                  <td class="negatedcell" background-color="#690019;">
-                      -----Negated-----<br>
-                  {%- else -%}
-                  <td>
-                  {%- endif -%}
-                    {%- for source in rule['source'] -%}
-                      {%- if source[0] != 'Any' -%}
-                      <a href="/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
-                      {%- else -%}
-                      {{ source[0] }}
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </td>
-                  {%- if rule['destination-negate'] == true -%}
-                  <td class="negatedcell" background-color="#690019;">
-                      -----Negated-----<br>
-                  {%- else -%}
-                  <td>
-                  {%- endif -%}
-                    {%- for destination in rule['destination'] -%}
-                      {%- if destination[0] != 'Any' -%}
-                      <a href="/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
-                      {%- else -%}
-                      {{ destination[0] }}
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </td>
-                  {%- if rule['service-negate'] == true -%}
-                  <td class="negatedcell" background-color="#690019;">
-                      -----Negated-----<br>
-                  {%- else -%}
-                  <td>
-                  {%- endif -%}
-                    {%- for service in rule['service'] -%}
-                      {%- if service[0] != 'Any' -%}
-                      <a href="/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
-                      {%- else -%}
-                      {{ service[0] }}
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </td>
-                  <td>{{ rule['action'] }}</td>
-                  <td>{{ rule['track'] }}</td>
-                  <td>
-                  {%- for target in rule['target'] -%}
-                    {%- if target[0] != 'Policy Targets' -%}
-                    <a href="/showobject/{{target[1]}}" target="_blank">{{ target[0] }}</a><br>
-                    {%- else -%}
-                    {{ target[0] }}
-                    {%- endif -%}
-                  {%- endfor -%}
-                  </td>
-                  <td>
-                    <form action="" method="post">
-                      <input type="image" name="delete" value="{{ rule['number'] }}" src="{{ url_for('static', filename='files/delete.png') }}">
-                    </form>
-                  </td>
-                </tr>
-              {%- endif -%}
-            {%- endfor -%}
             </tbody>
           </table>
         </div>
-      {%- endif -%}
       </div>
     </body>
 </html>

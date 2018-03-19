@@ -259,3 +259,103 @@ class CheckPoint(Management):
     def base64_ascii(base64resp):
         """Converts base64 to ascii for run command/showtask."""
         return base64.b64decode(base64resp).decode('utf-8')
+
+    def show_rules(self, **kwargs):
+        """Recieves Layer UID, limit, offset."""
+        all_rules = {'rulebase': []}
+        payload = {
+            'uid': kwargs['uid'],
+            'details-level': 'standard',
+            'offset': kwargs['offset'],
+            'limit': kwargs['limit'],
+            'use-object-dictionary': 'true'
+        }
+        app.logger.info('Retrieving rules for - {}'.format(kwargs))
+        response = self.show('access-rulebase', **kwargs)
+        all_rules.update({'to': response['to'], 'total': response['total']})
+        self._filter_rules(all_rules, response)
+        return all_rules
+
+    def _filter_rules(self, all_rules, response):
+        """Recieves show_rules response and performs logic against whether
+        rules are sections or rules."""
+        for rule in response['rulebase']:
+            if 'type' in rule:
+                if rule['type'] == 'access-rule':
+                    final = self._filter_rule(rule, response['objects-dictionary'])
+                    all_rules['rulebase'].append(final)
+                elif rule['type'] == 'access-section':
+                    if 'name' in rule:
+                        section = rule['name']
+                    else:
+                        section = ''
+                    all_rules['rulebase'].append({'type': 'accesssection', 'name': section})
+            if 'rulebase' in rule:
+                for subrule in rule['rulebase']:
+                    final = self._filter_rule(subrule, response['objects-dictionary'])
+                    all_rules['rulebase'].append(final)
+        return all_rules
+
+    @staticmethod
+    def _filter_rule(rule, object_dictionary):
+        """Recieves rule and replaces UID with Name."""
+        filteredrule = {}
+        if 'name' in rule:
+            name = rule['name']
+        else:
+            name = ''
+        num = rule['rule-number']
+        src = rule['source']
+        src_all = []
+        dst = rule['destination']
+        dst_all = []
+        srv = rule['service']
+        srv_all = []
+        act = rule['action']
+        if rule['track']['type']:
+            trc = rule['track']['type']
+        else:
+            trc = rule['track']
+        trg = rule['install-on']
+        trg_all = []
+        for obj in object_dictionary:
+            if name == obj['uid']:
+                name = obj['name']
+            if num == obj['uid']:
+                num = obj['name']
+            if act == obj['uid']:
+                act = obj['name']
+            if trc == obj['uid']:
+                trc = obj['name']
+        for srcobj in src:
+            for obj in object_dictionary:
+                if srcobj == obj['uid']:
+                    src_all.append((obj['name'], srcobj))
+        for dstobj in dst:
+            for obj in object_dictionary:
+                if dstobj == obj['uid']:
+                    dst_all.append((obj['name'], dstobj))
+        for srvobj in srv:
+            for obj in object_dictionary:
+                if srvobj == obj['uid']:
+                    srv_all.append((obj['name'], srvobj))
+        for trgobj in trg:
+            for obj in object_dictionary:
+                if trgobj == obj['uid']:
+                    trg_all.append((obj['name'], trgobj))
+        filteredrule.update({
+            'type': 'accessrule',
+            'number': num,
+            'name': name,
+            'source': src_all,
+            'source-negate': rule['source-negate'],
+            'destination': dst_all,
+            'destination-negate': rule['destination-negate'],
+            'service': srv_all,
+            'service-negate': rule['service-negate'],
+            'action': act,
+            'track': trc,
+            'target': trg_all,
+            'enabled': rule['enabled']
+        })
+        return filteredrule

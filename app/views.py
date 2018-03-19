@@ -122,7 +122,7 @@ def objects():
 @login_required
 def policy():
     if request.method == 'GET':
-        return render_template('policy.html', alllayers=apisession.all_layers)
+        return render_template('policy.html', alllayers=apisession.all_layers, allobjects='')
 
 
 @app.route('/scripts', methods=['GET', 'POST'])
@@ -206,6 +206,13 @@ class ShowServices(Resource):
             response = apisession.dbobj.get_services()
             return jsonify(response)
 
+class ShowRules(Resource):
+    def post(self):
+        if hasattr(apisession, 'sid'):
+            data = request.get_json()
+            response = apisession.show_rules(**data)
+            return jsonify(response)
+
 api.add_resource(ObjectCheck, '/objects/objectcheck')
 api.add_resource(FullSync, '/objects/fullsync')
 api.add_resource(DeltaSync, '/objects/deltasync')
@@ -215,3 +222,4 @@ api.add_resource(ShowGroups, '/objects/showgroups')
 api.add_resource(ShowAccessRoles, '/objects/showaccessroles')
 api.add_resource(ShowServers, '/objects/showservers')
 api.add_resource(ShowServices, '/objects/showservices')
+api.add_resource(ShowRules, '/policy/showrules')

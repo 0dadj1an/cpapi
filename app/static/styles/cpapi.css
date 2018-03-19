@@ -30,7 +30,7 @@ label {
 }
 
 span {
-  color: red;
+  color: white;
 }
 
 input[type=text], input[type=password] {
@@ -38,7 +38,7 @@ input[type=text], input[type=password] {
   box-sizing: border-box;.
   display: inline-block;
   margin: 8px 0;
-  padding: 12px 20px;
+  padding: 12px 12px;
   width: 100%;
 }
 
@@ -207,6 +207,17 @@ select {
   width: 50%;
 }
 
+.policyfeedback {
+  border: 2px solid #E65785;
+  border-radius: 25px;
+  display: none;
+  padding: 20px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
 .rulesearch {
   background-color: #576372;
   border: 2px solid #E65785;
@@ -221,6 +232,7 @@ select {
 .ruletable {
   border: 2px solid #E65785;
   border-radius: 15px;
+  display: none;
   padding: 5px;
   position: relative;
   width: 100%;
