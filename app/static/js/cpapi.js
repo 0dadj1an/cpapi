@@ -13,15 +13,12 @@ function dislplayrules(rules, offset) {
     for (i = 0; i < rules.rulebase.length; i++) {
         var rulecontainer = document.createElement("tr");
         currule = rules.rulebase[i];
-        if (currule.type === "accessection") {
+        if (currule.type === "accesssection") {
             rulecontainer.classList.add("rulesection");
             var nametd = document.createElement("td");
-            nametd.classList.add("namediv");
-            var nameinput = document.createElement("input");
-            nameinput.name = "name";
-            nameinput.type = "text";
-            nameinput.value = currule.name;
-            nametd.appendChild(nameinput);
+            nametd.colSpan = "9";
+            nametd.innerText = currule.name;
+            rulecontainer.appendChild(nametd);
         } else if (currule.type === "accessrule") {
             var j = 0;
             //NUMBER
@@ -152,9 +149,8 @@ function dislplayrules(rules, offset) {
             rulecontainer.appendChild(tracktd);
             rulecontainer.appendChild(targettd);
             rulecontainer.appendChild(edittd);
-            //ADD RULECONTAINER TO TABLE
-            tbody.appendChild(rulecontainer);
         }
+        tbody.appendChild(rulecontainer);
     }
 }
 
@@ -223,23 +219,26 @@ function sandboxPost() {
 }
 
 function objectupdate() {
-    var local = document.getElementById("local");
-    var remote = document.getElementById("remote");
-    var url = window.location + "/objectcheck";
+    var currentwindow = window.location.href;
+    var url = window.location.origin + "/objects/objectcheck";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
         var status = request.status;
         var data = request.responseText;
         var resp = JSON.parse(data);
-        local.innerText = resp.local;
-        remote.innerText = resp.remote;
+        if (currentwindow.includes("objects")) {
+            var local = document.getElementById("local");
+            var remote = document.getElementById("remote");
+            local.innerText = resp.local;
+            remote.innerText = resp.remote;
+        }
         if (resp.local != 0) {
             if (resp.local != resp.remote) {
                 deltasync();
             }
         } else {
-            if (window.location.includes("objects")) {
+              if (currentwindow.includes("objects")) {
               fullsync();
             } else {
                 console.log('need full sync.')
@@ -255,7 +254,7 @@ function objectupdate() {
 setInterval(objectupdate, 10000);
 
 function deltasync() {
-    var url = window.location + "/deltasync";
+    var url = window.location.origin + "/objects/deltasync";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -268,7 +267,7 @@ function deltasync() {
 }
 
 function fullsync() {
-    var url = window.location + "/fullsync";
+    var url = window.location.href + "/fullsync";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -315,7 +314,8 @@ function objectsearch() {
 
 function showobjects() {
     objectupdate();
-    if (window.location.includes("objects")) {
+    var currentwindow = window.location.href;
+    if (currentwindow.includes("objects")) {
         showhosts();
         shownetworks();
         showgroups();
@@ -331,7 +331,7 @@ function showhosts() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/showhosts";
+    var url = window.location.href + "/showhosts";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -367,7 +367,7 @@ function shownetworks() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/shownetworks";
+    var url = window.location.href + "/shownetworks";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -403,7 +403,7 @@ function showgroups() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/showgroups";
+    var url = window.location.href + "/showgroups";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -439,7 +439,7 @@ function showaccessroles() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/showaccessroles";
+    var url = window.location.href + "/showaccessroles";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -475,7 +475,7 @@ function showservers() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/showservers";
+    var url = window.location.href + "/showservers";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -511,7 +511,7 @@ function showservices() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
-    var url = window.location + "/showservices";
+    var url = window.location.href + "/showservices";
     var method = "GET";
     var request = new XMLHttpRequest();
     request.onload = function() {
@@ -542,7 +542,8 @@ function toggleservices() {
 }
 
 objectupdate();
-if (window.location.includes("objects")) {
+var currentwindow = window.location.href;
+if (currentwindow.includes("objects")) {
     showhosts();
     shownetworks();
     showgroups();
