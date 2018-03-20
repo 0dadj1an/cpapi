@@ -45,14 +45,7 @@ def internal_error(e):
 
 @app.before_request
 def before_request():
-    keepalive_pages = ['sandbox', 'policy', 'showobject', 'scripts', 'logout']
-    if request.endpoint in keepalive_pages:
-        if apisession.sid:
-            response = apisession.keepalive()
-            if response['message'] != 'OK':
-                return redirect('/login')
-        else:
-            return redirect('/login')
+    pass
 
 
 @app.route('/')
@@ -182,11 +175,13 @@ class ShowNetworks(Resource):
             response = apisession.dbobj.get_networks()
             return jsonify(response)
 
+
 class ShowGroups(Resource):
     def get(self):
         if hasattr(apisession, 'sid'):
             response = apisession.dbobj.get_groups()
             return jsonify(response)
+
 
 class ShowAccessRoles(Resource):
     def get(self):
@@ -194,11 +189,13 @@ class ShowAccessRoles(Resource):
             response = apisession.dbobj.get_access_roles()
             return jsonify(response)
 
+
 class ShowServers(Resource):
     def get(self):
         if hasattr(apisession, 'sid'):
             response = apisession.dbobj.get_servers()
             return jsonify(response)
+
 
 class ShowServices(Resource):
     def get(self):
@@ -206,12 +203,38 @@ class ShowServices(Resource):
             response = apisession.dbobj.get_services()
             return jsonify(response)
 
+
 class ShowRules(Resource):
     def post(self):
         if hasattr(apisession, 'sid'):
             data = request.get_json()
             response = apisession.show_rules(**data)
             return jsonify(response)
+
+
+class AddRule(Resource):
+    def put(self):
+        if hasattr(apisession, 'sid'):
+            data - request.get_json()
+            response = apisession.add('access-rule', **data)
+            return jsonify(response)
+
+
+class EditRule(Resource):
+    def post(self):
+        if hasattr(apisession, 'sid'):
+            data - request.get_json()
+            response = apisession.set('access-rule', **data)
+            return jsonify(response)
+
+
+class DeleteRule(Resource):
+    def delete(self):
+        if hasattr(apisession, 'sid'):
+            data - request.get_json()
+            response = apisession.delete('access-rule', **data)
+            return jsonify(response)
+
 
 api.add_resource(ObjectCheck, '/objects/objectcheck')
 api.add_resource(FullSync, '/objects/fullsync')
@@ -223,3 +246,6 @@ api.add_resource(ShowAccessRoles, '/objects/showaccessroles')
 api.add_resource(ShowServers, '/objects/showservers')
 api.add_resource(ShowServices, '/objects/showservices')
 api.add_resource(ShowRules, '/policy/showrules')
+api.add_resource(AddRule, '/policy/addrule')
+api.add_resource(EditRule, '/policy/editrule')
+api.add_resource(DeleteRule, '/policy/deleterule')

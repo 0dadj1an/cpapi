@@ -59,6 +59,7 @@ class Management(object):
                 verify=self.verify)
         except requests.exceptions.RequestException as e:
             app.logger.error('{} : {}'.format(type(e).__name__, e))
+            return 'Connection Failure: {}'.format(type(e).__name__)
         if str(response.status_code)[0] == '2':
             app.logger.debug('Command Success: {}'.format(command))
             return response.json()

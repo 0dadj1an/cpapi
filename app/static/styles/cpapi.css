@@ -144,6 +144,7 @@ select {
   margin: 20px;
 }
 
+/* Login */
 .header {
   align-items: center;
   display:flex;
@@ -165,6 +166,7 @@ select {
   width: 50%;
 }
 
+/* Sandbox */
 .sandboxform {
   background-color: #576372;
   border-radius: 25px;
@@ -196,6 +198,7 @@ select {
   white-space: pre-wrap;
 }
 
+/* Policy */
 .policyform {
   background-color: #576372;
   border: 2px solid #E65785;
@@ -276,6 +279,14 @@ select {
   text-align: left;
 }
 
+.disabledrule {
+  opacity: 0.5;
+}
+
+.negatedcell {
+  opacity:0.5;
+}
+
 /* Objects */
 .objectinfo {
   background-color: #576372;
@@ -303,27 +314,6 @@ select {
 
 .objectinfo h1 {
   color: white;
-}
-
-#hostform {
-  display: none;
-}
-
-#netform {
-  display: none;
-}
-
-#groupform {
-  display: none;
-}
-
-.disabledrule {
-  opacity: 0.5;
-}
-
-.negatedcell {
-  background-color: #690019;
-  opacity:0.5;
 }
 
 .scriptform {

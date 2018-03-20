@@ -1,3 +1,13 @@
+function deleteRule(tr) {
+    var ruleid = tr.id;
+    console.log(ruleid);
+}
+
+function editRule(tr) {
+    var ruleid = tr.id;
+    console.log(ruleid);
+}
+
 function dislplayrules(rules, offset) {
     var ruletable = document.getElementById("ruletable");
     ruletable.style.display = "block";
@@ -8,6 +18,7 @@ function dislplayrules(rules, offset) {
       }
     }
     var i = 0;
+    var rulenumid = 1;
     var currule = "somerule";
 
     for (i = 0; i < rules.rulebase.length; i++) {
@@ -36,12 +47,13 @@ function dislplayrules(rules, offset) {
             var nameinput = document.createElement("input");
             nameinput.name = "name";
             nameinput.type = "text";
-            nameinput.value = currule.name;
+            if (currule.enabled == false) {
+                rulecontainer.classList.add("disabledrule");
+            }
             nametd.appendChild(nameinput)
             //SOURCE
             var sourcetd = document.createElement("td");
             var sourceselect = document.createElement("select")
-            sourceselect.classList.add("selectjs")
             sourceselect.name = "source"
             sourceselect.multiple = "multiple";
             sourceselect.type = "text";
@@ -51,6 +63,9 @@ function dislplayrules(rules, offset) {
                 newopt.text = source[0];
                 newopt.value = source[1];
                 sourceselect.add(newopt);
+            }
+            if (currule["source-negate"] == true) {
+                sourcetd.classList.add("negatedcell");
             }
             sourcetd.appendChild(sourceselect);
             //DESTINATION
@@ -66,6 +81,9 @@ function dislplayrules(rules, offset) {
                 newopt.value = destination[1];
                 destinationselect.add(newopt);
             }
+            if (currule["destination-negate"] == true) {
+                destinationtd.classList.add("negatedcell");
+            }
             destinationtd.appendChild(destinationselect);
             //SERVICE
             var servicetd = document.createElement("td");
@@ -79,6 +97,9 @@ function dislplayrules(rules, offset) {
                 newopt.text = service[0];
                 newopt.value = service[1];
                 serviceselect.add(newopt);
+            }
+            if (currule["service-negate"] == true) {
+                servicetd.classList.add("negatedcell");
             }
             servicetd.appendChild(serviceselect);
             //ACTION
@@ -132,13 +153,23 @@ function dislplayrules(rules, offset) {
             }
             targettd.appendChild(targetselect);
             //EDIT
-            var edittd = document.createElement("td");
+            var modifytd = document.createElement("td");
+            var deleteinput = document.createElement("input");
             var editinput = document.createElement("input");
-            editinput.name = "delete";
+            deleteinput.setAttribute("onclick","javascript:deleteRule(this);");
+            deleteinput.id = rulenumid;
+            deleteinput.name = "delete";
+            deleteinput.type = "image";
+            deleteinput.value = "delete";
+            deleteinput.src = "/static/files/delete.png";
+            editinput.setAttribute("onclick","javascript:editRule(this);");
+            editinput.id = rulenumid;
+            editinput.name = "edit";
             editinput.type = "image";
-            editinput.value = "add";
-            editinput.src = "/static/files/delete.png";
-            edittd.appendChild(editinput);
+            editinput.value = "edit";
+            editinput.src = "/static/files/edit.png";
+            modifytd.appendChild(deleteinput);
+            modifytd.appendChild(editinput);
             //ADD ALL DIVS TO CONTAINER
             rulecontainer.appendChild(numtd);
             rulecontainer.appendChild(nametd);
@@ -148,7 +179,8 @@ function dislplayrules(rules, offset) {
             rulecontainer.appendChild(actiontd);
             rulecontainer.appendChild(tracktd);
             rulecontainer.appendChild(targettd);
-            rulecontainer.appendChild(edittd);
+            rulecontainer.appendChild(modifytd);
+            rulenumid += 1;
         }
         tbody.appendChild(rulecontainer);
     }
