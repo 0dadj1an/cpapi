@@ -274,6 +274,21 @@ function sandboxPost() {
     request.send(JSON.stringify(postData));
 }
 
+function objectdisplay(local, remote) {
+    var h4 = document.getElementById("synch4");
+    var image = document.getElementById("syncimage");
+    if (local === remote) {
+        h4.innerText = "Database Synced     ";
+        image.src = "/static/files/check.png"
+    } else if (local === 0) {
+        h4.innerText = "Need Full Sync     ";
+        image.src = "/static/files/fullsync.png";
+    } else if (local != remote) {
+        h4.innerText = "Delta sync in progress...     ";
+        image.src = "/static/files/syncing.png";
+    }
+}
+
 function objectupdate() {
     var currentwindow = window.location.href;
     var url = window.location.origin + "/objects/objectcheck";
@@ -296,12 +311,9 @@ function objectupdate() {
         } else {
               if (currentwindow.includes("objects")) {
               fullsync();
-            } else {
-                console.log('need full sync.')
-                //display sync status on pages
-                //notify user to perform first full sync on objects page.
             }
         }
+        objectdisplay(resp.local, resp.remote);
     }
     request.open(method, url);
     request.send();

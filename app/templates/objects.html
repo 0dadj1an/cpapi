@@ -9,6 +9,7 @@
         {%- include 'postlognav.html' -%}
       </div>
       <div class="content">
+        {%- include 'syncheader.html' -%}
         <div class="objectinfo">
           <label>Local Objects: </label><p id="local">{{ objectstatus['local'] }}</p>
           <label>Remote Objects: </label><p id="remote">{{ objectstatus['remote'] }}</p>
