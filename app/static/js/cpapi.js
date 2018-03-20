@@ -194,7 +194,7 @@ function dislplayrules(rules, offset) {
             editinput.src = "/static/files/edit.png";
             modifytd.appendChild(deleteinput);
             modifytd.appendChild(editinput);
-            //ADD ALL DIVS TO CONTAINER
+            //ADD ALL TD TO CONTAINER TR
             rulecontainer.appendChild(numtd);
             rulecontainer.appendChild(nametd);
             rulecontainer.appendChild(sourcetd);
