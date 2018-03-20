@@ -118,6 +118,14 @@ def policy():
         return render_template('policy.html', alllayers=apisession.all_layers, allobjects='')
 
 
+@app.route('/showobject/<cp_objectuid>', methods=['GET'])
+@login_required
+def showobject(cp_objectuid):
+    app.logger.info('Displaying Check Point Object {}.'.format(cp_objectuid))
+    response = apisession.show_object(cp_objectuid)
+    return render_template('showobject.html', cpobject=response.json())
+
+
 @app.route('/scripts', methods=['GET', 'POST'])
 @login_required
 def scripts():

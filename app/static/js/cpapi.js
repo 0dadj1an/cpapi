@@ -41,70 +41,88 @@ function dislplayrules(rules, offset) {
             numinput.name = "position";
             numinput.type = "text";
             numinput.value = currule.number;
+            numinput.disabled="true";
             numtd.appendChild(numinput);
             //NAME
             var nametd = document.createElement("td");
             var nameinput = document.createElement("input");
             nameinput.name = "name";
             nameinput.type = "text";
+            nameinput.disabled="true";
             if (currule.enabled == false) {
                 rulecontainer.classList.add("disabledrule");
             }
             nametd.appendChild(nameinput)
             //SOURCE
             var sourcetd = document.createElement("td");
-            var sourceselect = document.createElement("select")
-            sourceselect.name = "source"
-            sourceselect.multiple = "multiple";
-            sourceselect.type = "text";
+            var br = document.createElement("br");
             for (j = 0; j < rules.rulebase[i].source.length; j++) {
                 source = rules.rulebase[i].source[j];
-                var newopt = document.createElement("option");
-                newopt.text = source[0];
-                newopt.value = source[1];
-                sourceselect.add(newopt);
+                if (source[0] != "Any") {
+                    var sourcea = document.createElement("a");
+                    var br = document.createElement("br");
+                    sourcea.innerText = source[0];
+                    sourcea.href = "/showobject/" + source[1];
+                    sourcea.target = "_blank"
+                    sourcetd.appendChild(sourcea);
+                    sourcetd.appendChild(br);
+                } else {
+                    sourcea = document.createElement("p");
+                    sourcea.innerText = "Any";
+                    sourcetd.appendChild(sourcea);
+                }
             }
             if (currule["source-negate"] == true) {
                 sourcetd.classList.add("negatedcell");
             }
-            sourcetd.appendChild(sourceselect);
             //DESTINATION
             var destinationtd = document.createElement("td");
-            var destinationselect = document.createElement("select");
-            destinationselect.name = "destination";
-            destinationselect.multiple = "multiple";
-            destinationselect.type = "text";
+            var br = document.createElement("br");
             for (j = 0; j < rules.rulebase[i].destination.length; j++) {
                 destination = rules.rulebase[i].destination[j];
-                var newopt = document.createElement("option");
-                newopt.text = destination[0];
-                newopt.value = destination[1];
-                destinationselect.add(newopt);
+                if (destination[0] != "Any") {
+                    var destinationa = document.createElement("a");
+                    var br = document.createElement("br");
+                    destinationa.innerText = destination[0];
+                    destinationa.href = "/showobject/" + destination[1];
+                    destinationa.target = "_blank"
+                    destinationtd.appendChild(destinationa);
+                    destinationtd.appendChild(br);
+                } else {
+                  destinationa = document.createElement("p");
+                  destinationa.innerText = "Any";
+                  destinationtd.appendChild(destinationa);
+                }
             }
             if (currule["destination-negate"] == true) {
                 destinationtd.classList.add("negatedcell");
             }
-            destinationtd.appendChild(destinationselect);
             //SERVICE
             var servicetd = document.createElement("td");
-            var serviceselect = document.createElement("select");
-            serviceselect.name = "service";
-            serviceselect.multiple = "multiple";
-            serviceselect.type = "text";
+            var br = document.createElement("br");
             for (j = 0; j < rules.rulebase[i].service.length; j++) {
                 service = rules.rulebase[i].service[j];
-                var newopt = document.createElement("option");
-                newopt.text = service[0];
-                newopt.value = service[1];
-                serviceselect.add(newopt);
+                if (service[0] != "Any") {
+                    var servicea = document.createElement("a");
+                    var br = document.createElement("br");
+                    servicea.innerText = service[0];
+                    servicea.href = "/showobject/" + service[1];
+                    servicea.target = "_blank"
+                    servicetd.appendChild(servicea);
+                    servicetd.appendChild(br);
+                } else {
+                    servicea = document.createElement("p");
+                    servicea.innerText = "Any";
+                    servicetd.appendChild(servicea);
+                }
             }
             if (currule["service-negate"] == true) {
                 servicetd.classList.add("negatedcell");
             }
-            servicetd.appendChild(serviceselect);
             //ACTION
             var actiontd = document.createElement("td");
             var actionselect = document.createElement("select");
+            actionselect.disabled="true";
             actionselect.name = "action";
             actionselect.type = "text";
             var acceptopt = document.createElement("option");
@@ -119,6 +137,7 @@ function dislplayrules(rules, offset) {
             //TRACK
             var tracktd = document.createElement("td");
             var trackselect = document.createElement("select");
+            trackselect.disabled="true";
             trackselect.name = "track";
             trackselect.type = "text";
             var noneopt = document.createElement("option");
@@ -140,18 +159,23 @@ function dislplayrules(rules, offset) {
             tracktd.appendChild(trackselect);
             //TARGET
             var targettd = document.createElement("td");
-            var targetselect = document.createElement("select");
-            targetselect.name = "target";
-            targetselect.multiple = "multiple";
-            targetselect.type = "text";
+            var br = document.createElement("br");
             for (j = 0; j < rules.rulebase[i].target.length; j++) {
                 target = rules.rulebase[i].target[j];
-                var newopt = document.createElement("option");
-                newopt.text = target[0];
-                newopt.value = target[1];
-                targetselect.add(newopt);
+                if (target[0] != "Policy Targets") {
+                    var targeta = document.createElement("a");
+                    var br = document.createElement("br");
+                    targeta.innerText = target[0];
+                    targeta.href = "/showobject/" + target[1];
+                    targeta.target = "_blank"
+                    targettd.appendChild(targeta);
+                    targettd.appendChild(br);
+                } else {
+                    targeta = document.createElement("p");
+                    targeta.innerText = "Policy Targets";
+                    targettd.appendChild(targeta);
+                }
             }
-            targettd.appendChild(targetselect);
             //EDIT
             var modifytd = document.createElement("td");
             var deleteinput = document.createElement("input");

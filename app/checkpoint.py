@@ -359,3 +359,10 @@ class CheckPoint(Management):
             'enabled': rule['enabled']
         })
         return filteredrule
+
+    def show_object(self, objuid):
+        payload = {'uid': objuid}
+        response = self.show('object', **payload)
+        payload = {'uid': objuid, 'details-level': 'full'}
+        responsetwo = self.show('{}'.format(response['object']['type']), **payload)
+        return responsetwo
