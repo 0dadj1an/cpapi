@@ -275,16 +275,22 @@ function sandboxPost() {
 }
 
 function objectdisplay(local, remote) {
+    var currentwindow = window.location.href;
     var h4 = document.getElementById("synch4");
     var image = document.getElementById("syncimage");
     if (local === remote) {
-        h4.innerText = "Database Synced     ";
+        h4.innerText = "Database Synced";
         image.src = "/static/files/check.png"
     } else if (local === 0) {
-        h4.innerText = "Need Full Sync     ";
-        image.src = "/static/files/fullsync.png";
+        if (currentwindow.includes("objects")) {
+            h4.innerText = "Full sync in progress...";
+            image.src = "/static/files/syncing.png";
+        } else {
+            h4.innerText = "Need Full Sync";
+            image.src = "/static/files/fullsync.png";
+        }
     } else if (local != remote) {
-        h4.innerText = "Delta sync in progress...     ";
+        h4.innerText = "Delta sync in progress...";
         image.src = "/static/files/syncing.png";
     }
 }
@@ -309,7 +315,7 @@ function objectupdate() {
                 deltasync();
             }
         } else {
-              if (currentwindow.includes("objects")) {
+            if (currentwindow.includes("objects")) {
               fullsync();
             }
         }
@@ -337,10 +343,6 @@ function deltasync() {
 }
 
 function fullsync() {
-    var h4 = document.getElementById("synch4");
-    var image = document.getElementById("syncimage");
-    h4.innerText = "Full sync in progress...";
-    image.src = "/static/files/syncing.png";
     var url = window.location.href + "/fullsync";
     var method = "GET";
     var request = new XMLHttpRequest();
@@ -615,13 +617,4 @@ function toggleservices() {
     }
 }
 
-objectupdate();
-var currentwindow = window.location.href;
-if (currentwindow.includes("objects")) {
-    showhosts();
-    shownetworks();
-    showgroups();
-    showaccessroles();
-    showservers();
-    showservices();
-}
+showobjects();

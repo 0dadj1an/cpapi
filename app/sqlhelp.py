@@ -12,6 +12,7 @@ def createdb(dbname):
     dbobj.cursor.execute('CREATE TABLE servers (uid text PRIMARY KEY, name text);')
     dbobj.cursor.execute('CREATE TABLE services (uid text PRIMARY KEY, name text, port text, protocol text);')
     dbobj.dbconn.commit()
+    dbobj.dbconn.close()
 
 
 class sqlhelper(object):
