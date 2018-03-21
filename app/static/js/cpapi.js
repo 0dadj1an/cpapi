@@ -328,13 +328,19 @@ function deltasync() {
     request.onload = function() {
         var status = request.status;
         var data = request.responseText;
-        showobjects();
+        if (currentwindow.includes("objects")) {
+            showobjects();
+        }
     }
     request.open(method, url);
     request.send();
 }
 
 function fullsync() {
+    var h4 = document.getElementById("synch4");
+    var image = document.getElementById("syncimage");
+    h4.innerText = "Full sync in progress...";
+    image.src = "/static/files/syncing.png";
     var url = window.location.href + "/fullsync";
     var method = "GET";
     var request = new XMLHttpRequest();

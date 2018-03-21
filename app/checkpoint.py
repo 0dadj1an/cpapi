@@ -99,6 +99,7 @@ class CheckPoint(Management):
             response = self._api_call('show-{}'.format(plural), **payload)
             for cpobject in response['objects']:
                 self.dbobj.insert_object(cpobject)
+            self.dbobj.dbconn.commit()
             if 'to' in response and response['total'] != 0:
                 while response['to'] != response['total']:
                     self.offset += self.max_limit
@@ -109,7 +110,7 @@ class CheckPoint(Management):
                     response = self._api_call('show-{}'.format(plural), **payload)
                     for cpobject in response['objects']:
                         self.dbobj.insert_object(cpobject)
-        self.dbobj.dbconn.commit()
+                    self.dbobj.dbconn.commit()
 
     def delta_sync(self):
         """Resolve descrepency in local database."""
