@@ -2,7 +2,6 @@ from flask import jsonify
 from flask import render_template
 from flask import redirect
 from flask import request
-from flask import session
 from flask_login import UserMixin
 from flask_login import login_required
 from flask_login import login_user
@@ -13,7 +12,6 @@ from flask_restful import Api
 
 from app import app
 from app.checkpoint import CheckPoint
-from app.sqlhelp import sqlhelper
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -63,7 +61,7 @@ def login():
         app.logger.info('Login attempt {}@{} > {}'.format(
             loginform['user'], request.remote_addr, loginform['ipaddress']))
         apisession = CheckPoint(loginform['ipaddress'], loginform['user'],
-            password=loginform['password'], domain=loginform['domain'])
+                                password=loginform['password'], domain=loginform['domain'])
         response = apisession.login()
         if apisession.sid:
             app.logger.info('Login success {}@{} > {}'.format(
@@ -223,7 +221,7 @@ class ShowRules(Resource):
 class AddRule(Resource):
     def put(self):
         if hasattr(apisession, 'sid'):
-            data - request.get_json()
+            data = request.get_json()
             response = apisession.add('access-rule', **data)
             return jsonify(response)
 
@@ -231,7 +229,7 @@ class AddRule(Resource):
 class EditRule(Resource):
     def post(self):
         if hasattr(apisession, 'sid'):
-            data - request.get_json()
+            data = request.get_json()
             response = apisession.set('access-rule', **data)
             return jsonify(response)
 
@@ -239,7 +237,7 @@ class EditRule(Resource):
 class DeleteRule(Resource):
     def delete(self):
         if hasattr(apisession, 'sid'):
-            data - request.get_json()
+            data = request.get_json()
             response = apisession.delete('access-rule', **data)
             return jsonify(response)
 

@@ -64,7 +64,7 @@ class CheckPoint(Management):
         """Count objects for local comparison"""
         # Reset count for consecutive pulls.
         remote_obj = 0
-        for single, plural in self.obj_map.items():
+        for plural in self.obj_map.values():
             payload = {'limit': 1}
             response = self._api_call('show-{}'.format(plural), **payload)
             if 'total' in response:
@@ -73,7 +73,7 @@ class CheckPoint(Management):
 
     def get_remote_uids(self):
         all_remote_uids = []
-        for single, plural in self.obj_map.items():
+        for plural in self.obj_map.values():
             self.offset = 0
             payload = {'limit': self.max_limit, 'offset': self.offset, 'details-level': 'uid'}
             response = self._api_call('show-{}'.format(plural), **payload)
@@ -90,7 +90,7 @@ class CheckPoint(Management):
 
     def full_sync(self):
         """Collect objects for localdb."""
-        for single, plural in self.obj_map.items():
+        for plural in self.obj_map.values():
             self.offset = 0
             payload = {'limit': self.max_limit, 'offset': self.offset}
             app.logger.info(
@@ -198,8 +198,6 @@ class CheckPoint(Management):
             payload = ast.literal_eval(payload)
         except ValueError:
             return 'Invalid input provided.'
-        except Exception as exc:
-            return exc
         return self._api_call(command, **payload)
 
     def runcommand(self, targets, script):
@@ -264,13 +262,6 @@ class CheckPoint(Management):
     def show_rules(self, **kwargs):
         """Recieves Layer UID, limit, offset."""
         all_rules = {'rulebase': []}
-        payload = {
-            'uid': kwargs['uid'],
-            'details-level': 'standard',
-            'offset': kwargs['offset'],
-            'limit': kwargs['limit'],
-            'use-object-dictionary': 'true'
-        }
         app.logger.info('Retrieving rules for - {}'.format(kwargs))
         response = self.show('access-rulebase', **kwargs)
         all_rules.update({'to': response['to'], 'total': response['total']})

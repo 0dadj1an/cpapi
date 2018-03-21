@@ -1,14 +1,15 @@
 import os
 import platform
 import logging
-from flask import Flask
 from logging.handlers import RotatingFileHandler
 
-ostype = platform.system()
+from flask import Flask
 
-if ostype == 'Windows':
+OSTYPE = platform.system()
+
+if OSTYPE == 'Windows':
     BASEDIR = '{}\\'.format(os.getcwd())
-if ostype == 'Linux':
+if OSTYPE == 'Linux':
     BASEDIR = '/var/log/cpapi/'
 
 app = Flask(__name__)

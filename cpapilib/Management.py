@@ -63,7 +63,7 @@ class Management(object):
         if str(response.status_code)[0] == '2':
             app.logger.debug('Command Success: {}'.format(command))
             return response.json()
-        elif str(response.status_code)[0] =='4':
+        elif str(response.status_code)[0] == '4':
             app.logger.warn('Command Failure: {}'.format(command))
             app.logger.warn(response.text)
             return response.text
