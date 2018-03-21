@@ -1,11 +1,32 @@
+function deleteRulePost(rulenum) {
+    var url = window.location.href + "/deleterule";
+    var layeruid = document.getElementById("layer").value;
+    var method = "DELETE";
+    var postData = {};
+
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        var status = request.status;
+        var data = request.responseText;
+        
+    }
+    postData["rule-number"] = rulenum;
+    postData["layer"] = layeruid;
+    request.open(method, url);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.send(JSON.stringify(postData));
+}
+
 function deleteRule(tr) {
-    var ruleid = tr.id;
-    console.log(ruleid);
+    var rulenum = tr.id;
+    deleteRulePost(rulenum);
 }
 
 function editRule(tr) {
     var ruleid = tr.id;
     console.log(ruleid);
+    var container = document.getElementById(ruleid);
+    console.log(container);
 }
 
 function dislplayrules(rules, offset) {
@@ -195,6 +216,7 @@ function dislplayrules(rules, offset) {
             modifytd.appendChild(deleteinput);
             modifytd.appendChild(editinput);
             //ADD ALL TD TO CONTAINER TR
+            rulecontainer.id = rulenumid;
             rulecontainer.appendChild(numtd);
             rulecontainer.appendChild(nametd);
             rulecontainer.appendChild(sourcetd);
