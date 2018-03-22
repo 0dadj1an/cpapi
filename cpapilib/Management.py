@@ -22,7 +22,7 @@ class Management(object):
         """
         self.offset = 0
         self.small_limit = 50
-        self.max_limit = 1
+        self.max_limit = 500
         self.user = user
         self.password = password
         self.host = host
