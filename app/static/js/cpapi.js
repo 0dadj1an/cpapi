@@ -1,14 +1,21 @@
-function deleteRulePost(rulenum) {
+function clearruletable() {
+    var tbody = document.getElementById("tbody");
+    while (tbody.firstChild) {
+      tbody.removeChild(tbody.firstChild);
+    }
+}
+
+function deleteRulePost(rulenum, callback) {
     var url = window.location.href + "/deleterule";
     var layeruid = document.getElementById("layer").value;
     var method = "DELETE";
     var postData = {};
 
     var request = new XMLHttpRequest();
-    request.onload = function() {
-        var status = request.status;
-        var data = request.responseText;
-        
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+            callback(request, rulenum);
+        }
     }
     postData["rule-number"] = rulenum;
     postData["layer"] = layeruid;
@@ -17,9 +24,22 @@ function deleteRulePost(rulenum) {
     request.send(JSON.stringify(postData));
 }
 
+function removerulecheck(response, rulenum) {
+    if (response.status == 200) {
+        removerule(response.responseText, rulenum);
+    } else {
+       alert('Delete Rule Failed');
+    }
+}
+
+function removerule(response, rulenum) {
+    var delrule = JSON.parse(response);
+    console.log(rulenum);
+}
+
 function deleteRule(tr) {
     var rulenum = tr.id;
-    deleteRulePost(rulenum);
+    deleteRulePost(rulenum, removerulecheck);
 }
 
 function editRule(tr) {
@@ -34,9 +54,7 @@ function dislplayrules(rules, offset) {
     ruletable.style.display = "block";
     var tbody = document.getElementById("tbody");
     if (offset === 0) {
-      while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
-      }
+      clearruletable();
     }
     var i = 0;
     var rulenumid = 1;

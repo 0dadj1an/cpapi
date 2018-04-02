@@ -12,7 +12,7 @@
         {%- include 'syncheader.html' -%}
         <div class="policyform">
           <label><b>Rulebase</b></label>
-          <select id="layer" name="layer">
+          <select id="layer" name="layer" onchange="clearruletable()">
           {%- for layer in alllayers -%}
             {%- if layer[1] == lastlayer -%}
             <option value="{{ layer[1] }}" selected>{{ layer[0] }}</option>
