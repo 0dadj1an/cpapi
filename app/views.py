@@ -42,7 +42,10 @@ def before_request():
     if request.endpoint in keepalive_pages:
         if hasattr(apisession, 'ipaddress'):
             response = apisession.keepalive()
-            if response.status_code != 200:
+            try:
+                if response.status_code != 200:
+                    return redirect('/login')
+            except AttributeError:
                 return redirect('/login')
         else:
             return redirect('/login')
@@ -345,8 +348,7 @@ def policy():
                 alllayers=apisession.all_layers,
                 rulebase=response,
                 lastlayer=apisession.lastlayer,
-                allobjects=all_objects,
-                feedback=feedback)
+                allobjects=all_objects)
 
 
 @app.route('/showobject/<cp_objectuid>', methods=['GET'])
