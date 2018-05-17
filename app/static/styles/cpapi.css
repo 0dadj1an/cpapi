@@ -380,3 +380,7 @@ select {
   position: relative;
   width: 50%;
 }
+
+.commandresponse label {
+  color: #E65785;
+}
