@@ -12,7 +12,7 @@ if ostype == 'Linux':
     BASEDIR = '/var/log/cpapi/'
 
 app = Flask(__name__)
-app.config['version'] = '1.4.2'
+app.config['version'] = '1.4.3'
 app.config['BASEDIR'] = BASEDIR
 
 formatter = logging.Formatter('%(asctime)s %(levelname)s - '
