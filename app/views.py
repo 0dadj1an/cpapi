@@ -1,7 +1,6 @@
 from flask import render_template
 from flask import redirect
 from flask import request
-from flask import session
 
 from flask_login import UserMixin
 from flask_login import login_required
@@ -42,21 +41,18 @@ def before_request():
     if request.endpoint in keepalive_pages:
         if hasattr(apisession, 'ipaddress'):
             response = apisession.keepalive()
-            try:
-                if response.status_code != 200:
-                    return redirect('/login')
-            except AttributeError:
+            if response.status_code != 200:
                 return redirect('/login')
         else:
             return redirect('/login')
 
 
-@app.route('/')
+@app.route('/cpapi')
 def index():
-    return redirect('/login')
+    return redirect('/cpapi/login')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/cpapi/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
@@ -92,7 +88,7 @@ def login():
         return redirect('/custom')
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/cpapi/logout', methods=['GET'])
 @login_required
 def logout():
     if request.method == 'GET':
@@ -101,7 +97,7 @@ def logout():
         return redirect('/login')
 
 
-@app.route('/settings', methods=['GET', 'POST'])
+@app.route('/cpapi/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'GET':
         apisession.verify_obj()
@@ -136,7 +132,7 @@ def settings():
             local=apisession.local_obj)
 
 
-@app.route('/custom', methods=['GET', 'POST'])
+@app.route('/cpapi/custom', methods=['GET', 'POST'])
 @login_required
 def custom():
     if request.method == 'GET':
@@ -175,7 +171,7 @@ def custom():
             return redirect('/logout')
 
 
-@app.route('/addhost', methods=['GET', 'POST'])
+@app.route('/cpapi/addhost', methods=['GET', 'POST'])
 @login_required
 def addhost():
     if request.method == 'GET':
@@ -224,7 +220,7 @@ def addhost():
             response=response.text)
 
 
-@app.route('/addnetwork', methods=['GET', 'POST'])
+@app.route('/cpapi/addnetwork', methods=['GET', 'POST'])
 @login_required
 def addnetwork():
     if request.method == 'GET':
@@ -274,7 +270,7 @@ def addnetwork():
             response=response.text)
 
 
-@app.route('/addgroup', methods=['GET', 'POST'])
+@app.route('/cpapi/addgroup', methods=['GET', 'POST'])
 @login_required
 def addgroup():
     if request.method == 'GET':
@@ -300,7 +296,7 @@ def addgroup():
             response=response.text)
 
 
-@app.route('/policy', methods=['GET', 'POST'])
+@app.route('/cpapi/policy', methods=['GET', 'POST'])
 @login_required
 def policy():
     if request.method == 'GET':
@@ -348,10 +344,11 @@ def policy():
                 alllayers=apisession.all_layers,
                 rulebase=response,
                 lastlayer=apisession.lastlayer,
-                allobjects=all_objects)
+                allobjects=all_objects,
+                feedback=feedback)
 
 
-@app.route('/showobject/<cp_objectuid>', methods=['GET'])
+@app.route('/cpapi/showobject/<cp_objectuid>', methods=['GET'])
 @login_required
 def showobject(cp_objectuid):
     app.logger.info('Displaying Check Point Object {}.'.format(cp_objectuid))
@@ -359,7 +356,7 @@ def showobject(cp_objectuid):
     return render_template('showobject.html', cpobject=response.json())
 
 
-@app.route('/commands', methods=['GET', 'POST'])
+@app.route('/cpapi/commands', methods=['GET', 'POST'])
 @login_required
 def commands():
     if request.method == 'GET':
