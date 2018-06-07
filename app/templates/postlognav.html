@@ -1,8 +1,8 @@
 <ul>
   {%- if 'custom' in request.path -%}
-  <li><a class="active" href="/custom">Custom</a></li>
+  <li><a class="active" href="/cpapi/custom">Custom</a></li>
   {%- else -%}
-  <li><a href="/custom">Custom</a></li>
+  <li><a href="/cpapi/custom">Custom</a></li>
   {%- endif -%}
   {%- if 'add' in request.path -%}
   <li><a class="active">Add Objects</a>
@@ -10,26 +10,26 @@
   <li><a>Add Objects</a>
   {%- endif -%}
     <ul>
-      <li><a href="/addhost">Host</a></li>
-      <li><a href="/addnetwork">Network</a></li>
-      <li><a href="/addgroup">Group</a></li>
+      <li><a href="/cpapi/addhost">Host</a></li>
+      <li><a href="/cpapi/addnetwork">Network</a></li>
+      <li><a href="/cpapi/addgroup">Group</a></li>
     </ul>
   </li>
   {%- if 'policy' in request.path -%}
-  <li><a class="active" href="/policy">Policy</a></li>
+  <li><a class="active" href="/cpapi/policy">Policy</a></li>
   {%- else -%}
-  <li><a href="/policy">Policy</a></li>
+  <li><a href="/cpapi/policy">Policy</a></li>
   {%- endif -%}
   {%- if 'commands' in request.path -%}
-  <li><a class="active" href="/commands">Commands</a></li>
+  <li><a class="active" href="/cpapi/commands">Commands</a></li>
   {%- else -%}
-  <li><a href="/commands">Commands</a></li>
+  <li><a href="/cpapi/commands">Commands</a></li>
   {%- endif -%}
   {%- if 'settings' in request.path -%}
-  <li><a class="active" href="/settings">Settings</a></li>
+  <li><a class="active" href="/cpapi/settings">Settings</a></li>
   {%- else -%}
-  <li><a href="/settings">Settings</a></li>
+  <li><a href="/cpapi/settings">Settings</a></li>
   {%- endif -%}
-  <li><a href="/logout">Logout</a></li>
+  <li><a href="/cpapi/logout">Logout</a></li>
 </ul>
 <br>
