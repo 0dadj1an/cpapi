@@ -29,7 +29,7 @@ def load_user(user_id):
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return redirect('/login')
+    return redirect('/cpapi/login')
 
 
 @app.before_request
@@ -42,9 +42,9 @@ def before_request():
         if hasattr(apisession, 'ipaddress'):
             response = apisession.keepalive()
             if response.status_code != 200:
-                return redirect('/login')
+                return redirect('/cpapi/login')
         else:
-            return redirect('/login')
+            return redirect('/cpapi/login')
 
 
 @app.route('/cpapi')
@@ -85,7 +85,7 @@ def login():
         user = User(apisession.sid)
         login_user(user)
         apisession.pre_data()
-        return redirect('/custom')
+        return redirect('/cpapi/custom')
 
 
 @app.route('/cpapi/logout', methods=['GET'])
@@ -94,7 +94,7 @@ def logout():
     if request.method == 'GET':
         apisession.logout()
         logout_user()
-        return redirect('/login')
+        return redirect('/cpapi/login')
 
 
 @app.route('/cpapi/settings', methods=['GET', 'POST'])
@@ -168,7 +168,7 @@ def custom():
                     payload=payload,
                     response=response))
         else:
-            return redirect('/logout')
+            return redirect('/cpapi/logout')
 
 
 @app.route('/cpapi/addhost', methods=['GET', 'POST'])
