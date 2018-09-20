@@ -142,7 +142,7 @@
                   {%- endif -%}
                     {%- for source in rule['source'] -%}
                       {%- if source[0] != 'Any' -%}
-                      <a href="/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
+                      <a href="/cpapi/showobject/{{source[1]}}" target="_blank">{{ source[0] }}</a><br>
                       {%- else -%}
                       {{ source[0] }}
                       {%- endif -%}
@@ -156,7 +156,7 @@
                   {%- endif -%}
                     {%- for destination in rule['destination'] -%}
                       {%- if destination[0] != 'Any' -%}
-                      <a href="/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
+                      <a href="/cpapi/showobject/{{destination[1]}}" target="_blank">{{ destination[0] }}</a><br>
                       {%- else -%}
                       {{ destination[0] }}
                       {%- endif -%}
@@ -170,7 +170,7 @@
                   {%- endif -%}
                     {%- for service in rule['service'] -%}
                       {%- if service[0] != 'Any' -%}
-                      <a href="/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
+                      <a href="/cpapi/showobject/{{service[1]}}" target="_blank">{{ service[0] }}</a><br>
                       {%- else -%}
                       {{ service[0] }}
                       {%- endif -%}
@@ -181,7 +181,7 @@
                   <td>
                   {%- for target in rule['target'] -%}
                     {%- if target[0] != 'Policy Targets' -%}
-                    <a href="/showobject/{{target[1]}}" target="_blank">{{ target[0] }}</a><br>
+                    <a href="/cpapi/showobject/{{target[1]}}" target="_blank">{{ target[0] }}</a><br>
                     {%- else -%}
                     {{ target[0] }}
                     {%- endif -%}
