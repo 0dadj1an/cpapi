@@ -23,7 +23,7 @@
           <p>Name: {{ cpobject['name'] }}</p>
           <p>Members:</p>
           {%- for member in cpobject['members'] -%}
-          <p><a href="/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
+          <p><a href="/cpapi/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
           {%- endfor -%}
 
           {%- elif cpobject['type'] == 'service-group' -%}
@@ -31,7 +31,7 @@
           <p>Name: {{ cpobject['name'] }}</p>
           <p>Members:</p>
           {%- for member in cpobject['members'] -%}
-          <p><a href="/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
+          <p><a href="/cpapi/showobject/{{ member['uid'] }}" target="_blank">{{ member['name'] }}</a></p>
           {%- endfor -%}
 
           {%- elif cpobject['type'] == 'service-tcp' -%}
